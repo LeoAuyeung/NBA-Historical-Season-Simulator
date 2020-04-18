@@ -1,2 +1,9 @@
 # NBA-Historical-Season-Simulator
-A fantasy NBA season simulator to predict how a given team from a specific year will perform against other teams in a different year
+## CSCI-35000 Final Project
+
+### Team AI AI Captain
+#### Name - Github Username
+- Leo Au-Yeung - LeoAuyeung
+- Kun Yu - kyu21
+- Peter Lee - peterdjlee
+- Leman Yan - Leman-y
