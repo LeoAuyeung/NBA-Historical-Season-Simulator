@@ -7,7 +7,7 @@ nba_teams = teams.get_teams()
 celtics = [team for team in nba_teams if team['abbreviation'] == 'BOS'][0]
 celtics_id = celtics['id']
 
-print("Celtics ID: " + celtics_id)
+print(celtics_id)
 
 # Query for games where the Celtics were playing.
 gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=celtics_id)
