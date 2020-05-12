@@ -1,5 +1,3 @@
-# from configureCWD import setCurrentWorkingDirectory
-
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
@@ -7,6 +5,8 @@ import pandas as pd
 import pickle
 
 import os
+
+from datetime import datetime
 
 home_path = os.getcwd()
 
@@ -78,9 +78,11 @@ def logistic_regression(dataframe):
     return log_reg_result
     
 # Create new training model and save after training
-def create_model(startYear=None, startMonth=None, startDay=None, endYear=None, endMonth=None, endDay=None, season='2018-19', startOfSeason = '10/16/2018'):
+def create_model(name="model"):
+    now = datetime.now()
+    now_str = now.strftime("%Y%m%d")
 
-    filename = 'model-' + str(startYear) + str(startMonth) + str(startDay) + '-' + str(endYear) + str(endMonth) + str(endDay) + '.pkl'
+    filename = f'{name}_{now_str}.pkl'
 
     # Set directory to Data
     os.chdir(home_path + '/Data')

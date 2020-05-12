@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pandas = "*"
 numpy = "*"
+sklearn = "*"
+nba-api = "*"
 
 [requires]
 python_version = "3.8"
