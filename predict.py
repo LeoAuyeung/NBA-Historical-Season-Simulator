@@ -10,8 +10,8 @@ def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, end
 	homeTeam, awayTeam = list(game.items())[0]
 	gameAsList = [homeTeam, awayTeam]
 
-	homeTeamStats = getStatsForTeam(homeTeam, startDate, endDate, season)
-	awayTeamStats = getStatsForTeam(awayTeam, startDate, endDate, season)
+	homeTeamStats = getStatsForTeam(homeTeam, startDate, endDate, season) #specify season 1
+	awayTeamStats = getStatsForTeam(awayTeam, startDate, endDate, season) #specify season 2
 
 	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
 		zScoreDif = zScoreDifferential(homeTeamStats[stat], awayTeamStats[stat], meanDict[stat], standardDeviationDict[stat])
@@ -59,6 +59,7 @@ def interpretPrediction(gameWithPrediction):
 def main():
 	setCurrentWorkingDirectory('SavedModels')
 	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
+	# 82 x {CLIPPERS vs TEAM B}
 	gameWithPrediction = predictGame(game, "model_20200512", '01/04/2020', '2019-20', '10/22/2019')
 	interpretPrediction(gameWithPrediction)
 
