@@ -36,7 +36,8 @@ def knn(dataframe):
     # ==================== START applying k nearest neighbors ====================
 
     #Call KNeighborsClassifier from https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
-    knn_result = KNeighborsClassifier(n_neighbors=3)
+    knn_result = KNeighborsClassifier(n_neighbors=2)
+    print('n_neighbors = 2')
 
     # Fit the model according to the given training data.
     knn_result.fit(X_train, Y_train);
