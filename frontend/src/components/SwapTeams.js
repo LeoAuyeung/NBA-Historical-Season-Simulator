@@ -14,11 +14,21 @@ const SwapTeams = () => {
 		teamOne = name;
 		console.log(teamOne);
 	}
-
+	/*
+			const response = await fetch('http://localhost:5000/todos',{ //Wait for it to finish then consolelog response
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json'},
+				body: JSON.stringify(body)
+			}); // by default fetch is a get request
+	*/
 	const onSubmitForm = async e => {
 		e.preventDefault();
 		console.log('teamDescriptions',teamDescriptions);
 		console.log('teamList', teamList);
+		const response = fetch('/standings',{
+			method: 'POST',
+			body: teamList
+		});
 	}
 
 	return(
