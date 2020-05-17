@@ -37,7 +37,7 @@ def predictGame(game, modelName, currentDate, season, startOfSeason):
 		pickleModel = pickle.load(file)
 
 	# Predicts the probability that the home team loses/wins
-	prediction = pickleModel.predict_proba(justZScoreDifs)
+	prediction = pickleModel.predict(justZScoreDifs)
 
 	gameWithPrediction = [game, prediction]
 	return gameWithPrediction
@@ -45,6 +45,10 @@ def predictGame(game, modelName, currentDate, season, startOfSeason):
 def interpretPrediction(gameWithPrediction):
 
 	game, prediction = gameWithPrediction
+
+	print(game, prediction)
+
+	return None
 
 	winProb = prediction[0][1]
 	winProbRounded = round(winProb, 4)
