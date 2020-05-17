@@ -46,24 +46,22 @@ def interpretPrediction(gameWithPrediction):
 
 	game, prediction = gameWithPrediction
 
-	print(game, prediction)
-
-	return None
-
-	winProb = prediction[0][1]
-	winProbRounded = round(winProb, 4)
-	# Formulates percent chance that home team wins
-	winProbPercent = "{:.2%}".format(winProbRounded)
-
 	homeTeam = list(game.keys())[0]
 	awayTeam = list(game.values())[0]
 
-	print('There is a ' + winProbPercent + ' chance that the ' + homeTeam + ' will defeat the ' + awayTeam + '.')
+	prediction = prediction[0].item()
+
+	if prediction == 0:
+		winner = homeTeam
+	elif prediction == 1:
+		winner = awayTeam
+
+	print(f'{homeTeam} vs. {awayTeam} : {winner}')
 
 def main():
 	setCurrentWorkingDirectory('SavedModels')
 	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
-	gameWithPrediction = predictGame(game, "model_20200512", '01/04/2020', '2019-20', '10/22/2019')
+	gameWithPrediction = predictGame(game, "model_dTree_20200517", '01/04/2020', '2019-20', '10/22/2019')
 	interpretPrediction(gameWithPrediction)
 
 
