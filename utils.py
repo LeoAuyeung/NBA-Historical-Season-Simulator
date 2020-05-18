@@ -2,38 +2,43 @@ import os
 import time
 import json
 import pickle
+import csv
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
 
 import wptools
 from datetime import datetime
 import pandas as pd
 
-from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES
+from constants import TEAMS, HEADERS, SEASON_DATES, TEAMS_ABV
+
+from pprint import pprint
 
 home_path = os.getcwd()
 
 # Save the API call with the given parameters
 def saveAPICall(filename, allTeamsDict):
-    with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
-        pickle.dump(allTeamsDict, handle)
+	with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
+		pickle.dump(allTeamsDict, handle)
 
 # Check if we've already made an API call with the given parameters.
 def checkAPICall(filename):
-    fileFound = False
-    for file in os.listdir(home_path+'/SavedAPICalls/'):
-        if filename in file:
-            return True
+	fileFound = False
+	for file in os.listdir(home_path+'/SavedAPICalls/'):
+		if filename in file:
+			return True
 
-    return fileFound
+	return fileFound
 
 # Get the result of the API call we've already made
 def getAPICall(filename):
-    with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
-        return pickle.loads(handle.read())
+	with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
+		return pickle.loads(handle.read())
 
 
 def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
 	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
+
+	print(startDate, endDate)
 
 	if useCachedStats:
 		setCurrentWorkingDirectory("Data")
@@ -106,9 +111,9 @@ def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cach
 # Sets current working directory relative to where program folder is located
 def setCurrentWorkingDirectory(directoryName):
 
-    programDirectory = os.path.dirname(os.path.abspath(__file__))
-    newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
-    os.chdir(newCurrentWorkingDirectory)
+	programDirectory = os.path.dirname(os.path.abspath(__file__))
+	newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
+	os.chdir(newCurrentWorkingDirectory)
 
 def createGameDict(homeTeam, awayTeam):
 
@@ -135,6 +140,7 @@ def createGameDict(homeTeam, awayTeam):
 		"home": homeTeam,
 		"away": awayTeam
 	}
+
 
 def getSeasonDates(season):
 	if season in SEASON_DATES:
@@ -172,18 +178,18 @@ def getNBASeasonStartEndDates(season):
 
 # createNBASeasonDatesDict(2008, 2018) for 2008-09 to 2018-19
 def createNBASeasonDatesDict(first, last):
-    seasons = {}
+	seasons = {}
 
-    for x in range(first, last + 1):
-        season_str = f'{x}-{str(x+1)[-2:]}'
+	for x in range(first, last + 1):
+		season_str = f'{x}-{str(x+1)[-2:]}'
 
-        season_dates = getNBASeasonStartEndDates(season_str)
+		season_dates = getNBASeasonStartEndDates(season_str)
 
-        seasons[season_str] = season_dates
+		seasons[season_str] = season_dates
 
-    print(seasons)
+	print(seasons)
 
-    return seasons
+	return seasons
 
 
 def createStatsForTeamsCSV():
@@ -251,3 +257,38 @@ def getGameScheduleList(homeTeam, awaySeason):
 		regular_season_games.append(game_dict)
 	
 	return regular_season_games
+
+def parsePredictionCSV(filename):
+	setCurrentWorkingDirectory("Predictions")
+
+	with open(filename) as f:
+		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace=True)]
+	
+	return predicitons
+
+def getStatsForPredictionsCSV(predictions):
+	num_matches = len(predictions)
+
+	predicted_losses = sum([int(g["prediction"]) for g in predictions])
+	predictied_wins = num_matches - predicted_losses
+	
+	actual_losses = sum([int(g["actual"]) for g in predictions])
+	actual_wins = num_matches - actual_losses
+
+	wrong_preditions = sum([1 for x in predictions if x["prediction"] != x["actual"]])
+	right_preditions = num_matches - wrong_preditions
+
+	stats = {
+		"num_matches": num_matches,
+		"predicted_losses": predicted_losses,
+		"predicted_wins": predictied_wins,
+		"actual_losses": actual_losses,
+		"actual_wins": actual_wins,
+		"wrong_preditions": wrong_preditions,
+		"right_preditions": right_preditions
+	}
+
+	pprint(stats)
+
+
+# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))

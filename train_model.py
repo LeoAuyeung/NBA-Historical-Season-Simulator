@@ -285,32 +285,6 @@ def logistic_regression(dataframe):
 	# plt.show()
 
 	return log_reg_result
-	
-
-# Create new training model and save after training
-def create_model(name="model"):
-	now = datetime.now()
-	now_str = now.strftime("%Y%m%d")
-
-	model_name = "dTree"
-
-	filename = f'{name}_{model_name}_{now_str}.pkl'
-
-	# Set directory to Data
-	os.chdir(home_path + '/Data')
-
-	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
-
-	# Train model based on the dataframe given by CSV
-	# model = logistic_regression(all_games_dataframe)
-	model = decision_tree(all_games_dataframe)
-
-	# Set directory to SavedModels
-	os.chdir(home_path + '/SavedModels')
-
-	# Save Model
-	with open(filename, 'wb') as file:
-		pickle.dump(model, file)
 
 
 def create_model_helper(df, model_name):
