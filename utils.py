@@ -11,6 +11,8 @@ import pandas as pd
 
 from constants import TEAMS, HEADERS, SEASON_DATES
 
+from pprint import pprint
+
 home_path = os.getcwd()
 
 # Save the API call with the given parameters
@@ -228,5 +230,37 @@ def getGameScheduleList(homeTeam, awaySeason):
 	
 	return regular_season_games
 
-def parsePredictionCSVs(filename):
+def parsePredictionCSV(filename):
 	setCurrentWorkingDirectory("Predictions")
+
+	with open(filename) as f:
+		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace=True)]
+	
+	return predicitons
+
+def getStatsForPredictionsCSV(predictions):
+	num_matches = len(predictions)
+
+	predicted_losses = sum([int(g["prediction"]) for g in predictions])
+	predictied_wins = num_matches - predicted_losses
+	
+	actual_losses = sum([int(g["actual"]) for g in predictions])
+	actual_wins = num_matches - actual_losses
+
+	wrong_preditions = sum([1 for x in predictions if x["prediction"] != x["actual"]])
+	right_preditions = num_matches - wrong_preditions
+
+	stats = {
+		"num_matches": num_matches,
+		"predicted_losses": predicted_losses,
+		"predicted_wins": predictied_wins,
+		"actual_losses": actual_losses,
+		"actual_wins": actual_wins,
+		"wrong_preditions": wrong_preditions,
+		"right_preditions": right_preditions
+	}
+
+	pprint(stats)
+
+
+getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518_predictions.csv"))

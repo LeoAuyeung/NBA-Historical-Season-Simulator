@@ -126,6 +126,20 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 	
 	num_matches = len(matchScheduleList)
 
+	predicted_losses = sum([int(g["prediction"]) for g in games_df])
+	predictied_wins = num_matches - predicted_losses
+	
+	actual_losses = sum([int(g["actual"]) for g in games_df])
+	actual_wins = num_matches - actual_losses
+
+	return {
+		"num_matches": num_matches,
+		"predicted_losses": predicted_losses,
+		"predicted_wins": predictied_wins,
+		"actual_losses": actual_losses,
+		"actual_wins": actual_wins
+	}
+
 
 # home team is the swapped team
 def main():
