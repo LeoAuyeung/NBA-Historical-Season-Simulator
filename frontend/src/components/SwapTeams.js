@@ -119,6 +119,16 @@ const SwapTeams = () => {
 		}
 	]);
 		
+	const [predictions, setPredictions] = useState([
+		{
+			date: '10/16/2018',
+			home: 'Boston Celtics',
+			away: 'Philadelphia 76ers',
+			prediction: 0,
+			actual: 0
+		}
+	]);
+
 
 	let teamList = ['Atlanta Hawks','2019-20','Atlanta Hawks','2019-20']
 
@@ -280,6 +290,31 @@ const SwapTeams = () => {
 			      	))}
 			    </tbody>
 			</table>
+
+			<h2 className='text-center mt-4'>Predicted Games</h2>
+			<table className="table table-striped">
+			    <thead>
+			    	<tr>
+			        	<th>Date</th>
+			        	<th>Home</th>
+			        	<th>Away</th>
+			        	<th>Prediction</th>
+			        	<th>Actual</th>
+			    	</tr>
+			    </thead>
+			    <tbody>
+			      	{predictions.map((game,index) => (
+			      		<tr key={index} index={index}>
+			      			<td>{game.date}</td>
+			      			<td>{game.home}</td>
+			      			<td>{game.away}</td>
+			      			<td>{game.prediction}</td>
+			      			<td>{game.actual}</td>
+			      		</tr>
+			      	))}
+			    </tbody>
+			</table>
+
 		</Fragment>
 	); 
 
@@ -362,4 +397,6 @@ https://getbootstrap.com/docs/4.0/components/forms/#select-menu
 Table:
 https://www.w3schools.com/bootstrap4/bootstrap_tables.asp
 
+Git pull from master to branch:
+https://stackoverflow.com/questions/20101994/git-pull-from-master-into-the-development-branch
 */
