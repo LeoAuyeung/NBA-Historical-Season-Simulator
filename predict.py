@@ -5,13 +5,12 @@ from process import createMeanStandardDeviationDicts, zScoreDifferential
 from constants import TEAMS, STATS_TYPE, HEADERS
 from utils import setCurrentWorkingDirectory, getStatsForTeam, getSeasonDates
 
-def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season):
+def gameWithZScoreDifsList(homeTeam, awayTeam, meanDict, standardDeviationDict, useCachedStats=False):
 
-	homeTeam, awayTeam = list(game.items())[0]
-	gameAsList = [homeTeam, awayTeam]
+	gameAsList = [homeTeam["label"], awayTeam["label"]]
 
-	homeTeamStats = getStatsForTeam(homeTeam, startDate, endDate, season)
-	awayTeamStats = getStatsForTeam(awayTeam, startDate, endDate, season)
+	homeTeamStats = getStatsForTeam(homeTeam["name"], homeTeam["startDate"], homeTeam["endDate"], homeTeam["season"], useCachedStats)
+	awayTeamStats = getStatsForTeam(awayTeam["name"], awayTeam["startDate"], awayTeam["endDate"], awayTeam["season"], useCachedStats)
 
 	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
 		zScoreDif = zScoreDifferential(homeTeamStats[stat], awayTeamStats[stat], meanDict[stat], standardDeviationDict[stat])
@@ -19,14 +18,15 @@ def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, end
 	
 	return [gameAsList]
 
-def predictGame(game, modelName, season):
+def predictGame(game, modelName, useCachedStats=False):
 
-	dates = getSeasonDates(season)
-	startDate = dates["start"]
-	endDate = dates["end"]
+	base_season = game["away"]["season"]
+	base_season_startDate = game["away"]["startDate"]
+	base_season_endDate = game["away"]["endDate"]
 
-	meanDict, standardDeviationDict = createMeanStandardDeviationDicts(startDate, endDate, season)
-	gameAsList = gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season)
+	# given home team is swapped team, create mean and stddev using away team season
+	meanDict, standardDeviationDict = createMeanStandardDeviationDicts(base_season_startDate, base_season_endDate, base_season)
+	gameAsList = gameWithZScoreDifsList(game["home"], game["away"], meanDict, standardDeviationDict, useCachedStats)
 
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	gameWithZScoreDifs = pd.DataFrame(
@@ -47,11 +47,14 @@ def predictGame(game, modelName, season):
 	return gameWithPrediction
 
 def interpretPrediction(gameWithPrediction):
+	# teams = gameWithPrediction["teams"]
+	# prediction = gameWithPrediction["prediction"]
+	# matchDate = gameWithPrediction["date"]
 
 	game, prediction = gameWithPrediction
 
-	homeTeam = list(game.keys())[0]
-	awayTeam = list(game.values())[0]
+	homeTeam = game["home"]
+	awayTeam = game["away"]
 
 	prediction = prediction[0].item()
 
@@ -60,14 +63,88 @@ def interpretPrediction(gameWithPrediction):
 	elif prediction == 1:
 		winner = awayTeam
 
-	print(f'{homeTeam} vs. {awayTeam} : {winner}')
+	print(f'{homeTeam["label"]} vs. {awayTeam["label"]} : {winner["label"]}')
 
+def createGameDict(homeTeam, awayTeam):
+
+	home_season = homeTeam["season"]
+	home_season_dates = getSeasonDates(home_season)
+	home_startDate = home_season_dates["start"]
+	home_endDate = home_season_dates["end"]
+
+	homeTeam["startDate"] = home_startDate
+	homeTeam["endDate"] = home_endDate
+	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
+
+
+	away_season = awayTeam["season"]
+	away_season_dates = getSeasonDates(away_season)
+	away_startDate = away_season_dates["start"]
+	away_endDate = away_season_dates["end"]
+
+	awayTeam["startDate"] = away_startDate
+	awayTeam["endDate"] = away_endDate
+	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
+
+	return {
+		"home": homeTeam,
+		"away": awayTeam
+	}
+
+# def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False):
+# 	# need to make this function
+# 	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
+
+# 	games_df = []
+
+# 	for match in matchScheduleList:
+# 		awayTeam = {
+# 			"season": awaySeason,
+# 			"name": match["awayTeam"]
+# 		}
+
+# 		game = createGameDict(homeTeam, awayTeam)
+# 		gameWithPrediction = predictGame(game, modelName)
+
+# 		result = {
+# 			"teams" : gameWithPrediction[0],
+# 			"prediction": gameWithPrediction[1],
+# 			"date": match["date"]
+# 		}
+# 		interpretPrediction(result)
+
+# 		result_df = {
+# 			"home": gameWithPrediction[0]["home"]["name"],
+# 			"away": gameWithPrediction[0]["away"]["name"],
+# 			"date": match["date"],
+# 			"result": gameWithPrediction[1][0].item()
+# 		}
+# 		games_df.append(result_df)
+	
+# 	columns = ["date", "home", "away", "result"]
+# 	df = pd.DataFrame(games_df, columns=columns)
+
+# 	df.to_csv(f'{homeTeam["season"]}-{homeTeam["name"]}_{awaySeason}_predictions.csv', index=False)
+
+
+# home team is the swapped team
 def main():
 	setCurrentWorkingDirectory('SavedModels')
-	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
-	gameWithPrediction = predictGame(game, "model_dTree_20200517", '2019-20')
-	interpretPrediction(gameWithPrediction)
 
+	homeTeam = {
+		"season": "2019-20",
+		"name": "Los Angeles Clippers"
+	}
+	awayTeam = {
+		"season": "2019-20",
+		"name": "Memphis Grizzlies"
+	}
+	game = createGameDict(homeTeam, awayTeam)
+
+	modelName = "model_dTree_20200517"
+
+	gameWithPrediction = predictGame(game, modelName, useCachedStats=True)
+	interpretPrediction(gameWithPrediction)
 
 if __name__ == "__main__":
 	main()

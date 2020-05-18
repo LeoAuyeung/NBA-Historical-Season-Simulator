@@ -4,51 +4,76 @@ from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteam
 
 import wptools
 from datetime import datetime
+import pandas as pd
 
 from constants import TEAMS, HEADERS, SEASON_DATES
 
-def getStatsForTeam(team, startDate, endDate, season='2019-20'):
+def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
+	if useCachedStats:
+		setCurrentWorkingDirectory("Data")
 
-	time.sleep(1)
-	# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
-	generalTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
-		team_id=TEAMS[team], 
-		per_mode_detailed='Per100Possessions', 
-		date_from_nullable=startDate, 
-		date_to_nullable=endDate, 
-		season=season, 
-		headers=HEADERS, 
-		timeout=120
-	)
-	generalTeamDict = generalTeamInfo.get_normalized_dict()
-	generalTeamDashboard = generalTeamDict['OverallTeamDashboard'][0]
+		# read csv
+		allTeamStats = pd.read_csv(cachedFileName)
+		headers = list(allTeamStats)[2:]
 
-	# Returns Win PCT, Rebounds, Turnovers, and Plus Minus
-	winPercentage = generalTeamDashboard['W_PCT']
-	rebounds = generalTeamDashboard['REB']
-	turnovers = generalTeamDashboard['TOV']
-	plusMinus = generalTeamDashboard['PLUS_MINUS']
+		teamStats = allTeamStats.loc[(allTeamStats['season'] == season) & (allTeamStats['team'] == team)]
 
-	# Uses NBA_API to access the dictionary holding advanced stats for every team
-	advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team], measure_type_detailed_defense='Advanced', date_from_nullable=startDate, date_to_nullable=endDate, season=season, headers=HEADERS, timeout=120)
-	advancedTeamDict  = advancedTeamInfo.get_normalized_dict()
-	advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
+		allStats  = {}
+		for h in headers:
+			allStats[h] = teamStats[h].values[0]
+		
+		setCurrentWorkingDirectory("SavedModels")
 
-	# Variables holding OFF Rating, DEF Rating, and TS%
-	offensiveRating = advancedTeamDashboard['OFF_RATING']
-	defensiveRating = advancedTeamDashboard['DEF_RATING']
-	trueShootingPercentage = advancedTeamDashboard['TS_PCT']
+	else:
+		time.sleep(1)
+		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
+		generalTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
+			team_id=TEAMS[team], 
+			per_mode_detailed='Per100Possessions', 
+			date_from_nullable=startDate, 
+			date_to_nullable=endDate, 
+			season=season, 
+			headers=HEADERS, 
+			timeout=120
+		)
 
-	# Puts all the stats for specified team into a dictionary
-	allStats = {
-		'W_PCT':winPercentage,
-		'REB':rebounds,
-		'TOV':turnovers,
-		'PLUS_MINUS':plusMinus,
-		'OFF_RATING':offensiveRating,
-		'DEF_RATING': defensiveRating,
-		'TS_PCT':trueShootingPercentage,
-	}
+		generalTeamDict = generalTeamInfo.get_normalized_dict()
+		generalTeamDashboard = generalTeamDict['OverallTeamDashboard'][0]
+
+		# Returns Win PCT, Rebounds, Turnovers, and Plus Minus
+		winPercentage = generalTeamDashboard['W_PCT']
+		rebounds = generalTeamDashboard['REB']
+		turnovers = generalTeamDashboard['TOV']
+		plusMinus = generalTeamDashboard['PLUS_MINUS']
+
+		# Uses NBA_API to access the dictionary holding advanced stats for every team
+		advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
+			team_id=TEAMS[team], 
+			measure_type_detailed_defense='Advanced', 
+			date_from_nullable=startDate, 
+			date_to_nullable=endDate, 
+			season=season, 
+			headers=HEADERS, 
+			timeout=120
+		)
+		advancedTeamDict  = advancedTeamInfo.get_normalized_dict()
+		advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
+
+		# Variables holding OFF Rating, DEF Rating, and TS%
+		offensiveRating = advancedTeamDashboard['OFF_RATING']
+		defensiveRating = advancedTeamDashboard['DEF_RATING']
+		trueShootingPercentage = advancedTeamDashboard['TS_PCT']
+
+		# Puts all the stats for specified team into a dictionary
+		allStats = {
+			'W_PCT':winPercentage,
+			'REB':rebounds,
+			'TOV':turnovers,
+			'PLUS_MINUS':plusMinus,
+			'OFF_RATING':offensiveRating,
+			'DEF_RATING': defensiveRating,
+			'TS_PCT':trueShootingPercentage,
+		}
 
 	return allStats
 
@@ -108,3 +133,27 @@ def createNBASeasonDatesDict(first, last):
     print(seasons)
 
     return seasons
+
+
+def createStatsForTeamsCSV():
+	setCurrentWorkingDirectory("Data")
+
+	allStats = []
+	for season in SEASON_DATES.keys():
+		dates = getSeasonDates(season)
+		startDate = dates["start"]
+		endDate = dates["end"]
+
+		for team in TEAMS:
+			stats = getStatsForTeam(team, startDate, endDate, season)
+			stats["team"] = team
+			stats["season"] = season
+
+			print(stats)
+
+			allStats.append(stats)
+
+	columns = ["season", "team", "W_PCT", "REB", "TOV", "PLUS_MINUS", "OFF_RATING", "DEF_RATING", "TS_PCT"]
+	df = pd.DataFrame(allStats, columns=columns)
+
+	df.to_csv("2009-2019_TeamStats.csv", index=False)
