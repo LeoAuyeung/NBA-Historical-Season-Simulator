@@ -143,6 +143,8 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 		setCurrentWorkingDirectory('Predictions')
 
 		df.to_csv(f'{homeTeam["season"]}-{homeTeam["name"]}_{awaySeason}_predictions.csv', index=False)
+
+		setCurrentWorkingDirectory('SavedModels')
 	
 	num_matches = len(matchScheduleList)
 
@@ -176,8 +178,10 @@ def main():
 
 	predictSeason(homeTeam, awaySeason, modelName, useCachedStats=True)
 
-	end = timer()
-	print(f'Took {end - start} seconds.')
+	end = timer() 
+
+	elapsed_time = end - start
+	print(f'Elapsed Time: {int(elapsed_time / 60)} minutes {int(elapsed_time % 60)} seconds.')
 
 if __name__ == "__main__":
 	main()
