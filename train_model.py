@@ -1,9 +1,13 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn import metrics
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics, datasets
 import pandas as pd
 import pickle
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 import os
 
@@ -11,140 +15,332 @@ from datetime import datetime
 
 home_path = os.getcwd()
 
-def logistic_regression(dataframe):
 
-    # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
-    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+#k nearest neighbors
+def knn(dataframe):
 
-    # ==================== START store necessary variables ====================
+	# Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
+	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
 
-    # feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
-    feature_data = dataframe[features]
+	# ==================== START store necessary variables ====================
 
-    # actual_result_data holds actual result of the games which we can then check our prediction with
-    actual_result_data = dataframe.Result
+	# feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+	feature_data = dataframe[features]
 
-    # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
-    # Split arrays or matrices into random train and test subsets
-    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+	# actual_result_data holds actual result of the games which we can then check our prediction with
+	actual_result_data = dataframe.Result
 
-    # ==================== END store necessary variables ====================
+	# Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+	# Split arrays or matrices into random train and test subsets
+	X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
 
-
-    # ==================== START applying logistic regression ====================
-
-    # Call sklearn.linear_model's Logistic Regression function: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-    log_reg_result = LogisticRegression()
-
-    # Fit the model according to the given training data.
-    log_reg_result.fit(X_train, Y_train)
-
-    # Predict class labels for samples in X
-    Y_pred = log_reg_result.predict(X_test)
-
-    # Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
-    # Compute confusion matrix to evaluate the accuracy of a classification
-    confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
-
-    # ==================== END applying logistic regression ====================
+	# ==================== END store necessary variables ====================
 
 
-    # ==================== Print model accuracy information ====================
-    print('\nCoefficient Information: \n')
+	# ==================== START applying k nearest neighbors ====================
 
-    # Loop through each feature
-    for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
+	#Call KNeighborsClassifier from https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+	knn_result = KNeighborsClassifier(n_neighbors=2)
+	print('n_neighbors = 2')
 
-        # Get feature name and corresponding coefficients
-        log_reg_coefficients = log_reg_result.coef_
-        curr_feature = features[i]
-        curr_coefficient = log_reg_coefficients[0][i]
+	# Fit the model according to the given training data.
+	knn_result.fit(X_train, Y_train);
 
-        # Print them
-        print(curr_feature + ': ' + str(curr_coefficient))
+	# Predict class labels for samples in X
+	Y_pred = knn_result.predict(X_test)
 
-    print('\n----------------------------------')
+	# Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+	# Compute confusion matrix to evaluate the accuracy of a classification
+	confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
 
-    # Printing accuracy, precision, and recall based on metrics data
-    print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
-    print("Precision: ", metrics.precision_score(Y_test, Y_pred))
-    print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+	# ==================== END applying k nearest neighbors ====================
 
-    print('----------------------------------\n')
 
-    # Print confusion matrix
-    print('Confusion Matrix:')
-    print(confusion_matrix)
+	# ==================== Print model accuracy information ====================
+   
+	'''
+	K nearest neigbors doesnt seem to have any features
+	print('\nCoefficient Information: \n')
 
-    return log_reg_result
+	print('knn_result.classes_',knn_result.classes_)
+	print('knn_result.effective_metric_', knn_result.effective_metric_)
+	print('knn_result.effective_metric_params_', knn_result.effective_metric_params_)
+	print('knn_result.outputs_2d_', knn_result.outputs_2d_)
+	'''
+
+	# Loop through each feature
+	'''
+	for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
+
+		# Get feature name and corresponding coefficients
+		knn_coefficients = knn_result.coef_
+		curr_feature = features[i]
+		curr_coefficient = knn_coefficients[0][i]
+
+		# Print them
+		print(curr_feature + ': ' + str(curr_coefficient))
+
+	print('\n----------------------------------')
+	'''
+
+	# Printing accuracy, precision, and recall based on metrics data
+	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+	print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+
+	print('----------------------------------\n')
+
+	# Print confusion matrix
+	print('Confusion Matrix:')
+	print(confusion_matrix)
+
+	return knn_result
+   
+
+def random_forest(dataframe):
+	 # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
+	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+
+	# ==================== START store necessary variables ====================
+
+	# feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+	feature_data = dataframe[features]
+
+	# actual_result_data holds actual result of the games which we can then check our prediction with
+	actual_result_data = dataframe.Result
+
+	# Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+	# Split arrays or matrices into random train and test subsets
+	X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.3, shuffle=True)
+
+	# ==================== END store necessary variables ====================
+
+	# ==================== START applying random forest ====================
+	# Create a Gaussian Classifier
+	random_forest_result = RandomForestClassifier(n_estimators=100)
+
+	# Train the model using the training sets
+	random_forest_result.fit(X_train,Y_train)
+
+	# Predict class labels for samples in X
+	Y_pred = random_forest_result.predict(X_test)
+	
+	# Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+	# Compute confusion matrix to evaluate the accuracy of a classification
+	confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
+	
+	# ==================== END applying random forest ====================
+
+	# ==================== Print model accuracy information ====================
+	print('\nFeature Importance: \n')
+	print(random_forest_result.feature_importances_)
+
+	print('\n----------------------------------')
+
+	# Printing accuracy, precision, and recall based on metrics data
+	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+	print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+
+	print('----------------------------------\n')
+
+	# Print confusion matrix
+	print('Confusion Matrix:')
+	print(confusion_matrix)
+	
+	# Create an array with features and their correspodning importance values
+	feature_imp = pd.Series(random_forest_result.feature_importances_,index=features).sort_values(ascending=False)
+	
+	# Creating a bar plot
+	sns.barplot(x=feature_imp, y=feature_imp.index)
+
+	# Add labels to your graph
+	plt.xlabel('Feature Importance Score')
+	plt.ylabel('Features')
+	plt.title("Visualizing Important Features")
+	# plt.show()
+
+	return random_forest_result
 
 
 def decision_tree(dataframe):
-     # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
-    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+	 # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
+	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
 
-    # feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
-    feature_data = dataframe[features]
+	# feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+	feature_data = dataframe[features]
 
-    # actual_result_data holds actual result of the games which we can then check our prediction with
-    actual_result_data = dataframe.Result
+	# actual_result_data holds actual result of the games which we can then check our prediction with
+	actual_result_data = dataframe.Result
 
-    # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
-    # Split arrays or matrices into random train and test subsets
-    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+	# Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+	# Split arrays or matrices into random train and test subsets
+	X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
 
-    # Call sklearn.linear_model's Logistic Regression function: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-    decision_tree_result = DecisionTreeClassifier()
+	# Call sklearn.linear_model's Logistic Regression function: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+	decision_tree_result = DecisionTreeClassifier()
 
-    # Fit the model according to the given training data.
-    decision_tree_result.fit(X_train, Y_train)
+	# Fit the model according to the given training data.
+	decision_tree_result.fit(X_train, Y_train)
 
-    # Predict class labels for samples in X
-    Y_pred = decision_tree_result.predict(X_test)
+	# Predict class labels for samples in X
+	Y_pred = decision_tree_result.predict(X_test)
 
-    # Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
-    # Compute confusion matrix to evaluate the accuracy of a classification
-    confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
+	# Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+	# Compute confusion matrix to evaluate the accuracy of a classification
+	confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
 
-    print('\n----------------------------------')
+	print('\n----------------------------------')
 
-    # Printing accuracy, precision, and recall based on metrics data
-    print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
-    print("Precision: ", metrics.precision_score(Y_test, Y_pred))
-    print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+	# Printing accuracy, precision, and recall based on metrics data
+	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+	print("Recall: ", metrics.recall_score(Y_test, Y_pred))
 
-    print('----------------------------------\n')
+	print('----------------------------------\n')
 
-    # Print confusion matrix
-    print('Confusion Matrix:')
-    print(confusion_matrix)
+	# Print confusion matrix
+	print('Confusion Matrix:')
+	print(confusion_matrix)
 
-    return decision_tree_result
+	return decision_tree_result
+
+
+def logistic_regression(dataframe):
+	# Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
+	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+
+	# ==================== START store necessary variables ====================
+
+	# feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+	feature_data = dataframe[features]
+
+	# actual_result_data holds actual result of the games which we can then check our prediction with
+	actual_result_data = dataframe.Result
+
+	# Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+	# Split arrays or matrices into random train and test subsets
+	X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+
+	# ==================== END store necessary variables ====================
+
+
+	# ==================== START applying logistic regression ====================
+
+	# Call sklearn.linear_model's Logistic Regression function: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+	log_reg_result = LogisticRegression()
+
+	# Fit the model according to the given training data.
+	log_reg_result.fit(X_train, Y_train)
+
+	# Predict class labels for samples in X
+	Y_pred = log_reg_result.predict(X_test)
+
+	# Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+	# Compute confusion matrix to evaluate the accuracy of a classification
+	confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
+
+	# ==================== END applying logistic regression ====================
+
+
+	# ==================== Print model accuracy information ====================
+	print('\nCoefficient Information: \n')
+
+	# Loop through each feature
+	feature_coefficients = []
+	for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
+
+		# Get feature name and corresponding coefficients
+		log_reg_coefficients = log_reg_result.coef_
+		curr_feature = features[i]
+		curr_coefficient = log_reg_coefficients[0][i]
+
+		feature_coefficients.append(curr_coefficient)
+
+		# Print them
+		print(curr_feature + ': ' + str(curr_coefficient))
+
+	print('\n----------------------------------')
+
+	# Printing accuracy, precision, and recall based on metrics data
+	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+	print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+
+	print('----------------------------------\n')
+
+	# Print confusion matrix
+	print('Confusion Matrix:')
+	print(confusion_matrix)
+
+	# Create an array with features and their correspodning coefficient values
+	feature_coefficients = pd.Series(feature_coefficients,index=features).sort_values(ascending=False)
+
+	# Creating a bar plot
+	sns.barplot(x=feature_coefficients, y=feature_coefficients.index)
+
+	# Add labels to graph
+	plt.xlabel('Feature Coefficient')
+	plt.ylabel('Features')
+	plt.title("Visualizing Feature Coefficients")
+	# plt.show()
+
+	return log_reg_result
+	
 
 # Create new training model and save after training
 def create_model(name="model"):
-    now = datetime.now()
-    now_str = now.strftime("%Y%m%d")
+	now = datetime.now()
+	now_str = now.strftime("%Y%m%d")
 
-    model_name = "dTree"
+	model_name = "dTree"
 
-    filename = f'{name}_{model_name}_{now_str}.pkl'
+	filename = f'{name}_{model_name}_{now_str}.pkl'
 
-    # Set directory to Data
-    os.chdir(home_path + '/Data')
+	# Set directory to Data
+	os.chdir(home_path + '/Data')
 
-    all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
+	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
 
-    # Train model based on the dataframe given by CSV
-    # model = logistic_regression(all_games_dataframe)
-    model = decision_tree(all_games_dataframe)
+	# Train model based on the dataframe given by CSV
+	# model = logistic_regression(all_games_dataframe)
+	model = decision_tree(all_games_dataframe)
 
-    # Set directory to SavedModels
-    os.chdir(home_path + '/SavedModels')
+	# Set directory to SavedModels
+	os.chdir(home_path + '/SavedModels')
 
-    # Save Model
-    with open(filename, 'wb') as file:
-        pickle.dump(model, file)
+	# Save Model
+	with open(filename, 'wb') as file:
+		pickle.dump(model, file)
+
+
+# Create new training model and save after training
+def create_model(name="model"):
+	now = datetime.now()
+	now_str = now.strftime("%Y%m%d")
+
+	model_names = ["knn", "random_forest_model", "dTree"]
+
+	model_name=model_names[2]
+
+	filename = f'{name}_{model_name}_{now_str}.pkl'
+
+	# Set directory to Data
+	os.chdir(home_path + '/Data')
+
+	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
+
+	# model = knn(all_games_dataframe);
+	# model = logistic_regression(all_games_dataframe)
+	# model = random_forest(all_games_dataframe)
+	model = decision_tree(all_games_dataframe)
+
+	# Set directory to SavedModels
+	os.chdir(home_path + '/SavedModels')
+
+	# Save Model
+	with open(filename, 'wb') as file:
+		pickle.dump(model, file)
 
 if __name__ == "__main__":
-    create_model()
+	create_model()

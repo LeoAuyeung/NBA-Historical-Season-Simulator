@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#node modules
+node_modules/
+
+# Ignore junk files in SavedAPICalls/
+*.json

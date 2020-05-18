@@ -1,5 +1,7 @@
 import os
 import time
+import json
+import pickle
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats
 
 import wptools
@@ -8,7 +10,31 @@ import pandas as pd
 
 from constants import TEAMS, HEADERS, SEASON_DATES
 
+home_path = os.getcwd()
+
+# Save the API call with the given parameters
+def saveAPICall(filename, allTeamsDict):
+    with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
+        pickle.dump(allTeamsDict, handle)
+
+# Check if we've already made an API call with the given parameters.
+def checkAPICall(filename):
+    fileFound = False
+    for file in os.listdir(home_path+'/SavedAPICalls/'):
+        if filename in file:
+            return True
+
+    return fileFound
+
+# Get the result of the API call we've already made
+def getAPICall(filename):
+    with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
+        return pickle.loads(handle.read())
+
+
 def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
+	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
+
 	if useCachedStats:
 		setCurrentWorkingDirectory("Data")
 
