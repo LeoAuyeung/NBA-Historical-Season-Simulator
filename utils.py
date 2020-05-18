@@ -17,22 +17,22 @@ home_path = os.getcwd()
 
 # Save the API call with the given parameters
 def saveAPICall(filename, allTeamsDict):
-    with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
-        pickle.dump(allTeamsDict, handle)
+	with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
+		pickle.dump(allTeamsDict, handle)
 
 # Check if we've already made an API call with the given parameters.
 def checkAPICall(filename):
-    fileFound = False
-    for file in os.listdir(home_path+'/SavedAPICalls/'):
-        if filename in file:
-            return True
+	fileFound = False
+	for file in os.listdir(home_path+'/SavedAPICalls/'):
+		if filename in file:
+			return True
 
-    return fileFound
+	return fileFound
 
 # Get the result of the API call we've already made
 def getAPICall(filename):
-    with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
-        return pickle.loads(handle.read())
+	with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
+		return pickle.loads(handle.read())
 
 
 def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
@@ -109,9 +109,35 @@ def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cach
 # Sets current working directory relative to where program folder is located
 def setCurrentWorkingDirectory(directoryName):
 
-    programDirectory = os.path.dirname(os.path.abspath(__file__))
-    newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
-    os.chdir(newCurrentWorkingDirectory)
+	programDirectory = os.path.dirname(os.path.abspath(__file__))
+	newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
+	os.chdir(newCurrentWorkingDirectory)
+
+def createGameDict(homeTeam, awayTeam):
+
+	home_season = homeTeam["season"]
+	home_season_dates = getSeasonDates(home_season)
+	home_startDate = home_season_dates["start"]
+	home_endDate = home_season_dates["end"]
+
+	homeTeam["startDate"] = home_startDate
+	homeTeam["endDate"] = home_endDate
+	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
+
+
+	away_season = awayTeam["season"]
+	away_season_dates = getSeasonDates(away_season)
+	away_startDate = away_season_dates["start"]
+	away_endDate = away_season_dates["end"]
+
+	awayTeam["startDate"] = away_startDate
+	awayTeam["endDate"] = away_endDate
+	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
+
+	return {
+		"home": homeTeam,
+		"away": awayTeam
+	}
 
 
 def getSeasonDates(season):
@@ -150,18 +176,18 @@ def getNBASeasonStartEndDates(season):
 
 # createNBASeasonDatesDict(2008, 2018) for 2008-09 to 2018-19
 def createNBASeasonDatesDict(first, last):
-    seasons = {}
+	seasons = {}
 
-    for x in range(first, last + 1):
-        season_str = f'{x}-{str(x+1)[-2:]}'
+	for x in range(first, last + 1):
+		season_str = f'{x}-{str(x+1)[-2:]}'
 
-        season_dates = getNBASeasonStartEndDates(season_str)
+		season_dates = getNBASeasonStartEndDates(season_str)
 
-        seasons[season_str] = season_dates
+		seasons[season_str] = season_dates
 
-    print(seasons)
+	print(seasons)
 
-    return seasons
+	return seasons
 
 
 def createStatsForTeamsCSV():
@@ -263,4 +289,5 @@ def getStatsForPredictionsCSV(predictions):
 	pprint(stats)
 
 
-getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518_predictions.csv"))
+# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518_predictions.csv"))
+
