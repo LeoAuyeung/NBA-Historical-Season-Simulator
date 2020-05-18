@@ -80,7 +80,7 @@ def random_forest(dataframe):
     plt.xlabel('Feature Importance Score')
     plt.ylabel('Features')
     plt.title("Visualizing Important Features")
-    # plt.show()
+    plt.show()
 
     return random_forest_result
 
