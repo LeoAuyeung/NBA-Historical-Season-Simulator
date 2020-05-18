@@ -30,24 +30,25 @@ def get_api_call(filename):
         return pickle.loads(handle.read())
 
 
-def get_team_stats(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
-	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
+def get_team_stats(team, start_date, end_date, season, use_cached_stats=False, cached_filename="2009-2019_TeamStats.csv"):
+	filename = team + '_' + start_date + '_' + end_date + '_' + season + '.json'
 
-	if useCachedStats:
+	if use_cached_stats:
 		# set directory to Data
 		prog_directory = os.path.dirname(os.path.abspath(__file__))
 		new_directory = os.path.join(prog_directory, "Data")
 		os.chdir(new_directory)
 
 		# read csv
-		all_stats = pd.read_csv(cachedFileName)
+		all_stats = pd.read_csv(cached_filename)
 		headers = list(all_stats)[2:]
 
+		# get team stats
 		team_stats = all_stats.loc[(all_stats['season'] == season) & (all_stats['team'] == team)]
 
-		allStats  = {}
+		all_stats  = {}
 		for h in headers:
-			allStats[h] = team_stats[h].values[0]
+			all_stats[h] = team_stats[h].values[0]
 		
 		# set directory to SavedModels
 		prog_directory = os.path.dirname(os.path.abspath(__file__))
@@ -57,88 +58,86 @@ def get_team_stats(team, startDate, endDate, season, useCachedStats=False, cache
 	else:
 		time.sleep(1)
 		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
-		generalTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
+		general_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
 			team_id=TEAMS[team], 
 			per_mode_detailed='Per100Possessions', 
-			date_from_nullable=startDate, 
-			date_to_nullable=endDate, 
+			date_from_nullable=start_date, 
+			date_to_nullable=end_date, 
 			season=season, 
 			headers=HEADERS, 
 			timeout=120
 		)
 
-		generalTeamDict = generalTeamInfo.get_normalized_dict()
-		generalTeamDashboard = generalTeamDict['OverallTeamDashboard'][0]
+		general_team_dict = general_team_info.get_normalized_dict()
+		general_team_dash = general_team_dict['OverallTeamDashboard'][0]
 
 		# Returns Win PCT, Rebounds, Turnovers, and Plus Minus
-		winPercentage = generalTeamDashboard['W_PCT']
-		rebounds = generalTeamDashboard['REB']
-		turnovers = generalTeamDashboard['TOV']
-		plusMinus = generalTeamDashboard['PLUS_MINUS']
+		win_pct = general_team_dash['W_PCT']
+		rebounds = general_team_dash['REB']
+		turnovers = general_team_dash['TOV']
+		plus_minus = general_team_dash['PLUS_MINUS']
 
 		# Uses NBA_API to access the dictionary holding advanced stats for every team
-		advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
+		adv_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
 			team_id=TEAMS[team], 
 			measure_type_detailed_defense='Advanced', 
-			date_from_nullable=startDate, 
-			date_to_nullable=endDate, 
+			date_from_nullable=start_date, 
+			date_to_nullable=end_date, 
 			season=season, 
 			headers=HEADERS, 
 			timeout=120
 		)
-		advancedTeamDict  = advancedTeamInfo.get_normalized_dict()
-		advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
+		adv_team_dict  = adv_team_info.get_normalized_dict()
+		adv_team_dash = adv_team_dict['OverallTeamDashboard'][0]
 
 		# Variables holding OFF Rating, DEF Rating, and TS%
-		offensiveRating = advancedTeamDashboard['OFF_RATING']
-		defensiveRating = advancedTeamDashboard['DEF_RATING']
-		trueShootingPercentage = advancedTeamDashboard['TS_PCT']
+		offensiveRating = adv_team_dash['OFF_RATING']
+		defensiveRating = adv_team_dash['DEF_RATING']
+		trueShootingPercentage = adv_team_dash['TS_PCT']
 
 		# Puts all the stats for specified team into a dictionary
-		allStats = {
-			'W_PCT':winPercentage,
+		all_stats = {
+			'W_PCT':win_pct,
 			'REB':rebounds,
 			'TOV':turnovers,
-			'PLUS_MINUS':plusMinus,
+			'PLUS_MINUS':plus_minus,
 			'OFF_RATING':offensiveRating,
 			'DEF_RATING': defensiveRating,
 			'TS_PCT':trueShootingPercentage,
 		}
 
-	return allStats
+	return all_stats
 
-def create_game_dict(homeTeam, awayTeam):
+def create_game_dict(home_team, away_team):
 
-	home_season = homeTeam["season"]
+	# Setting necessary variables to create the home and away team dictionaries
+	home_season = home_team["season"]
 	home_season_dates = get_season_dates(home_season)
-	home_startDate = home_season_dates["start"]
-	home_endDate = home_season_dates["end"]
 
-	homeTeam["startDate"] = home_startDate
-	homeTeam["endDate"] = home_endDate
-	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
+	home_team["start_date"] = home_season_dates["start"]
+	home_team["end_date"] = home_season_dates["end"]
+	home_team["label"] = home_team["season"] + " " + home_team["name"]
 
-
-	away_season = awayTeam["season"]
+	away_season = away_team["season"]
 	away_season_dates = get_season_dates(away_season)
-	away_startDate = away_season_dates["start"]
-	away_endDate = away_season_dates["end"]
 
-	awayTeam["startDate"] = away_startDate
-	awayTeam["endDate"] = away_endDate
-	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
+	away_team["start_date"] = away_season_dates["start"]
+	away_team["end_date"] = away_season_dates["end"]
+	away_team["label"] = away_team["season"] + " " + away_team["name"]
 
 	return {
-		"home": homeTeam,
-		"away": awayTeam
+		"home": home_team,
+		"away": away_team
 	}
 
+# Get the season dates
 def get_season_dates(season):
 	if season in SEASON_DATES:
 		return SEASON_DATES[season]
 	else:
 		return get_nba_season_start_end_dates(season)
 
+# Get the NBA season start and end dates
 def get_nba_season_start_end_dates(season):
 	name = f"{season} NBA season"
 	page = wptools.page(name, silent=True).get_parse(show=False)
@@ -167,7 +166,7 @@ def get_nba_season_start_end_dates(season):
 	return {"start": start_str, "end": end_str}
 
 
-# create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
+# Create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
 def create_nba_season_dates_dict(first, last):
     seasons = {}
 
@@ -182,46 +181,55 @@ def create_nba_season_dates_dict(first, last):
 
     return seasons
 
-
+# Create the actual CSVs of the stats
 def create_team_stats_csv():
 	# set directory to Data
 	prog_directory = os.path.dirname(os.path.abspath(__file__))
 	new_directory = os.path.join(prog_directory, "Data")
 	os.chdir(new_directory)
 
-	allStats = []
+	all_stats = []
+	# for each season, get dates
 	for season in SEASON_DATES.keys():
 		dates = get_season_dates(season)
-		startDate = dates["start"]
-		endDate = dates["end"]
+		start_date = dates["start"]
+		end_date = dates["end"]
 
+		# for each team, get stats of that season
 		for team in TEAMS:
-			stats = get_team_stats(team, startDate, endDate, season)
+			stats = get_team_stats(team, start_date, end_date, season)
 			stats["team"] = team
 			stats["season"] = season
 
 			print(stats)
 
-			allStats.append(stats)
+			all_stats.append(stats)
 
+	# feature cols we are using
 	columns = ["season", "team", "W_PCT", "REB", "TOV", "PLUS_MINUS", "OFF_RATING", "DEF_RATING", "TS_PCT"]
-	df = pd.DataFrame(allStats, columns=columns)
+	df = pd.DataFrame(all_stats, columns=columns)
 
 	df.to_csv("2009-2019_TeamStats.csv", index=False)
 
-def get_game_schedule_list(homeTeam, awaySeason):
-	homeTeamName = homeTeam["name"]
-	team_id = TEAMS[homeTeamName]
-	dates = SEASON_DATES[awaySeason]
+# Get the entire schedule of a team during a specific season
+def get_game_schedule_list(home_team, away_season):
+	# Set necessary variables
+	home_team_name = home_team["name"]
+	team_id = TEAMS[home_team_name]
+	dates = SEASON_DATES[away_season]
 	start = datetime.strptime(dates["start"], "%m/%d/%Y").strftime("%Y-%m-%d")
 	end = datetime.strptime(dates["end"], "%m/%d/%Y").strftime("%Y-%m-%d")
 
-	gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=team_id, season_nullable=awaySeason)
+	# use the NBA api endpoint to find the game
+	gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=team_id, season_nullable=away_season)
 	games = gamefinder.get_data_frames()[0]
 
+	# Get the regular season games that we need from the specified dates
 	regular_season_games_df = games.loc[(games["GAME_DATE"] >= start) & (games["GAME_DATE"] <= end)].sort_values("GAME_DATE")
 	regular_season_games_list = regular_season_games_df.to_dict("records")
 	regular_season_games = []
+
+	# For each game in regular season, we want to add the new team
 	for game in regular_season_games_list:
 		match = game["MATCHUP"]
 		split_vs = match.split(" vs. ")
@@ -230,8 +238,8 @@ def get_game_schedule_list(homeTeam, awaySeason):
 			split = split_at
 		else:
 			split = split_vs
-		awayTeam = split[1]
-		awayTeamName = TEAMS_ABV[awayTeam]
+		away_team = split[1]
+		away_team_name = TEAMS_ABV[away_team]
 
 		date_df = game["GAME_DATE"]
 		date_str = datetime.strptime(date_df, "%Y-%m-%d").strftime("%m/%d/%Y")
@@ -243,8 +251,8 @@ def get_game_schedule_list(homeTeam, awaySeason):
 			actual_encoded = 1
 
 		game_dict = {
-			"season" : awaySeason,
-			"awayTeam" : awayTeamName,
+			"season" : away_season,
+			"away_team" : away_team_name,
 			"date": date_str,
 			"actual": actual_encoded
 		}
