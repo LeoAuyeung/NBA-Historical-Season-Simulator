@@ -23,11 +23,14 @@ const SwapTeams = () => {
 	*/
 	const onSubmitForm = async e => {
 		e.preventDefault();
-		console.log('teamDescriptions',teamDescriptions);
-		console.log('teamList', teamList);
+		//console.log('teamDescriptions',teamDescriptions);
+		//console.log('teamList', teamList);
+		const body = { teamList: teamList };
+
 		const response = fetch('/standings',{
 			method: 'POST',
-			body: teamList
+			headers: { 'Content-Type': 'application/json'},
+			body: JSON.stringify(body)
 		});
 	}
 
@@ -128,6 +131,8 @@ const SwapTeams = () => {
 				</div>
 			</form>
 
+			<h2 className='text-center'>Standings</h2>
+			<p>{teamList}</p>
 
 		</Fragment>
 	); 
@@ -137,47 +142,6 @@ const SwapTeams = () => {
 export default SwapTeams;
 
 /*  
-							<div className="dropdown">
-								<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							    	Select Team dsadasdasdasd
-							 	</button>
-								<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							    	<a className="dropdown-item" href="#">Action</a>
-							    	<a className="dropdown-item" href="#">Another action</a>
-							    	<a className="dropdown-item" href="#">Something else here</a>
-								</div>
-							</div>
-
-const InputTodo = () => {
-	const [description, setDescription] = useState(''); //you can use hooks instead of classes
-
-	const onSubmitForm = async e => {
-		e.preventDefault(); //prevent refresh
-		try {
-			const body = { description };
-			const response = await fetch('http://localhost:5000/todos',{ //Wait for it to finish then consolelog response
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json'},
-				body: JSON.stringify(body)
-			}); // by default fetch is a get request
-
-			//console.log(response);
-			window.location = '/'; //Once response is sent it will refresh and show the changes
-		}catch (err) {
-			console.error(err.message);
-		}
-	}
-
-	//onSubmit is a DOM event
-	return (
-		<Fragment>
-			<h1 className='text-center mt-5'>Pern Todo List</h1>
-			<form className='d-flex mt-5' onSubmit={ onSubmitForm }> 
-				<input type='text' className='form-control' value={description} onChange={e => setDescription(e.target.value)}/>
-				<button className='btn btn-success'>Add</button>
-			</form>
-		</Fragment>
-	);
 
 
 Previous Code:
@@ -234,9 +198,11 @@ Previous Code:
 							</div>
 
 
-Reference: 
+---------------------------  REFERENCE: 
 
+Selection Menu
 https://getbootstrap.com/docs/4.0/components/forms/#select-menu
+
 <select class="custom-select">
   <option selected>Open this select menu</option>
   <option value="1">One</option>
