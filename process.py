@@ -1,23 +1,21 @@
-from nba_api.stats.endpoints import leaguedashteamstats
-import statistics
-import time
-from constants import HEADERS, STATS_TYPE
-
-import json
-
-import pickle
-
 import os
+import time
+import json
+import pickle
+import statistics
+from constants import HEADERS, STATS_TYPE
+from nba_api.stats.endpoints import leaguedashteamstats
+
 home_path = os.getcwd()
 
 # Save the API call with the given parameters
-def saveAPICall(filename, allTeamsDict):
+def save_api_call(filename, allTeamsDict):
 	return None
 	with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
 		pickle.dump(allTeamsDict, handle)
 
 # Check if we've already made an API call with the given parameters.
-def checkAPICall(filename):
+def check_api_call(filename):
 	fileFound = False
 	for file in os.listdir(home_path+'/SavedAPICalls/'):
 		if filename in file:
@@ -26,7 +24,7 @@ def checkAPICall(filename):
 	return fileFound
 
 # Get the result of the API call we've already made
-def getAPICall(filename):
+def get_api_call(filename):
 	with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
 		return pickle.loads(handle.read())
 
@@ -37,11 +35,11 @@ def basicOrAdvancedStat(startDate, endDate, season='2018-19', statType='Base'):
 	filename = statType + '_' + startDate + '_' + endDate + '_' + season + '.json'
 
 	# Check if we've made the same api call before
-	callAlreadyMade = checkAPICall(filename)
+	callAlreadyMade = check_api_call(filename)
 
 	if callAlreadyMade:
 		# Get the result of the API call
-		allTeamsDict = getAPICall(filename)
+		allTeamsDict = get_api_call(filename)
 	else:
 		# Gets list of dictionaries with stats for every team
 		allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
@@ -52,7 +50,7 @@ def basicOrAdvancedStat(startDate, endDate, season='2018-19', statType='Base'):
 															headers=HEADERS,
 															timeout=120)
 		allTeamsDict = allTeamsInfo.get_normalized_dict()
-		saveAPICall(filename, allTeamsDict)
+		save_api_call(filename, allTeamsDict)
 	
 	allTeamsList = allTeamsDict['LeagueDashTeamStats']
 	return allTeamsList

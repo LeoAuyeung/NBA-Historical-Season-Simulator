@@ -1,24 +1,21 @@
+import sys
+import os
 import pickle
 import pandas as pd
 
-from nba_api.stats.endpoints import leaguegamelog
-
-from process import createMeanStandardDeviationDicts, zScoreDifferential
-from nba_api.stats.library.parameters import SeasonTypeAllStar
 from constants import TEAMS, STATS_TYPE, HEADERS
-from utils import setCurrentWorkingDirectory, getStatsForTeam
-
-import sys
-
-import os
+from nba_api.stats.endpoints import leaguegamelog
+from nba_api.stats.library.parameters import SeasonTypeAllStar
+from process import createMeanStandardDeviationDicts, zScoreDifferential
+from utils import get_team_stats
 
 home_path = os.getcwd()
 
 def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season):
     homeTeam, awayTeam = list(game.items())[0]
     gameAsList = [homeTeam, awayTeam]
-    homeTeamStats = getStatsForTeam(homeTeam, startDate, endDate, season)
-    awayTeamStats = getStatsForTeam(awayTeam, startDate, endDate, season)
+    homeTeamStats = get_team_stats(homeTeam, startDate, endDate, season)
+    awayTeamStats = get_team_stats(awayTeam, startDate, endDate, season)
     
     for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
         zScoreDif = zScoreDifferential(homeTeamStats[stat], awayTeamStats[stat], meanDict[stat], standardDeviationDict[stat])

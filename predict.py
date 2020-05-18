@@ -1,17 +1,18 @@
+import os
 import pickle
 import pandas as pd
 from timeit import default_timer as timer
 
 from process import createMeanStandardDeviationDicts, zScoreDifferential
 from constants import TEAMS, STATS_TYPE, HEADERS
-from utils import setCurrentWorkingDirectory, getStatsForTeam, getSeasonDates, getGameScheduleList, createGameDict
+from utils import get_team_stats, get_season_dates, get_game_schedule_list, create_game_dict
 
 def gameWithZScoreDifsList(homeTeam, awayTeam, meanDict, standardDeviationDict, useCachedStats=False):
 
 	gameAsList = [homeTeam["label"], awayTeam["label"]]
 
-	homeTeamStats = getStatsForTeam(homeTeam["name"], homeTeam["startDate"], homeTeam["endDate"], homeTeam["season"], useCachedStats)
-	awayTeamStats = getStatsForTeam(awayTeam["name"], awayTeam["startDate"], awayTeam["endDate"], awayTeam["season"], useCachedStats)
+	homeTeamStats = get_team_stats(homeTeam["name"], homeTeam["startDate"], homeTeam["endDate"], homeTeam["season"], useCachedStats)
+	awayTeamStats = get_team_stats(awayTeam["name"], awayTeam["startDate"], awayTeam["endDate"], awayTeam["season"], useCachedStats)
 
 	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
 		zScoreDif = zScoreDifferential(homeTeamStats[stat], awayTeamStats[stat], meanDict[stat], standardDeviationDict[stat])
@@ -81,7 +82,7 @@ def interpretPrediction(gameWithPrediction, unit, index):
 		print(f'{homeTeam["label"]} vs. {awayTeam["label"]} : {winner["label"]}')
 
 def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToCSV=False):
-	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
+	matchScheduleList = get_game_schedule_list(homeTeam, awaySeason)
 
 	games_df = []
 
@@ -91,7 +92,7 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 			"name": match["awayTeam"],
 		}
 
-		game = createGameDict(homeTeam, awayTeam)
+		game = create_game_dict(homeTeam, awayTeam)
 		gameWithPrediction = predictGame(game, modelName)
 
 		result = {
@@ -114,11 +115,17 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 		columns = ["date", "home", "away", "prediction", "actual"]
 		df = pd.DataFrame(games_df, columns=columns)
 
-		setCurrentWorkingDirectory('Predictions')
+		# set directory to Predictions
+		prog_directory = os.path.dirname(os.path.abspath(__file__))
+		new_directory = os.path.join(prog_directory, "Predictions")
+		os.chdir(new_directory)
 
 		df.to_csv(f'{homeTeam["season"]}-{homeTeam["name"]}_{awaySeason}_predictions.csv', index=False)
 
-		setCurrentWorkingDirectory('SavedModels')
+		# set directory to SavedModels
+		prog_directory = os.path.dirname(os.path.abspath(__file__))
+		new_directory = os.path.join(prog_directory, "SavedModels")
+		os.chdir(new_directory)
 	
 	num_matches = len(matchScheduleList)
 
@@ -140,14 +147,11 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 # home team is the swapped team
 def main():
 	start = timer()
-
-	setCurrentWorkingDirectory('SavedModels')
-<<<<<<< HEAD
-	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
-	# 82 x {CLIPPERS vs TEAM B}
-	gameWithPrediction = predictGame(game, "gaussianNB_20200515", '01/04/2020', '2019-20', '10/22/2019')
-	interpretPrediction(gameWithPrediction)
-=======
+	
+	# set directory to SavedModels
+	prog_directory = os.path.dirname(os.path.abspath(__file__))
+	new_directory = os.path.join(prog_directory, "SavedModels")
+	os.chdir(new_directory)
 	modelName = "model_dTree_20200517"
 
 	homeTeam = {
@@ -157,7 +161,6 @@ def main():
 	awaySeason = "2018-19"
 
 	predictSeason(homeTeam, awaySeason, modelName, useCachedStats=True)
->>>>>>> master
 
 	end = timer() 
 

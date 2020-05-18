@@ -2,53 +2,57 @@ import os
 import time
 import json
 import pickle
-from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
-
 import wptools
-from datetime import datetime
 import pandas as pd
-
+from datetime import datetime
+from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
 from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES
 
 home_path = os.getcwd()
 
 # Save the API call with the given parameters
-def saveAPICall(filename, allTeamsDict):
-    with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
-        pickle.dump(allTeamsDict, handle)
+def save_api_call(filename, all_teams):
+    with open(home_path + '/SavedAPICalls/' + filename, 'wb') as handle:
+        pickle.dump(all_teams, handle)
 
 # Check if we've already made an API call with the given parameters.
-def checkAPICall(filename):
-    fileFound = False
-    for file in os.listdir(home_path+'/SavedAPICalls/'):
+def check_api_call(filename):
+    file_found = False
+    for file in os.listdir(home_path + '/SavedAPICalls/'):
         if filename in file:
             return True
 
-    return fileFound
+    return file_found
 
 # Get the result of the API call we've already made
-def getAPICall(filename):
-    with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
+def get_api_call(filename):
+    with open(home_path + '/SavedAPICalls/' + filename, 'rb') as handle:
         return pickle.loads(handle.read())
 
 
-def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
+def get_team_stats(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
 	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
 
 	if useCachedStats:
-		setCurrentWorkingDirectory("Data")
+		# set directory to Data
+		prog_directory = os.path.dirname(os.path.abspath(__file__))
+		new_directory = os.path.join(prog_directory, "Data")
+		os.chdir(new_directory)
 
 		# read csv
-		allTeamStats = pd.read_csv(cachedFileName)
-		headers = list(allTeamStats)[2:]
+		all_stats = pd.read_csv(cachedFileName)
+		headers = list(all_stats)[2:]
 
-		teamStats = allTeamStats.loc[(allTeamStats['season'] == season) & (allTeamStats['team'] == team)]
+		team_stats = all_stats.loc[(all_stats['season'] == season) & (all_stats['team'] == team)]
 
 		allStats  = {}
 		for h in headers:
-			allStats[h] = teamStats[h].values[0]
+			allStats[h] = team_stats[h].values[0]
 		
-		setCurrentWorkingDirectory("SavedModels")
+		# set directory to SavedModels
+		prog_directory = os.path.dirname(os.path.abspath(__file__))
+		new_directory = os.path.join(prog_directory, "SavedModels")
+		os.chdir(new_directory)
 
 	else:
 		time.sleep(1)
@@ -103,17 +107,10 @@ def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cach
 
 	return allStats
 
-# Sets current working directory relative to where program folder is located
-def setCurrentWorkingDirectory(directoryName):
-
-    programDirectory = os.path.dirname(os.path.abspath(__file__))
-    newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
-    os.chdir(newCurrentWorkingDirectory)
-
-def createGameDict(homeTeam, awayTeam):
+def create_game_dict(homeTeam, awayTeam):
 
 	home_season = homeTeam["season"]
-	home_season_dates = getSeasonDates(home_season)
+	home_season_dates = get_season_dates(home_season)
 	home_startDate = home_season_dates["start"]
 	home_endDate = home_season_dates["end"]
 
@@ -123,7 +120,7 @@ def createGameDict(homeTeam, awayTeam):
 
 
 	away_season = awayTeam["season"]
-	away_season_dates = getSeasonDates(away_season)
+	away_season_dates = get_season_dates(away_season)
 	away_startDate = away_season_dates["start"]
 	away_endDate = away_season_dates["end"]
 
@@ -136,13 +133,13 @@ def createGameDict(homeTeam, awayTeam):
 		"away": awayTeam
 	}
 
-def getSeasonDates(season):
+def get_season_dates(season):
 	if season in SEASON_DATES:
 		return SEASON_DATES[season]
 	else:
-		return getNBASeasonStartEndDates(season)
+		return get_nba_season_start_end_dates(season)
 
-def getNBASeasonStartEndDates(season):
+def get_nba_season_start_end_dates(season):
 	name = f"{season} NBA season"
 	page = wptools.page(name, silent=True).get_parse(show=False)
 	duration = page.data['infobox']["duration"]
@@ -170,14 +167,14 @@ def getNBASeasonStartEndDates(season):
 	return {"start": start_str, "end": end_str}
 
 
-# createNBASeasonDatesDict(2008, 2018) for 2008-09 to 2018-19
-def createNBASeasonDatesDict(first, last):
+# create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
+def create_nba_season_dates_dict(first, last):
     seasons = {}
 
     for x in range(first, last + 1):
         season_str = f'{x}-{str(x+1)[-2:]}'
 
-        season_dates = getNBASeasonStartEndDates(season_str)
+        season_dates = get_nba_season_start_end_dates(season_str)
 
         seasons[season_str] = season_dates
 
@@ -186,17 +183,20 @@ def createNBASeasonDatesDict(first, last):
     return seasons
 
 
-def createStatsForTeamsCSV():
-	setCurrentWorkingDirectory("Data")
+def create_team_stats_csv():
+	# set directory to Data
+	prog_directory = os.path.dirname(os.path.abspath(__file__))
+	new_directory = os.path.join(prog_directory, "Data")
+	os.chdir(new_directory)
 
 	allStats = []
 	for season in SEASON_DATES.keys():
-		dates = getSeasonDates(season)
+		dates = get_season_dates(season)
 		startDate = dates["start"]
 		endDate = dates["end"]
 
 		for team in TEAMS:
-			stats = getStatsForTeam(team, startDate, endDate, season)
+			stats = get_team_stats(team, startDate, endDate, season)
 			stats["team"] = team
 			stats["season"] = season
 
@@ -209,7 +209,7 @@ def createStatsForTeamsCSV():
 
 	df.to_csv("2009-2019_TeamStats.csv", index=False)
 
-def getGameScheduleList(homeTeam, awaySeason):
+def get_game_schedule_list(homeTeam, awaySeason):
 	homeTeamName = homeTeam["name"]
 	team_id = TEAMS[homeTeamName]
 	dates = SEASON_DATES[awaySeason]
