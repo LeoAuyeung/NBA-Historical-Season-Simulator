@@ -1,16 +1,15 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, datasets
-import pandas as pd
-import pickle
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import pandas as pd
+import pickle
 import os
-
 from datetime import datetime
 
 home_path = os.getcwd()
@@ -314,26 +313,35 @@ def create_model(name="model"):
 		pickle.dump(model, file)
 
 
+def create_model_helper(df, model_name):
+	if model_name == "log_reg":
+		model = logistic_regression(df)
+	elif model_name == "knn":
+		model = knn(df)
+	elif model_name == "random_forest":
+		model = random_forest(df)
+	elif model_name == "dTree":
+		model = decision_tree(df)
+	# add svm here
+	
+	return model
+
 # Create new training model and save after training
 def create_model(name="model"):
 	now = datetime.now()
 	now_str = now.strftime("%Y%m%d")
 
-	model_names = ["knn", "random_forest_model", "dTree"]
-
-	model_name=model_names[2]
+	# add svm here
+	model_names = ["log_reg", "knn", "random_forest", "dTree"]
+	model_name=model_names[3]
 
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
 	# Set directory to Data
 	os.chdir(home_path + '/Data')
-
 	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
 
-	# model = knn(all_games_dataframe);
-	# model = logistic_regression(all_games_dataframe)
-	# model = random_forest(all_games_dataframe)
-	model = decision_tree(all_games_dataframe)
+	model = create_model_helper(all_games_dataframe, model_name)
 
 	# Set directory to SavedModels
 	os.chdir(home_path + '/SavedModels')

@@ -12,7 +12,7 @@ sklearn = "*"
 nba-api = "*"
 wptools = "*"
 matplotlib = "*"
-
+seaborn = "*"
 
 [requires]
 python_version = "3.8"
