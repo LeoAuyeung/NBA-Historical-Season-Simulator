@@ -138,6 +138,28 @@ const SwapTeams = () => {
 		console.log('jsondata',jsonData);
 
 		//setTeamDescriptions(teamDescriptions+1);
+		/*
+		setTeamDescriptions([
+			{
+				teamName: 'Golden State Warriors',
+				wins: 73,
+				losses: 9,
+				wlPercent: .890
+			},
+			{
+				teamName: 'San Antonio Spurs',
+				wins: 67,
+				losses: 15,
+				wlPercent: .817
+			},
+			{
+				teamName: 'Cleveland Cavaliers',
+				wins: 57,
+				losses: 25,
+				wlPercent: '.695'
+			}
+		])
+		*/
 	}
 
 	return(
