@@ -3,55 +3,20 @@ import statistics
 import time
 from constants import HEADERS, STATS_TYPE
 
-import json
-
-import pickle
-
-import os
-home_path = os.getcwd()
-
-# Save the API call with the given parameters
-def saveAPICall(filename, allTeamsDict):
-    with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
-        pickle.dump(allTeamsDict, handle)
-
-# Check if we've already made an API call with the given parameters.
-def checkAPICall(filename):
-    fileFound = False
-    for file in os.listdir(home_path+'/SavedAPICalls/'):
-        if filename in file:
-            return True
-
-    return fileFound
-
-# Get the result of the API call we've already made
-def getAPICall(filename):
-    with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
-        return pickle.loads(handle.read())
-
 # Finds league stats for entered basic or advanced statistic (statType = 'Base' or 'Advanced')
 def basicOrAdvancedStat(startDate, endDate, season='2018-19', statType='Base'):
+
     time.sleep(.5)
-    
-    filename = statType + '_' + startDate + '_' + endDate + '_' + season + '.json'
 
-    # Check if we've made the same api call before
-    callAlreadyMade = checkAPICall(filename)
-
-    if callAlreadyMade:
-        # Get the result of the API call
-        allTeamsDict = getAPICall(filename)
-    else:
-        # Gets list of dictionaries with stats for every team
-        allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-                                                            measure_type_detailed_defense=statType,
-                                                            date_from_nullable=startDate,
-                                                            date_to_nullable=endDate,
-                                                            season=season,
-                                                            headers=HEADERS,
-                                                            timeout=120)
-        allTeamsDict = allTeamsInfo.get_normalized_dict()
-        saveAPICall(filename, allTeamsDict)
+     # Gets list of dictionaries with stats for every team
+    allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
+                                                        measure_type_detailed_defense=statType,
+                                                        date_from_nullable=startDate,
+                                                        date_to_nullable=endDate,
+                                                        season=season,
+                                                        headers=HEADERS,
+                                                        timeout=120)
+    allTeamsDict = allTeamsInfo.get_normalized_dict()
     
     allTeamsList = allTeamsDict['LeagueDashTeamStats']
     return allTeamsList
