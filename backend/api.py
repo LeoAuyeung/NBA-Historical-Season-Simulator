@@ -20,7 +20,7 @@ def get_standings():
 	print('teamsAndSeasons',teamsAndSeasons)
 
 
-	return {'test': 'test'}
+	return {['Chicago Bulls', 60, 20, '75%']}
 
 '''
 Reference:
@@ -30,5 +30,10 @@ Build a Simple CRUD App with Python, Flask, and React
 
 Parse JSON - Convert from JSON to Python
 - https://www.w3schools.com/python/python_json.asp
+
+Flask example with POST
+- https://stackoverflow.com/questions/22947905/flask-example-with-post
+- https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
+- https://stackoverflow.com/questions/10999990/get-raw-post-body-in-python-flask-regardless-of-content-type-header/23898949
 
 '''

@@ -2,7 +2,39 @@ import React, { Fragment, useState } from 'react';
 //useState https://reactjs.org/docs/hooks-state.html
 
 const SwapTeams = () => {
-	const [teamDescriptions, setTeamDescriptions] = useState('');
+	const [teamDescriptions, setTeamDescriptions] = useState([
+		{
+			teamName: 'Atlanta Hawks',
+			wins: 82,
+			losses: 0,
+			wlPercent: '100%'
+		},
+		{
+			teamName: 'Boston Celtics',
+			wins: 81,
+			losses: 1,
+			wlPercent: '99%'
+		},
+		{
+			teamName: 'Brooklyn Nets',
+			wins: 80,
+			losses: 2,
+			wlPercent: '98%'
+		},
+		{
+			teamName: 'Charlotte Hornets',
+			wins: 79,
+			losses: 3,
+			wlPercent: '97%'
+		},
+		{
+			teamName: 'Chicago Bulls',
+			wins: 78,
+			losses: 4,
+			wlPercent: '96%'
+		},
+	]);
+		
 
 	let teamList = ['Atlanta Hawks','2019-20','Atlanta Hawks','2019-20']
 
@@ -27,11 +59,16 @@ const SwapTeams = () => {
 		//console.log('teamList', teamList);
 		const body = { teamList: teamList };
 
-		const response = fetch('/standings',{
+		const response = await fetch('/standings',{
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json'},
 			body: JSON.stringify(body)
 		});
+		const jsonData = await response.json();
+
+		console.log('jsondata',jsonData);
+
+		//setTeamDescriptions(teamDescriptions+1);
 	}
 
 	return(
@@ -132,8 +169,34 @@ const SwapTeams = () => {
 			</form>
 
 			<h2 className='text-center'>Standings</h2>
-			<p>{teamList}</p>
-
+			<p>Counter {teamDescriptions[0].teamName}</p>
+			<table class="table table-striped">
+			    <thead>
+			    	<tr>
+			        	<th>Team Name</th>
+			        	<th>Wins</th>
+			        	<th>Losses</th>
+			        	<th>Win/Loss PCT</th>
+			    	</tr>
+			    </thead>
+			    <tbody>
+			    	<tr>
+			    	  <td>John</td>
+			    	  <td>Doe</td>
+			    	  <td>john@example.com</td>
+			    	</tr>
+			    	<tr>
+			    	  <td>Mary</td>
+			    	  <td>Moe</td>
+			    	  <td>mary@example.com</td>
+			    	</tr>
+			    	<tr>
+			    	  <td>July</td>
+			    	  <td>Dooley</td>
+			    	  <td>july@example.com</td>
+			    	</tr>
+			    </tbody>
+			</table>
 		</Fragment>
 	); 
 
