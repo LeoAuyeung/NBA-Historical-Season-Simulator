@@ -177,7 +177,7 @@ def create_model(name="random_forest_model"):
     # Set directory to Data
     os.chdir(home_path + '/Data')
 
-    all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
+    all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2010-19.csv')
 
     # Train logistic regression model based on the dataframe given by CSV
     # logistic_regression_model = logistic_regression(all_games_dataframe)
