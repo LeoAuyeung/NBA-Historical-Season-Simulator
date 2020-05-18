@@ -60,7 +60,7 @@ def main():
 	setCurrentWorkingDirectory('SavedModels')
 	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
 	# 82 x {CLIPPERS vs TEAM B}
-	gameWithPrediction = predictGame(game, "model_20200512", '01/04/2020', '2019-20', '10/22/2019')
+	gameWithPrediction = predictGame(game, "gaussianNB_20200515", '01/04/2020', '2019-20', '10/22/2019')
 	interpretPrediction(gameWithPrediction)
 
 
