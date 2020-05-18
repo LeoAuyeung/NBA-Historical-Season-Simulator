@@ -26,11 +26,7 @@ def predictGame(game, modelName, season):
 	endDate = dates["end"]
 
 	meanDict, standardDeviationDict = createMeanStandardDeviationDicts(startDate, endDate, season)
-	gameAsList = 	(game, meanDict, standardDeviationDict, startDate, endDate, season)
-
-	print(gameAsList)
-
-	return None
+	gameAsList = gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season)
 
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	gameWithZScoreDifs = pd.DataFrame(
