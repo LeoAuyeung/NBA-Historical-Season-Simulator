@@ -40,52 +40,54 @@ def getData(game, season, startOfSeason, currentDate):
     return gameWithZScoreDifs
 
 def main():
-    # Grab all games from startYear-endYear, process each game and save to csv.
-    startYear = 2011
-    endYear = 2017
-    for seasonYear in range(startYear,endYear+1):
-        gamefinder = leaguegamelog.LeagueGameLog(season=seasonYear, season_type_all_star=SeasonTypeAllStar.default)
-        games = gamefinder.get_data_frames()[0]
-        prevTeam = games['TEAM_NAME'][0]
-        startOfSeason = games['GAME_DATE'][0]
-        season = startOfSeason[:4] + '-' + str(int(startOfSeason[2:4])+1)
+    # Whichever year we want the data for.
+    # seasonYear = 2015
+    gamefinder = leaguegamelog.LeagueGameLog(season=seasonYear, season_type_all_star=SeasonTypeAllStar.default)
+    games = gamefinder.get_data_frames()[0]
+    prevTeam = games['TEAM_NAME'][0]
+    startOfSeason = games['GAME_DATE'][0]
+    season = startOfSeason[:4] + '-' + str(int(startOfSeason[2:4])+1)
 
-        # For a given season, iterate through all the games
-        for index, row in games.iterrows():
-            if index <= 135:
+    # If for some reason your program stopped running, continue progress by 
+    # settiing this to the last index that was downloaded.
+    # !!! When -1, it will reset whatever file you were saving to so be careful !!!
+    lastIndexDownloaded = -1
+    # For a given season, iterate through all the games
+    for index, row in games.iterrows():
+        if index <= lastIndexDownloaded:
+            continue
+        if index % 2 != 0:
+            currTeam = row['TEAM_NAME']
+            game = {prevTeam: currTeam}
+            gameDate = row['GAME_DATE']
+
+            gameStat = getData(game, season, startOfSeason, gameDate)
+            if gameStat.empty: # If we got no data
                 continue
-            if index % 2 != 0:
-                currTeam = row['TEAM_NAME']
-                game = {prevTeam: currTeam}
-                gameDate = row['GAME_DATE']
-
-                gameStat = getData(game, season, startOfSeason, gameDate)
-                if gameStat.empty: # If we got no data
-                    continue
-                winLoss = row['WL']
-                if winLoss == 'W':
-                    gameStat['Result'] = 0
-                else:
-                    gameStat['Result'] = 1
-
-                year = gameDate[:4]
-                month = gameDate[5:7]
-                day = gameDate[-2:]
-                newDateFormat = month + '/' + day + '/' + year
-                gameStat['Date'] = newDateFormat
-
-                percentageDone = (index + 1) / (games.shape[0]/2) # Total number of games
-                percentageDone *= 100
-                print('['+str(index)+'] Progress: ' + str(round(percentageDone, 3)) + '%', " | ", game, season, startOfSeason, gameDate)
-
-                if index == 1:
-                    # Initialize the file with headers
-                    gameStat.to_csv(home_path+'/Data/gamesWithInfo' + season + '.csv')
-                else:
-                    with open(home_path+'/Data/gamesWithInfo' + season + '.csv','a') as file:
-                        gameStat.to_csv(file, header=False)
+            winLoss = row['WL']
+            if winLoss == 'W':
+                gameStat['Result'] = 0
             else:
-                prevTeam = row['TEAM_NAME']
+                gameStat['Result'] = 1
+
+            year = gameDate[:4]
+            month = gameDate[5:7]
+            day = gameDate[-2:]
+            newDateFormat = month + '/' + day + '/' + year
+            gameStat['Date'] = newDateFormat
+
+            percentageDone = (index + 1) / (games.shape[0]/2) # Total number of games
+            percentageDone *= 100
+            print('['+str(index)+'] Progress: ' + str(round(percentageDone, 3)) + '%', " | ", game, gameDate)
+
+            if index == 1:
+                # Initialize the file with headers. This function resets the file.
+                gameStat.to_csv(home_path+'/Data/gamesWithInfo' + season + '.csv')
+            else:
+                with open(home_path+'/Data/gamesWithInfo' + season + '.csv','a') as file:
+                    gameStat.to_csv(file, header=False)
+        else:
+            prevTeam = row['TEAM_NAME']
 
 if __name__ == "__main__":
 	main()
