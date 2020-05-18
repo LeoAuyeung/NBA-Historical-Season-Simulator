@@ -1,39 +1,47 @@
 from nba_api.stats.static import teams
 from nba_api.stats.endpoints import leaguegamefinder
-from nba_api.stats.endpoints import teamyearbyyearstats
 
-nba_teams = teams.get_teams()
-# Select the dictionary for the Celtics, which contains their team ID.
-celtics = [team for team in nba_teams if team['abbreviation'] == 'BOS'][0]
-celtics_id = celtics['id']
+from datetime import datetime
+from constants import SEASON_DATES, TEAMS, TEAMS_ABV
+from pprint import pprint
 
-print(celtics_id)
+team = "Boston Celtics"
+team_id = TEAMS[team]
 
-# Query for games where the Celtics were playing.
-gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=celtics_id)
-# The first DataFrame of those returned is what we want.
+season = "2018-19"
+dates = SEASON_DATES[season]
+start = datetime.strptime(dates["start"], "%m/%d/%Y").strftime("%Y-%m-%d")
+end = datetime.strptime(dates["end"], "%m/%d/%Y").strftime("%Y-%m-%d")
+
+gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=team_id, season_nullable=season)
 games = gamefinder.get_data_frames()[0]
-games.head()
 
-# Subset the games to when the last 4 digits of SEASON_ID were 2017.
-games_1718 = games[games.SEASON_ID.str[-4:] == '2017']
-games_1718.head()
+regular_season_games_df = games.loc[(games["GAME_DATE"] >= start) & (games["GAME_DATE"] <= end)].sort_values("GAME_DATE")
+regular_season_games_list = regular_season_games_df.to_dict("records")
+regular_season_games = []
+for game in regular_season_games_list:
+    match = game["MATCHUP"]
+    split_vs = match.split(" vs. ")
+    if len(split_vs) == 1:
+        split_at = match.split(" @ ")
+        split = split_at
+    else:
+        split = split_vs
+    awayTeam = split[1]
+    awayTeamName = TEAMS_ABV[awayTeam]
 
-# Prints the DataFrame object from pandas library.
-print(games_1718)
-# Prints the json form of the DataFrame object.
-# print(games_1718.to_json())
+    date_df = game["GAME_DATE"]
+    date_str = datetime.strptime(date_df, "%Y-%m-%d").strftime("%m/%d/%Y")
 
-# Query for year by year stats for Celtics.
-statsfinder = teamyearbyyearstats.TeamYearByYearStats(team_id=celtics_id)
-stats = statsfinder.get_data_frames()[0]
-stats.head()
+    game_dict = {
+        "season" : season,
+        "name" : awayTeamName,
+        "date": date_str
+    }
+    regular_season_games.append(game_dict)
 
-# Subset the games to when the year is 2017.
-stats_1718 = stats[stats.YEAR.str[2:4] == '17']
-stats_1718.head()
+pprint(regular_season_games)
 
-# Prints the DataFrame object from pandas library.
-print(stats_1718)
-# Prints the json form of the DataFrame object.
-# print(stats_1718.to_json())
+
+# print(regular_season_games)
+# regular_season_games.to_csv("reg_games.csv")
