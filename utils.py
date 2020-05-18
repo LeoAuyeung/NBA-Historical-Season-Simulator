@@ -292,4 +292,3 @@ def getStatsForPredictionsCSV(predictions):
 
 
 # getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
-
