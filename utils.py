@@ -9,7 +9,7 @@ import wptools
 from datetime import datetime
 import pandas as pd
 
-from constants import TEAMS, HEADERS, SEASON_DATES
+from constants import TEAMS, HEADERS, SEASON_DATES, TEAMS_ABV
 
 from pprint import pprint
 
@@ -37,6 +37,8 @@ def getAPICall(filename):
 
 def getStatsForTeam(team, startDate, endDate, season, useCachedStats=False, cachedFileName="2009-2019_TeamStats.csv"):
 	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
+
+	print(startDate, endDate)
 
 	if useCachedStats:
 		setCurrentWorkingDirectory("Data")
@@ -289,5 +291,5 @@ def getStatsForPredictionsCSV(predictions):
 	pprint(stats)
 
 
-# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518_predictions.csv"))
+# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
 

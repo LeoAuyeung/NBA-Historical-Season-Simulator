@@ -11,7 +11,7 @@ def gameWithZScoreDifsList(homeTeam, awayTeam, meanDict, standardDeviationDict, 
 
 	gameAsList = [homeTeam["label"], awayTeam["label"]]
 
-	homeTeamStats = getStatsForTeam(homeTeam["name"], homeTeam["startDate"], gameDate, homeTeam["season"], useCachedStats)
+	homeTeamStats = getStatsForTeam(homeTeam["name"], homeTeam["startDate"], homeTeam["endDate"], homeTeam["season"], useCachedStats)
 	if useGameDate:
 		awayTeamStats = getStatsForTeam(awayTeam["name"], awayTeam["startDate"], gameDate, awayTeam["season"], useCachedStats)
 	else:
@@ -55,7 +55,15 @@ def predictGame(game, modelName, useCachedStats=False, useGameDate=False, gameDa
 	gameWithPrediction = [game, prediction]
 	return gameWithPrediction
 
+
 def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToCSV=False, useGameDate=False):
+	'''
+	Predits an NBA season given a team and a season
+	Uses specified model
+	useCachedStats - uses cached results from getStatsForTeam
+	saveToCSV - saves simulated results to csv
+	useGameDate - for getStatsForTeam, uses match date as endDate rather than just endDate of the season
+	'''
 	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
 
 	games_df = []
@@ -86,6 +94,9 @@ def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToC
 		games_df.append(result_df)
 	
 	if saveToCSV:
+		now = datetime.now()
+		now_str = now.strftime("%Y%m%d%H%M%S")
+
 		columns = ["date", "home", "away", "prediction", "actual"]
 		df = pd.DataFrame(games_df, columns=columns)
 
@@ -150,7 +161,7 @@ def main():
 	start = timer()
 
 	setCurrentWorkingDirectory('SavedModels')
-	modelName = "model_knn_20200517"
+	modelName = "model_knn_20200518"
 
 	homeTeam = {
 		"season": "2015-16",
@@ -158,7 +169,7 @@ def main():
 	}
 	awaySeason = "2015-16"
 
-	predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToCSV=True, useGameDate=True)
+	predictSeason(homeTeam, awaySeason, modelName, useCachedStats=True, saveToCSV=True, useGameDate=False)
 
 	end = timer() 
 
