@@ -4,55 +4,124 @@ import React, { Fragment, useState } from 'react';
 const SwapTeams = () => {
 	const [teamDescriptions, setTeamDescriptions] = useState([
 		{
+			teamName: 'Golden State Warriors',
+			wins: 73,
+			losses: 9,
+			wlPercent: .890
+		},
+		{
+			teamName: 'San Antonio Spurs',
+			wins: 67,
+			losses: 15,
+			wlPercent: .817
+		},
+		{
+			teamName: 'Cleveland Cavaliers',
+			wins: 57,
+			losses: 25,
+			wlPercent: '.695'
+		},
+		{
+			teamName: 'Toronto Raptors',
+			wins: 56,
+			losses: 26,
+			wlPercent: '.683'
+		},
+		{
+			teamName: 'Oklahoma City Thunder',
+			wins: 55,
+			losses: 27,
+			wlPercent: .671 
+		},
+		{
+			teamName: 'LA Clippers',
+			wins: 53,
+			losses: 29,
+			wlPercent: .646
+		},
+		{
+			teamName: 'Miami Heat',
+			wins: 48,
+			losses: 34,
+			wlPercent: .585
+		},
+		{
 			teamName: 'Atlanta Hawks',
-			wins: 82,
-			losses: 0,
-			wlPercent: '100%'
+			wins: 48,
+			losses: 34,
+			wlPercent: .585
 		},
 		{
 			teamName: 'Boston Celtics',
-			wins: 81,
-			losses: 1,
-			wlPercent: '99%'
-		},
-		{
-			teamName: 'Brooklyn Nets',
-			wins: 80,
-			losses: 2,
-			wlPercent: '98%'
+			wins: 48,
+			losses: 34,
+			wlPercent: .585 
 		},
 		{
 			teamName: 'Charlotte Hornets',
-			wins: 79,
-			losses: 3,
-			wlPercent: '97%'
+			wins: 48,
+			losses: 34,
+			wlPercent: .585 
 		},
 		{
-			teamName: 'Chicago Bulls',
-			wins: 78,
-			losses: 4,
-			wlPercent: '96%'
+			teamName: 'Indiana Pacers',
+			wins: 45,
+			losses: 37,
+			wlPercent: .549
 		},
+		{
+			teamName: 'Portland Trail Blazers',
+			wins: 44,
+			losses: 38,
+			wlPercent: .537 
+		},	
+		{
+			teamName: 'Detroit Pistons',
+			wins: 44,
+			losses: 38,
+			wlPercent: .537 
+		},	
+		{
+			teamName: 'Dallas Mavericks',
+			wins: 42,
+			losses: 40,
+			wlPercent: .512
+		},	
+		{
+			teamName: 'Dallas Mavericks',
+			wins: 42,
+			losses: 40,
+			wlPercent: .512
+		},	
+		{
+			teamName: 'Memphis Grizzlies',
+			wins: 42,
+			losses: 40,
+			wlPercent: .512
+		},	
+		{
+			teamName: 'Chicago Bulls',
+			wins: 42,
+			losses: 40,
+			wlPercent: .512
+		},	
+		{
+			teamName: 'Houston Rockets',
+			wins: 41,
+			losses: 41,
+			wlPercent: .500
+		},	
+		{
+			teamName: 'Washington Wizards',
+			wins: 41,
+			losses: 41,
+			wlPercent: .500
+		}
 	]);
 		
 
 	let teamList = ['Atlanta Hawks','2019-20','Atlanta Hawks','2019-20']
 
-	let response = ['apple','bob']
-	let teamOne; 
-	//console.log(firstTeam);
-
-	const firstTeam = (name) => {
-		teamOne = name;
-		console.log(teamOne);
-	}
-	/*
-			const response = await fetch('http://localhost:5000/todos',{ //Wait for it to finish then consolelog response
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json'},
-				body: JSON.stringify(body)
-			}); // by default fetch is a get request
-	*/
 	const onSubmitForm = async e => {
 		e.preventDefault();
 		//console.log('teamDescriptions',teamDescriptions);
@@ -168,9 +237,8 @@ const SwapTeams = () => {
 				</div>
 			</form>
 
-			<h2 className='text-center'>Standings</h2>
-			<p>Counter {teamDescriptions[0].teamName}</p>
-			<table class="table table-striped">
+			<h2 className='text-center mt-4'>Standings</h2>
+			<table className="table table-striped">
 			    <thead>
 			    	<tr>
 			        	<th>Team Name</th>
@@ -180,21 +248,14 @@ const SwapTeams = () => {
 			    	</tr>
 			    </thead>
 			    <tbody>
-			    	<tr>
-			    	  <td>John</td>
-			    	  <td>Doe</td>
-			    	  <td>john@example.com</td>
-			    	</tr>
-			    	<tr>
-			    	  <td>Mary</td>
-			    	  <td>Moe</td>
-			    	  <td>mary@example.com</td>
-			    	</tr>
-			    	<tr>
-			    	  <td>July</td>
-			    	  <td>Dooley</td>
-			    	  <td>july@example.com</td>
-			    	</tr>
+			      	{teamDescriptions.map((team,index) => (
+			      		<tr key={index} index={index}>
+			      			<td>{team.teamName}</td>
+			      			<td>{team.wins}</td>
+			      			<td>{team.losses}</td>
+			      			<td>{team.wlPercent}</td>
+			      		</tr>
+			      	))}
 			    </tbody>
 			</table>
 		</Fragment>
@@ -208,6 +269,9 @@ export default SwapTeams;
 
 
 Previous Code:
+---------- Specific team name from teamDescription
+			<p>Counter {teamDescriptions[0].teamName}</p>
+
 // --------------- DROP DOWN ------
 							<div className="dropdown">
 								<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -272,5 +336,8 @@ https://getbootstrap.com/docs/4.0/components/forms/#select-menu
   <option value="2">Two</option>
   <option value="3">Three</option>
 </select>
+
+Table:
+https://www.w3schools.com/bootstrap4/bootstrap_tables.asp
 
 */

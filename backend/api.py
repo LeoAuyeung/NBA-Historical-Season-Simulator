@@ -14,13 +14,15 @@ def get_current_time():
 @app.route('/standings', methods = ['POST'])
 def get_standings():
 	data = json.loads(request.data)
-
 	teamsAndSeasons = data['teamList'] #Holds Ex: ['Chicago Bulls', '2019-20', 'Atlanta Hawks', '2019-20']
 
-	print('teamsAndSeasons',teamsAndSeasons)
+	#print('teamsAndSeasons',teamsAndSeasons)
 
-
-	return {['Chicago Bulls', 60, 20, '75%']}
+	#Frontend is expecting an array with dicts inside
+	#Example: [{'teamName': 'Golden State Warriors', 'wins': 73, 'losses': 9, 'wlPercent': 0.89}, {'name': 'John', 'age': 30, 'city': 'New York'}]
+	#We will need to take the standings list from predict.py and turn it into that ^^^ then return it to frontend
+	
+	return { 'standings' : ['Chicago Bulls', 60, 20, '75%']}
 
 '''
 Reference:
@@ -36,4 +38,6 @@ Flask example with POST
 - https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
 - https://stackoverflow.com/questions/10999990/get-raw-post-body-in-python-flask-regardless-of-content-type-header/23898949
 
+Convert Python List Into Dict
+- https://appdividend.com/2019/11/12/how-to-convert-python-list-to-dictionary-example/
 '''
