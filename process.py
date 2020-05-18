@@ -12,6 +12,7 @@ home_path = os.getcwd()
 
 # Save the API call with the given parameters
 def saveAPICall(filename, allTeamsDict):
+	return None
 	with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
 		pickle.dump(allTeamsDict, handle)
 
