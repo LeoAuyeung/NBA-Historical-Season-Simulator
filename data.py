@@ -8,7 +8,10 @@ from nba_api.stats.library.parameters import SeasonTypeAllStar
 from constants import TEAMS, STATS_TYPE, HEADERS
 from utils import setCurrentWorkingDirectory, getStatsForTeam
 
+import sys
+
 import os
+
 home_path = os.getcwd()
 
 def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season):
@@ -41,19 +44,35 @@ def getData(game, season, startOfSeason, currentDate):
 
 def main():
     # Whichever year we want the data for.
-    # seasonYear = 2015
+    if len(sys.argv) < 2:
+        print("Wrong usage")
+        sys.exit()
+    else:
+        seasonYear = int(sys.argv[1])
+    # seasonYear = 2011
     gamefinder = leaguegamelog.LeagueGameLog(season=seasonYear, season_type_all_star=SeasonTypeAllStar.default)
     games = gamefinder.get_data_frames()[0]
     prevTeam = games['TEAM_NAME'][0]
     startOfSeason = games['GAME_DATE'][0]
     season = startOfSeason[:4] + '-' + str(int(startOfSeason[2:4])+1)
 
-    # If for some reason your program stopped running, continue progress by 
-    # settiing this to the last index that was downloaded.
-    # !!! When -1, it will reset whatever file you were saving to so be careful !!!
-    lastIndexDownloaded = -1
+    # downloadHelperDF = pd.read_csv(home_path+'/Data/gamesWithInfo' + season + '.csv')
+    # # If for some reason your program stopped running, continue progress by 
+    # # settiing this to the last index that was downloaded.
+    # # !!! When -1, it will reset whatever file you were saving to so be careful !!!
+    # If download helper exists, get it and retrieve last index
+    lastIndexDownloaded = -10
+    for file in os.listdir(home_path+'/Data/'):
+        if 'DownloadHelper'+season+'.csv' in file:
+            df = pd.read_csv(home_path+'/Data/DownloadHelper'+season+'.csv')
+            lastIndexDownloaded = int(df['lastIndex'])
+            
+
     # For a given season, iterate through all the games
     for index, row in games.iterrows():
+        if lastIndexDownloaded == -10:
+            print("NEED TO SET LAST INDEX")
+            sys.exit()
         if index <= lastIndexDownloaded:
             continue
         if index % 2 != 0:
@@ -76,15 +95,19 @@ def main():
             newDateFormat = month + '/' + day + '/' + year
             gameStat['Date'] = newDateFormat
 
-            percentageDone = (index + 1) / (games.shape[0]/2) # Total number of games
+            percentageDone = (index + 1) / games.shape[0] # Total number of games
             percentageDone *= 100
-            print('['+str(index)+'] Progress: ' + str(round(percentageDone, 3)) + '%', " | ", game, gameDate)
+            print('['+str(index)+'] Progress: ' + str(round(percentageDone, 2)) + '%', " | ", 'Season ' + season, prevTeam + ' vs ' + currTeam)
 
             if index == 1:
                 # Initialize the file with headers. This function resets the file.
                 gameStat.to_csv(home_path+'/Data/gamesWithInfo' + season + '.csv')
             else:
-                with open(home_path+'/Data/gamesWithInfo' + season + '.csv','a') as file:
+                # Keep track of last downloaded index and season year
+                downloadHelperData = {'lastIndex' : [index]}
+                downloadHelperDF = pd.DataFrame(downloadHelperData, columns = ['lastIndex'])
+                downloadHelperDF.to_csv(home_path+'/Data/DownloadHelper'+season+'.csv')
+                with open(home_path+'/Data/gamesWithInfo'+season+'.csv','a') as file:
                     gameStat.to_csv(file, header=False)
         else:
             prevTeam = row['TEAM_NAME']

@@ -30,7 +30,7 @@ def getAPICall(filename):
 
 def getStatsForTeam(team, startDate, endDate, season='2019-20'):
 	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
-	time.sleep(1)
+	time.sleep(.5)
 	# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
 	generalTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team], 
 																				per_mode_detailed='Per100Possessions', 
@@ -47,6 +47,8 @@ def getStatsForTeam(team, startDate, endDate, season='2019-20'):
 	rebounds = generalTeamDashboard['REB']
 	turnovers = generalTeamDashboard['TOV']
 	plusMinus = generalTeamDashboard['PLUS_MINUS']
+	
+	time.sleep(.5)
 
 	# Uses NBA_API to access the dictionary holding advanced stats for every team
 	advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team],

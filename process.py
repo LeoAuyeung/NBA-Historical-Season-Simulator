@@ -5,8 +5,6 @@ from constants import HEADERS, STATS_TYPE
 
 import json
 
-import pandas as pd
-
 import pickle
 
 import os
@@ -33,7 +31,7 @@ def getAPICall(filename):
 
 # Finds league stats for entered basic or advanced statistic (statType = 'Base' or 'Advanced')
 def basicOrAdvancedStat(startDate, endDate, season='2018-19', statType='Base'):
-    time.sleep(.2)
+    time.sleep(.5)
     
     filename = statType + '_' + startDate + '_' + endDate + '_' + season + '.json'
 
