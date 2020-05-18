@@ -110,6 +110,31 @@ def setCurrentWorkingDirectory(directoryName):
     newCurrentWorkingDirectory = os.path.join(programDirectory, directoryName)
     os.chdir(newCurrentWorkingDirectory)
 
+def createGameDict(homeTeam, awayTeam):
+
+	home_season = homeTeam["season"]
+	home_season_dates = getSeasonDates(home_season)
+	home_startDate = home_season_dates["start"]
+	home_endDate = home_season_dates["end"]
+
+	homeTeam["startDate"] = home_startDate
+	homeTeam["endDate"] = home_endDate
+	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
+
+
+	away_season = awayTeam["season"]
+	away_season_dates = getSeasonDates(away_season)
+	away_startDate = away_season_dates["start"]
+	away_endDate = away_season_dates["end"]
+
+	awayTeam["startDate"] = away_startDate
+	awayTeam["endDate"] = away_endDate
+	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
+
+	return {
+		"home": homeTeam,
+		"away": awayTeam
+	}
 
 def getSeasonDates(season):
 	if season in SEASON_DATES:
