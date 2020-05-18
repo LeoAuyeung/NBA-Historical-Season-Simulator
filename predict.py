@@ -1,5 +1,7 @@
 import pickle
 import pandas as pd
+from timeit import default_timer as timer
+from datetime import datetime
 
 from process import createMeanStandardDeviationDicts, zScoreDifferential
 from constants import TEAMS, STATS_TYPE, HEADERS
@@ -77,70 +79,66 @@ def createGameDict(homeTeam, awayTeam):
 	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
 
 
-	away_season = awayTeam["season"]
-	away_season_dates = getSeasonDates(away_season)
-	away_startDate = away_season_dates["start"]
-	away_endDate = away_season_dates["end"]
+def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToCSV=True):
+	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
 
 	awayTeam["startDate"] = away_startDate
 	awayTeam["endDate"] = away_endDate
 	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
 
-	return {
-		"home": homeTeam,
-		"away": awayTeam
-	}
+	for index, match in enumerate(matchScheduleList):
+		awayTeam = {
+			"season": awaySeason,
+			"name": match["awayTeam"],
+		}
 
-# TODO pending function to get schedule list
-# def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False):
-# 	# need to make this function
-# 	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
+		game = createGameDict(homeTeam, awayTeam)
+		gameWithPrediction = predictGame(game, modelName, useCachedStats)
 
-# 	games_df = []
+		result = {
+			"teams" : gameWithPrediction[0],
+			"prediction": gameWithPrediction[1],
+			"date": match["date"]
+		}
+		interpretPrediction(result, unit="season", index=index+1)
 
-# 	for match in matchScheduleList:
-# 		awayTeam = {
-# 			"season": awaySeason,
-# 			"name": match["awayTeam"]
-# 		}
-
-# 		game = createGameDict(homeTeam, awayTeam)
-# 		gameWithPrediction = predictGame(game, modelName)
-
-# 		result = {
-# 			"teams" : gameWithPrediction[0],
-# 			"prediction": gameWithPrediction[1],
-# 			"date": match["date"]
-# 		}
-# 		interpretPrediction(result)
-
-# 		result_df = {
-# 			"home": gameWithPrediction[0]["home"]["name"],
-# 			"away": gameWithPrediction[0]["away"]["name"],
-# 			"date": match["date"],
-# 			"result": gameWithPrediction[1][0].item()
-# 		}
-# 		games_df.append(result_df)
+		result_df = {
+			"home": gameWithPrediction[0]["home"]["name"],
+			"away": gameWithPrediction[0]["away"]["name"],
+			"date": match["date"],
+			"prediction": gameWithPrediction[1][0].item(),
+			"actual": match["actual"]
+		}
+		games_df.append(result_df)
 	
-# 	columns = ["date", "home", "away", "result"]
-# 	df = pd.DataFrame(games_df, columns=columns)
+	if saveToCSV:
+		columns = ["date", "home", "away", "prediction", "actual"]
+		df = pd.DataFrame(games_df, columns=columns)
 
-# 	df.to_csv(f'{homeTeam["season"]}-{homeTeam["name"]}_{awaySeason}_predictions.csv', index=False)
+		setCurrentWorkingDirectory('Predictions')
+
+		now = datetime.now()
+		now_str = now.strftime("%Y%m%d")
+
+		df.to_csv(f'{homeTeam["season"]}-{homeTeam["name"]}_{awaySeason}_{modelName}_{now_str}_predictions.csv', index=False)
+
+		setCurrentWorkingDirectory('SavedModels')
+	
+	num_matches = len(matchScheduleList)
 
 
 # home team is the swapped team
 def main():
 	setCurrentWorkingDirectory('SavedModels')
+	modelName = "model_dTree_20200518"
 
 	homeTeam = {
 		"season": "2019-20",
 		"name": "Los Angeles Clippers"
 	}
-	awayTeam = {
-		"season": "2019-20",
-		"name": "Memphis Grizzlies"
-	}
-	game = createGameDict(homeTeam, awayTeam)
+	awaySeason = "2015-16"
+
+	predictSeason(homeTeam, awaySeason, modelName, useCachedStats=True)
 
 	modelName = "model_dTree_20200517"
 

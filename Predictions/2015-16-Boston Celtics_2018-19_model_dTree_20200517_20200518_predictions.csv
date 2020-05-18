@@ -1,0 +1,83 @@
+date,home,away,prediction,actual
+10/16/2018,Boston Celtics,Philadelphia 76ers,0,0
+10/19/2018,Boston Celtics,Toronto Raptors,1,1
+10/20/2018,Boston Celtics,New York Knicks,0,0
+10/22/2018,Boston Celtics,Orlando Magic,1,1
+10/25/2018,Boston Celtics,Oklahoma City Thunder,1,0
+10/27/2018,Boston Celtics,Detroit Pistons,1,0
+10/30/2018,Boston Celtics,Detroit Pistons,1,0
+11/01/2018,Boston Celtics,Milwaukee Bucks,0,0
+11/03/2018,Boston Celtics,Indiana Pacers,1,1
+11/05/2018,Boston Celtics,Denver Nuggets,0,1
+11/08/2018,Boston Celtics,Phoenix Suns,0,0
+11/09/2018,Boston Celtics,Utah Jazz,0,1
+11/11/2018,Boston Celtics,Portland Trail Blazers,0,1
+11/14/2018,Boston Celtics,Chicago Bulls,0,0
+11/16/2018,Boston Celtics,Toronto Raptors,1,0
+11/17/2018,Boston Celtics,Utah Jazz,0,1
+11/19/2018,Boston Celtics,Charlotte Hornets,1,1
+11/21/2018,Boston Celtics,New York Knicks,0,1
+11/23/2018,Boston Celtics,Atlanta Hawks,0,0
+11/24/2018,Boston Celtics,Dallas Mavericks,1,1
+11/26/2018,Boston Celtics,New Orleans Pelicans,0,0
+11/30/2018,Boston Celtics,Cleveland Cavaliers,1,0
+12/01/2018,Boston Celtics,Minnesota Timberwolves,0,0
+12/06/2018,Boston Celtics,New York Knicks,0,0
+12/08/2018,Boston Celtics,Chicago Bulls,0,0
+12/10/2018,Boston Celtics,New Orleans Pelicans,0,0
+12/12/2018,Boston Celtics,Washington Wizards,0,0
+12/14/2018,Boston Celtics,Atlanta Hawks,0,0
+12/15/2018,Boston Celtics,Detroit Pistons,1,1
+12/19/2018,Boston Celtics,Phoenix Suns,0,1
+12/21/2018,Boston Celtics,Milwaukee Bucks,0,1
+12/23/2018,Boston Celtics,Charlotte Hornets,1,0
+12/25/2018,Boston Celtics,Philadelphia 76ers,0,0
+12/27/2018,Boston Celtics,Houston Rockets,1,1
+12/29/2018,Boston Celtics,Memphis Grizzlies,1,0
+12/31/2018,Boston Celtics,San Antonio Spurs,0,1
+01/02/2019,Boston Celtics,Minnesota Timberwolves,0,0
+01/04/2019,Boston Celtics,Dallas Mavericks,1,0
+01/07/2019,Boston Celtics,Brooklyn Nets,0,0
+01/09/2019,Boston Celtics,Indiana Pacers,1,0
+01/10/2019,Boston Celtics,Miami Heat,0,1
+01/12/2019,Boston Celtics,Orlando Magic,1,1
+01/14/2019,Boston Celtics,Brooklyn Nets,0,1
+01/16/2019,Boston Celtics,Toronto Raptors,1,0
+01/18/2019,Boston Celtics,Memphis Grizzlies,1,0
+01/19/2019,Boston Celtics,Atlanta Hawks,0,0
+01/21/2019,Boston Celtics,Miami Heat,0,0
+01/23/2019,Boston Celtics,Cleveland Cavaliers,1,0
+01/26/2019,Boston Celtics,Golden State Warriors,1,1
+01/28/2019,Boston Celtics,Brooklyn Nets,0,0
+01/30/2019,Boston Celtics,Charlotte Hornets,1,0
+02/01/2019,Boston Celtics,New York Knicks,0,0
+02/03/2019,Boston Celtics,Oklahoma City Thunder,1,0
+02/05/2019,Boston Celtics,Cleveland Cavaliers,1,0
+02/07/2019,Boston Celtics,Los Angeles Lakers,1,1
+02/09/2019,Boston Celtics,Los Angeles Clippers,1,1
+02/12/2019,Boston Celtics,Philadelphia 76ers,0,0
+02/13/2019,Boston Celtics,Detroit Pistons,1,0
+02/21/2019,Boston Celtics,Milwaukee Bucks,0,1
+02/23/2019,Boston Celtics,Chicago Bulls,0,1
+02/26/2019,Boston Celtics,Toronto Raptors,1,1
+02/27/2019,Boston Celtics,Portland Trail Blazers,0,1
+03/01/2019,Boston Celtics,Washington Wizards,0,0
+03/03/2019,Boston Celtics,Houston Rockets,1,1
+03/05/2019,Boston Celtics,Golden State Warriors,1,0
+03/06/2019,Boston Celtics,Sacramento Kings,1,0
+03/09/2019,Boston Celtics,Los Angeles Lakers,1,0
+03/11/2019,Boston Celtics,Los Angeles Clippers,1,1
+03/14/2019,Boston Celtics,Sacramento Kings,1,0
+03/16/2019,Boston Celtics,Atlanta Hawks,0,0
+03/18/2019,Boston Celtics,Denver Nuggets,0,1
+03/20/2019,Boston Celtics,Philadelphia 76ers,0,1
+03/23/2019,Boston Celtics,Charlotte Hornets,1,1
+03/24/2019,Boston Celtics,San Antonio Spurs,0,1
+03/26/2019,Boston Celtics,Cleveland Cavaliers,1,0
+03/29/2019,Boston Celtics,Indiana Pacers,1,0
+03/30/2019,Boston Celtics,Brooklyn Nets,0,1
+04/01/2019,Boston Celtics,Miami Heat,0,0
+04/03/2019,Boston Celtics,Miami Heat,0,0
+04/05/2019,Boston Celtics,Indiana Pacers,1,0
+04/07/2019,Boston Celtics,Orlando Magic,1,1
+04/09/2019,Boston Celtics,Washington Wizards,0,0
