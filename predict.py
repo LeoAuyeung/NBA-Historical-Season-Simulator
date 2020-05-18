@@ -4,7 +4,7 @@ from timeit import default_timer as timer
 
 from process import createMeanStandardDeviationDicts, zScoreDifferential
 from constants import TEAMS, STATS_TYPE, HEADERS
-from utils import setCurrentWorkingDirectory, getStatsForTeam, getSeasonDates, getGameScheduleList
+from utils import setCurrentWorkingDirectory, getStatsForTeam, getSeasonDates, getGameScheduleList, createGameDict
 
 def gameWithZScoreDifsList(homeTeam, awayTeam, meanDict, standardDeviationDict, useCachedStats=False):
 
@@ -79,32 +79,6 @@ def interpretPrediction(gameWithPrediction, unit, index):
 			winner = awayTeam
 
 		print(f'{homeTeam["label"]} vs. {awayTeam["label"]} : {winner["label"]}')
-
-def createGameDict(homeTeam, awayTeam):
-
-	home_season = homeTeam["season"]
-	home_season_dates = getSeasonDates(home_season)
-	home_startDate = home_season_dates["start"]
-	home_endDate = home_season_dates["end"]
-
-	homeTeam["startDate"] = home_startDate
-	homeTeam["endDate"] = home_endDate
-	homeTeam["label"] = homeTeam["season"] + " " + homeTeam["name"]
-
-
-	away_season = awayTeam["season"]
-	away_season_dates = getSeasonDates(away_season)
-	away_startDate = away_season_dates["start"]
-	away_endDate = away_season_dates["end"]
-
-	awayTeam["startDate"] = away_startDate
-	awayTeam["endDate"] = away_endDate
-	awayTeam["label"] = awayTeam["season"] + " " + awayTeam["name"]
-
-	return {
-		"home": homeTeam,
-		"away": awayTeam
-	}
 
 def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False, saveToCSV=False):
 	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
