@@ -3,7 +3,7 @@ import pandas as pd
 
 from process import createMeanStandardDeviationDicts, zScoreDifferential
 from constants import TEAMS, STATS_TYPE, HEADERS
-from utils import setCurrentWorkingDirectory, getStatsForTeam
+from utils import setCurrentWorkingDirectory, getStatsForTeam, getSeasonDates
 
 def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, endDate, season):
 
@@ -19,10 +19,18 @@ def gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startDate, end
 	
 	return [gameAsList]
 
-def predictGame(game, modelName, currentDate, season, startOfSeason):
+def predictGame(game, modelName, season):
 
-	meanDict, standardDeviationDict = createMeanStandardDeviationDicts(startOfSeason, currentDate, season)
-	gameAsList = gameWithZScoreDifsList(game, meanDict, standardDeviationDict, startOfSeason, currentDate, season)
+	dates = getSeasonDates(season)
+	startDate = dates["start"]
+	endDate = dates["end"]
+
+	meanDict, standardDeviationDict = createMeanStandardDeviationDicts(startDate, endDate, season)
+	gameAsList = 	(game, meanDict, standardDeviationDict, startDate, endDate, season)
+
+	print(gameAsList)
+
+	return None
 
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	gameWithZScoreDifs = pd.DataFrame(
@@ -61,7 +69,7 @@ def interpretPrediction(gameWithPrediction):
 def main():
 	setCurrentWorkingDirectory('SavedModels')
 	game = {'Los Angeles Clippers': 'Memphis Grizzlies'}
-	gameWithPrediction = predictGame(game, "model_dTree_20200517", '01/04/2020', '2019-20', '10/22/2019')
+	gameWithPrediction = predictGame(game, "model_dTree_20200517", '2019-20')
 	interpretPrediction(gameWithPrediction)
 
 
