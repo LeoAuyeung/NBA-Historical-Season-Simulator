@@ -10,7 +10,9 @@ pandas = "*"
 numpy = "*"
 sklearn = "*"
 nba-api = "*"
+wptools = "*"
 matplotlib = "*"
+
 
 [requires]
 python_version = "3.8"
