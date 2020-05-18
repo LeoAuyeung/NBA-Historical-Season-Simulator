@@ -91,6 +91,7 @@ def createGameDict(homeTeam, awayTeam):
 		"away": awayTeam
 	}
 
+# TODO pending function to get schedule list
 # def predictSeason(homeTeam, awaySeason, modelName, useCachedStats=False):
 # 	# need to make this function
 # 	matchScheduleList = getGameScheduleList(homeTeam, awaySeason)
