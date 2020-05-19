@@ -8,14 +8,12 @@ from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_
 from constants import TEAMS, STATS_TYPE, HEADERS
 
 # Get the normalized Z-scores of the games played based on the home and away team stats, mean, and std dev
-def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_stats = False, use_game_date = False, game_date = None):
+def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_stats = False):
 
 	games = [home_team["label"], away_team["label"]]
+
 	home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
-	if use_game_date:
-		away_stats = get_team_stats(away_team["name"], away_team["start_date"], game_date, away_team["season"], use_cached_stats)
-	else:
-		away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
+	away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
 
 	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
 		z_score_dif = z_score_difference(home_stats[stat], away_stats[stat], mean_dict[stat], std_dev_dict[stat])
@@ -25,19 +23,15 @@ def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_
 
 
 # Predict the game based on the training model used. Can use a cached training model.
-def predict_game(game, model_name, use_cached_stats = False, use_game_date = False, game_date = None):
+def predict_game(game, model_name, use_cached_stats = False):
 
 	base_season = game["away"]["season"]
 	base_season_start_date = game["away"]["start_date"]
 	base_season_end_date = game["away"]["end_date"]
 
 	# given home team is swapped team, create mean and stddev using away team season
-	if use_game_date:
-		mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, game_date, base_season)
-	else:
-		mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
-
-	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats, use_game_date, game_date)
+	mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
+	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats)
 
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	game_with_z_score_difs = pd.DataFrame(
@@ -59,13 +53,12 @@ def predict_game(game, model_name, use_cached_stats = False, use_game_date = Fal
 
 
 # Predict an entire season using the original team's schedule
-def predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = False):
+def predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True):
 	'''
 	Predicts an NBA season given a team and a season
 	Uses specified model
 	use_cached_stats - uses cached results from getStatsForTeam
 	save_to_CSV - saves simulated results to csv
-	use_game_date - for getStatsForTeam, uses match date as endDate rather than just endDate of the season
 	'''
 	match_schedule_list = get_game_schedule_list(home_team, away_season)
 
@@ -116,21 +109,23 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# set directory to SavedModels
 		set_directory("SavedModels")
 	
-	num_matches = len(match_schedule_list)
+	return games_df
 
-	predicted_losses = sum([int(g["prediction"]) for g in games_df])
-	predictied_wins = num_matches - predicted_losses
+	# num_matches = len(match_schedule_list)
+
+	# predicted_losses = sum([int(g["prediction"]) for g in games_df])
+	# predictied_wins = num_matches - predicted_losses
 	
-	actual_losses = sum([int(g["actual"]) for g in games_df])
-	actual_wins = num_matches - actual_losses
+	# actual_losses = sum([int(g["actual"]) for g in games_df])
+	# actual_wins = num_matches - actual_losses
 
-	return {
-		"num_matches": num_matches,
-		"predicted_losses": predicted_losses,
-		"predicted_wins": predictied_wins,
-		"actual_losses": actual_losses,
-		"actual_wins": actual_wins
-	}
+	# return {
+	# 	"num_matches": num_matches,
+	# 	"predicted_losses": predicted_losses,
+	# 	"predicted_wins": predictied_wins,
+	# 	"actual_losses": actual_losses,
+	# 	"actual_wins": actual_wins
+	# }
 
 # Interpret our predicted game result
 def interpret_prediction(game_with_prediction, unit, index):
@@ -182,7 +177,7 @@ def main():
 	}
 	away_season = "2015-16"
 
-	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True, use_game_date = False)
+	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True)
 
 	end = timer() 
 
