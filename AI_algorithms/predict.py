@@ -105,7 +105,7 @@ def interpret_prediction_season(games_df):
 	print('----------------------------------\n')
 
 # Predict the game based on the training model used. Can use a cached training model.
-def predict_game(game, model_name, use_cached_stats = False, use_game_date = False, game_date = None):
+def predict_game(game, model_name, features, use_cached_stats = False, use_game_date = False, game_date = None):
 
 	base_season = game["away"]["season"]
 	base_season_start_date = game["away"]["start_date"]
@@ -224,7 +224,7 @@ def main():
 	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
-	model_name = "model_random_forest_20200519132422"
+	model_name = "model_random_forest_20200519160613"
 	home_team = {
 		"season": "2017-18",
 		"name": "Los Angeles Lakers"
