@@ -356,7 +356,6 @@ def create_model_helper(df, model_name):
 		model = decision_tree(df)
 	elif model_name == "gaussian_nb":
 		model = gaussian_nb(df)
-	# add svm here
 	
 	return model
 
