@@ -12,14 +12,22 @@ import os
 
 from datetime import datetime
 
-# #######
-from sklearn import datasets
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 
 home_path = os.getcwd()
 
 def random_forest(dataframe):
      # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
-    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    features = ['W_PCT','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','TOV','STL','BLK','BLKA',
+        'PF','PFD','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING','E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_PCT','AST_TO',
+        'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',]
+    
+    # Feature set 1
+    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    # Feature set 2
+    # features = ['W_PCT','NET_RATING','PIE','PLUS_MINUS', 'DEF_RATING', 'TS_PCT', 'PTS']
 
     # ==================== START store necessary variables ====================
 
@@ -28,6 +36,16 @@ def random_forest(dataframe):
 
     # actual_result_data holds actual result of the games which we can then check our prediction with
     actual_result_data = dataframe.Result
+
+
+    bestfeatures = SelectKBest(score_func=chi2, k=10)
+    fit = bestfeatures.fit(feature_data,actual_result_data)
+    dfscores = pd.DataFrame(fit.scores_)
+    dfcolumns = pd.DataFrame(feature_data.columns)
+    #concat two dataframes for better visualization 
+    featureScores = pd.concat([dfcolumns,dfscores],axis=1)
+    featureScores.columns = ['Specs','Score']  #naming the dataframe columns
+    print(featureScores.nlargest(10,'Score'))  #print 10 best features
 
     # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     # Split arrays or matrices into random train and test subsets
@@ -177,7 +195,7 @@ def create_model(name="random_forest_model"):
     # Set directory to Data
     os.chdir(home_path + '/Data')
 
-    all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2010-19.csv')
+    all_games_dataframe = pd.read_csv(home_path + '/Data/MoreInfoData/COMBINEDgamesWithMoreInfo2010-15.csv')
 
     # Train logistic regression model based on the dataframe given by CSV
     # logistic_regression_model = logistic_regression(all_games_dataframe)

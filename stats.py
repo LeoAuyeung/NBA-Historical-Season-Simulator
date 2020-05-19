@@ -24,53 +24,57 @@ from nba_api.stats.library.parameters import SeasonTypeAllStar
 # # Prints the DataFrame object from pandas library.
 # print(games_1718)
 
-# import pandas as pd
-# import os
-# home_path = os.getcwd()
-# frames = []
-# for file in os.listdir(home_path+'/Data/'):
-#     if 'gamesWithInfo' in file:
-#         df = pd.read_csv(home_path+'/Data/'+file)
-#         df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-#         frames.append(df)
-#         df.to_csv(home_path+'/TrainingData/'+file)
+import pandas as pd
+import os
+home_path = os.getcwd()
+frames = []
+target_files = ['gamesWithInfo2010-11.csv','gamesWithInfo2011-12.csv','gamesWithInfo2012-13.csv'
+,'gamesWithInfo2013-14.csv','gamesWithInfo2014-15.csv']
+for file in os.listdir(home_path+'/Data/OriginalData/'):
+    if file in target_files:
+        # newName = 'gamesWithMoreInfo' + file[-11:]
+        # print(file,newName)
+        df = pd.read_csv(home_path+'/Data/OriginalData/'+file)
+        # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+        frames.append(df)
+        # df.to_csv(home_path+'/Data/t'+file)
 
-# allGames = pd.concat(frames)
-# allGames.to_csv(home_path+'/TrainingData/COMBINEDgamesWithInfo2010-2019.csv')
+allGames = pd.concat(frames)
+allGames.to_csv(home_path+'/Data/OriginalData/COMBINEDgamesWithInfo2010-15.csv')
 
 
-from constants import HEADERS, STATS_TYPE
-gamefinder = leaguegamelog.LeagueGameLog(season=2015, season_type_all_star=SeasonTypeAllStar.default)
-games = gamefinder.get_data_frames()[0]
-print(games)
+# from constants import HEADERS, STATS_TYPE
+# gamefinder = leaguegamelog.LeagueGameLog(season=2015, season_type_all_star=SeasonTypeAllStar.default)
+# games = gamefinder.get_data_frames()[0]
+# print(games)
 
-allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-                                                        measure_type_detailed_defense='Base',
-                                                        date_from_nullable='2015-10-27',
-                                                        date_to_nullable='2016-04-13',
-                                                        season='2015-16',
-                                                        headers=HEADERS,
-                                                        timeout=120)
+# allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
+#                                                         measure_type_detailed_defense='Base',
+#                                                         date_from_nullable='2015-10-27',
+#                                                         date_to_nullable='2016-04-13',
+#                                                         season='2015-16',
+#                                                         headers=HEADERS,
+#                                                         timeout=120)
 
-df = allTeamsInfo.get_data_frames()[0]
-print(df)
+# df = allTeamsInfo.get_data_frames()[0]
+# print(df)
 
 
 # for attribute in df.columns:
 #     print("'"+attribute+"':'"+"Base',")
 
 
-allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-                                                        measure_type_detailed_defense='Advanced',
-                                                        date_from_nullable='2015-10-27',
-                                                        date_to_nullable='2016-04-13',
-                                                        season='2015-16',
-                                                        headers=HEADERS,
-                                                        timeout=120)
+# allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
+#                                                         measure_type_detailed_defense='Advanced',
+#                                                         date_from_nullable='2015-10-27',
+#                                                         date_to_nullable='2016-04-13',
+#                                                         season='2015-16',
+#                                                         headers=HEADERS,
+#                                                         timeout=120)
 
-df = allTeamsInfo.get_data_frames()[0]
-print(df)
+# df = allTeamsInfo.get_data_frames()[0]
+# print(df)
 
 
-for attribute in df.columns:
-    print("'"+attribute+"':'"+"Advanced',")
+# for attribute in df.columns:
+#     print("'"+attribute+"':'"+"Advanced',")
