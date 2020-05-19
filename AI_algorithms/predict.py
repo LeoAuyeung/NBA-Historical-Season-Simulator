@@ -188,8 +188,8 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		interpret_prediction(result, unit = "season", index = index+1)
 
 		result_df = {
-			"home": game_with_prediction[0]["home"]["name"],
-			"away": game_with_prediction[0]["away"]["name"],
+			"home": game_with_prediction[0]["home"]["label"],
+			"away": game_with_prediction[0]["away"]["label"],
 			"date": match["date"],
 			"prediction": game_with_prediction[1][0].item(),
 			"actual": match["actual"]
