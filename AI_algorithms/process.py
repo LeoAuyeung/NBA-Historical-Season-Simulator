@@ -3,7 +3,7 @@ import time
 import json
 import pickle
 import statistics
-from constants import HEADERS, STATS_TYPE
+from constants import HEADERS, STATS_TYPE, ADDITIONAL_STATS_TYPE
 from nba_api.stats.endpoints import leaguedashteamstats
 
 home_path = os.getcwd()

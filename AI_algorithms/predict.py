@@ -118,19 +118,17 @@ def predict_game(game, model_name, use_cached_stats = False, use_game_date = Fal
 		mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
 
 	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats, use_game_date, game_date)
-
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	game_with_z_score_difs = pd.DataFrame(
 		games,
-		columns = ['Home', 'Away', 'W_PCT', 'REB', 'TOV','PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+		columns = features
 	)
 
 	# Slices only the features used in the model
-	just_z_score_difs = game_with_z_score_difs.loc[:, 'W_PCT':'TS_PCT']
+	just_z_score_difs = game_with_z_score_difs.loc[:, features[2]:features[-1]]
 
 	with open(f'{model_name}.pkl', 'rb') as file:
 		pickle_model = pickle.load(file)
-
 	# Predicts the probability that the home team loses/wins
 	p = pickle_model.predict_proba(just_z_score_difs)
 	prediction = pickle_model.predict(just_z_score_difs)
@@ -177,7 +175,9 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 			game_date = match["date"]
 
 		# use game dictionary and given params to create predictions
-		game_with_prediction = predict_game(game, model_name, use_cached_stats, use_game_date, game_date)
+    # K-Best
+		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
+		game_with_prediction = predict_game(game, model_name, features, use_cached_stats, use_game_date, game_date)
 
 		# interpret the predictions
 		result = {

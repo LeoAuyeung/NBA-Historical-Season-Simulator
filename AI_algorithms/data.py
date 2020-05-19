@@ -7,24 +7,21 @@ from constants import TEAMS, STATS_TYPE, HEADERS, ADDITIONAL_STATS_TYPE
 from nba_api.stats.endpoints import leaguegamelog
 from nba_api.stats.library.parameters import SeasonTypeAllStar
 from process import create_mean_std_dev_dicts, z_score_difference
-from utils import get_team_stats
+from utils import get_team_stats_2
 
 home_path = os.getcwd()
 
 # Get the normalized Z-scores of the games played based on the home and away team stats, mean, and std dev
 def get_z_scores_list(game, mean_dict, std_dev_dict, startDate, endDate, season):
-    home_team = list(game.items())[0]
-    away_team = list(game.items())[0]
-    games = [home_team["label"], away_team["label"]]
-    
-    home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
-    away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
+    homeTeam, awayTeam = list(game.items())[0]
+    gameAsList = [homeTeam, awayTeam]
+    homeTeamStats = get_team_stats_2(homeTeam, startDate, endDate, season)
+    awayTeamStats = get_team_stats_2(awayTeam, startDate, endDate, season)
     
     for stat, statType in ADDITIONAL_STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
-        z_score_dif = z_score_difference(home_stats[stat], away_stats[stat], mean_dict[stat], std_dev_dict[stat])
-        games.append(z_score_dif)
-        
-    return [games]
+        zScoreDif = z_score_difference(homeTeamStats[stat], awayTeamStats[stat], mean_dict[stat], std_dev_dict[stat])
+        gameAsList.append(zScoreDif)
+    return [gameAsList]
 
 # Get the data and the Zscore differentials of each game
 def get_data(game, season, start_of_season, current_date):
@@ -49,8 +46,25 @@ def get_data(game, season, start_of_season, current_date):
 
     return game_with_z_score_difs
 
+def combine_date():
+    home_path = os.getcwd()
+    frames = []
+    target_files = ['gamesWithInfo2010-11.csv','gamesWithInfo2011-12.csv','gamesWithInfo2012-13.csv'
+    ,'gamesWithInfo2013-14.csv','gamesWithInfo2014-15.csv']
+    for file in os.listdir(home_path+'/Data/OriginalData/'):
+        if file in target_files:
+            # newName = 'gamesWithMoreInfo' + file[-11:]
+            # print(file,newName)
+            df = pd.read_csv(home_path+'/Data/OriginalData/'+file)
+            # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+            frames.append(df)
+            # df.to_csv(home_path+'/Data/t'+file)
+
+    allGames = pd.concat(frames)
+    allGames.to_csv(home_path+'/Data/OriginalData/COMBINEDgamesWithInfo2010-15.csv')
+
 def main():
-    # Whichever year we want the data for.
+    combine_date()
     if len(sys.argv) < 2:
         print("Wrong usage")
         sys.exit()
@@ -73,11 +87,11 @@ def main():
     # # !!! When -1, it will reset whatever file you were saving to so be careful !!!
     # If download helper exists, get it and retrieve last index
     last_index_downloaded = -10
-    for file in os.listdir(home_path+'/Data/'):
+    for file in os.listdir(home_path+'/TestTrainingData/'):
         if 'DownloadHelper' + season + '.csv' in file:
-            df = pd.read_csv(home_path + '/Data/DownloadHelper' + season + '.csv')
+            df = pd.read_csv(home_path + '/TestTrainingData/DownloadHelper' + season + '.csv')
             last_index_downloaded = int(df['lastIndex'])
-            
+
     # For a given season, iterate through all the games
     for index, row in games.iterrows():
         if last_index_downloaded == -10:
@@ -111,7 +125,7 @@ def main():
 
             if index == 1:
                 # Initialize the file with headers. This function resets the file.
-                game_stat.to_csv(home_path + '/Data/gamesWithMoreInfo' + season + '.csv')
+                game_stat.to_csv(home_path + '/TestTrainingData/gamesWithMoreInfo' + season + '.csv')
             else:
                 # Keep track of last downloaded index and season year
                 download_helper_data = {'lastIndex' : [index]}
