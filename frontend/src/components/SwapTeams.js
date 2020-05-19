@@ -118,7 +118,7 @@ const SwapTeams = () => {
 			wlPercent: .500
 		}
 	]);
-		
+	/*	
 	const [predictions, setPredictions] = useState([
 		{
 			date: '10/16/2018',
@@ -128,7 +128,13 @@ const SwapTeams = () => {
 			actual: 0
 		}
 	]);
+	*/
+	const [predictions, setPredictions] = useState([{"home": "Boston Celtics", "away": "Philadelphia 76ers", "date": "10/28/2015", "prediction": 1, "actual": 0}]
 
+
+	);
+
+//jsondata.predictions [{"home": "Boston Celtics", "away": "Philadelphia 76ers", "date": "10/28/2015", "prediction": 1, "actual": 0}, {"home": "Boston Celtics", "away": "Toronto Raptors", "date": "10/30/2015", "prediction": 0, "actual": 1}, {"home": "Boston Celtics", "away": "San Antonio Spurs", "date": "11/01/2015", "prediction": 1, "actual": 1}, {"home": "Boston Celtics", "away": "Indiana Pacers", "date": "11/04/2015", "prediction": 1, "actual": 1}, 
 
 	let teamList = ['Atlanta Hawks','2019-20','Atlanta Hawks','2019-20']
 
@@ -138,6 +144,9 @@ const SwapTeams = () => {
 		//console.log('teamList', teamList);
 		const body = { teamList: teamList };
 
+		console.log('teamList', teamList);
+
+
 		const response = await fetch('/standings',{
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json'},
@@ -146,7 +155,12 @@ const SwapTeams = () => {
 		const jsonData = await response.json();
 
 		console.log('jsondata',jsonData);
+		console.log('jsondata.predictions', jsonData.listOfPredictions);
 
+		setPredictions(jsonData.listOfPredictions)
+
+		//setPredictions(jsonData.predictions);
+		//console.log('test',jsonData.test);
 		//setTeamDescriptions(teamDescriptions+1);
 		/*
 		setTeamDescriptions([
@@ -170,6 +184,7 @@ const SwapTeams = () => {
 			}
 		])
 		*/
+		//console.log(jsonData.predictions);
 	}
 
 	return(
@@ -190,8 +205,8 @@ const SwapTeams = () => {
 							  <option value="Golden State Warriors">Golden State Warriors</option>
 							  <option value="Houston Rockets">Houston Rockets</option>
 							  <option value="Indiana Pacers">Indiana Pacers</option>
-							  <option value="LA Clippers">LA Clippers</option>
-							  <option value="LA Lakers">LA Lakers</option>
+							  <option value="Los Angeles Clippers">Los Angeles Clippers</option>
+							  <option value="Los Angeles Lakers">Los Angeles Lakers</option>
 							  <option value="Memphis Grizzlies">Memphis Grizzlies</option>
 							  <option value="Miami Heat">Miami Heat</option>
 							  <option value="Milwaukee Bucks">Milwaukee Bucks</option>
@@ -233,8 +248,8 @@ const SwapTeams = () => {
 							  <option value="Golden State Warriors">Golden State Warriors</option>
 							  <option value="Houston Rockets">Houston Rockets</option>
 							  <option value="Indiana Pacers">Indiana Pacers</option>
-							  <option value="LA Clippers">LA Clippers</option>
-							  <option value="LA Lakers">LA Lakers</option>
+							  <option value="Los Angeles Clippers">Los Angeles Clippers</option>
+							  <option value="Los Angeles Lakers">Los Angeles Lakers</option>
 							  <option value="Memphis Grizzlies">Memphis Grizzlies</option>
 							  <option value="Miami Heat">Miami Heat</option>
 							  <option value="Milwaukee Bucks">Milwaukee Bucks</option>

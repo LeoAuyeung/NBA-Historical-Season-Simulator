@@ -38,7 +38,7 @@ def interpret_prediction(game_with_prediction, unit, index):
 		elif prediction == 1:
 			winner = away_team
 
-		print(f'({index}) {match_date} - {home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
+		#print(f'({index}) {match_date} - {home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
 
 	elif unit == "game":
 		game, prediction = game_with_prediction
@@ -53,7 +53,7 @@ def interpret_prediction(game_with_prediction, unit, index):
 		elif prediction == 1:
 			winner = away_team
 
-		print(f'{home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
+		#print(f'{home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
 
 
 '''
