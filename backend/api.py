@@ -4,6 +4,10 @@ from flask import request
 from flask import jsonify
 import json
 
+
+from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_directory
+
+
 #from AI_algorithms import predict
 
 #from predict import dummy_function
@@ -22,7 +26,7 @@ def get_standings():
 	data = json.loads(request.data)
 	teamsAndSeasons = data['teamList'] #Holds Ex: ['Chicago Bulls', '2019-20', 'Atlanta Hawks', '2019-20']
 
-	#print('teamsAndSeasons',teamsAndSeasons)
+	print('teamsAndSeasons',teamsAndSeasons)
 
 	#Frontend is expecting an array with dicts inside
 	#Example: [{'teamName': 'Golden State Warriors', 'wins': 73, 'losses': 9, 'wlPercent': 0.89}, {'name': 'John', 'age': 30, 'city': 'New York'}]
@@ -36,7 +40,9 @@ def get_standings():
 	}
 	away_season = "2015-16"
 	'''
-	model_name = "model_knn_20200518"
+	set_directory("SavedModels")
+	model_name = "model_random_forest_20200519160613"
+
 	home_team = {
 		"season": teamsAndSeasons[3],
 		"name": teamsAndSeasons[2]
@@ -50,8 +56,8 @@ def get_standings():
 	#response_json = jsonify(predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False) )
 
 	#print('response_json',response_json);
-	prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False, use_game_date = False);
-	print('prediction_list', prediction_list)
+	prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = False, use_game_date = False);
+	#print('prediction_list', prediction_list)
 
 	#predict_season result is being turned into a string. we want it to stay as a list fuck
 
@@ -70,12 +76,14 @@ Put this in predicts.py so it will display win or loss
 #dummy_function(); A test to see if we can import a function from predict.py
 
 #-------------------- TESTING FRONTEND SENDING TO BACKEND WITH TEAM SELECTION
+#dummy_function();
+
+
 '''
 teamsAndSeasons = ["Atlanta Hawks", "2019-20", "Los Angeles Lakers", "2018-19"]
 
-dummy_function();
 
-model_name = "model_knn_20200518"
+model_name = "model_random_forest_20200519160613"
 home_team = {
 	"season": teamsAndSeasons[3],
 	"name": teamsAndSeasons[2]
@@ -85,10 +93,23 @@ away_season = teamsAndSeasons[1]
 print('works');
 
 #print('response_json',response_json);
-prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False);
-print('prediction_list', prediction_list)
+#before predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False, use_game_date = True)
+predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = True)
 '''
 
+'''
+set_directory("SavedModels")
+
+# INPUTS USED TO PREDICT SEASON
+model_name = "model_random_forest_20200519160613"
+home_team = {
+	"season": "2017-18",
+	"name": "Los Angeles Lakers"
+}
+away_season = "2017-18"
+
+predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = False, use_game_date = False)
+'''
 
 '''
 Reference:
