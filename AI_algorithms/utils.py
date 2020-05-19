@@ -2,9 +2,8 @@ import os
 import time
 import json
 import pickle
-import wptools
 import pandas as pd
-from pprint import pprint
+
 from datetime import datetime
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
 from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES
@@ -119,37 +118,6 @@ def create_game_dict(home_team, away_team):
 def get_season_dates(season):
 	if season in SEASON_DATES:
 		return SEASON_DATES[season]
-	else:
-		return get_nba_season_start_end_dates(season)
-
-# Get the NBA season start and end dates
-def get_nba_season_start_end_dates(season):
-	name = f"{season} NBA season"
-	page = wptools.page(name, silent = True).get_parse(show = False)
-	duration = page.data['infobox']["duration"]
-
-	if season == "2019-20":
-		split = duration.split("|")[1].split("(")[0].strip()
-		start, end = split.split(" – ")
-	else:
-		split = duration.split("<br>")
-		if len(split) == 1:
-			start, end = duration.split("<br />")[0].strip().split(" – ")
-		else:
-			start, end = duration.split("<br>")[0].strip().split(" – ")
-
-	date_fmt_parse = "%B %d, %Y"
-
-	start_dt = datetime.strptime(start, date_fmt_parse)
-	end_dt = datetime.strptime(end, date_fmt_parse)
-
-	date_fmt_str = "%m/%d/%Y"
-
-	start_str = start_dt.strftime(date_fmt_str)
-	end_str = end_dt.strftime(date_fmt_str)
-
-	return {"start": start_str, "end": end_str}
-
 
 # Create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
 def create_nba_season_dates_dict(first, last):
@@ -158,7 +126,7 @@ def create_nba_season_dates_dict(first, last):
 	for x in range(first, last + 1):
 		season_str = f'{x}-{str(x+1)[-2:]}'
 
-		season_dates = get_nba_season_start_end_dates(season_str)
+		season_dates = get_season_dates(season_str)
 
 		seasons[season_str] = season_dates
 
@@ -246,7 +214,9 @@ def get_game_schedule_list(home_team, away_season):
 	return regular_season_games
 
 def parsePredictionCSV(filename):
-	setCurrentWorkingDirectory("Predictions")
+	prog_directory = os.path.dirname(os.path.abspath(__file__))
+	new_directory = os.path.join(prog_directory, "Predictions")
+	os.chdir(new_directory)
 
 	with open(filename) as f:
 		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace = True)]
