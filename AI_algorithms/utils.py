@@ -243,9 +243,7 @@ def get_game_schedule_list(home_team, away_season):
 
 def parsePredictionCSV(filename):
 	# set directory to Predictions
-	prog_directory = os.path.dirname(os.path.abspath(__file__))
-	new_directory = os.path.join(prog_directory, "Predictions")
-	os.chdir(new_directory)
+	set_directory("Predictions")
 
 	with open(filename) as f:
 		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace = True)]
