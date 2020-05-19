@@ -276,4 +276,10 @@ def getStatsForPredictionsCSV(predictions):
 
 	print(stats)
 
+
+def set_directory(name):
+    src = os.path.dirname(os.path.abspath(__file__))
+    new_directory = os.path.join(src, name)
+    os.chdir(new_directory)
+
 # getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
