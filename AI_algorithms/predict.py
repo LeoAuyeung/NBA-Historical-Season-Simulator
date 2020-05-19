@@ -188,8 +188,8 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		interpret_prediction(result, unit = "season", index = index+1)
 
 		result_df = {
-			"home": game_with_prediction[0]["home"]["name"],
-			"away": game_with_prediction[0]["away"]["name"],
+			"home": game_with_prediction[0]["home"]["label"],
+			"away": game_with_prediction[0]["away"]["label"],
 			"date": match["date"],
 			"prediction": game_with_prediction[1][0].item(),
 			"actual": match["actual"]
@@ -224,14 +224,14 @@ def main():
 	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
-	model_name = "model_random_forest_20200519160613"
+	model_name = "model_random_forest_20200519165846"
 	home_team = {
 		"season": "2017-18",
 		"name": "Los Angeles Lakers"
 	}
 	away_season = "2017-18"
 
-	predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = True)
+	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True, use_game_date = False)
 
 	end = timer() 
 

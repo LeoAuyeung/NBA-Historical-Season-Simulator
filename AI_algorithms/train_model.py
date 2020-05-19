@@ -110,13 +110,13 @@ def random_forest(dataframe):
 
     # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     # Split arrays or matrices into random train and test subsets
-    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.3, shuffle=True)
 
     # ==================== END store necessary variables ====================
 
     # ==================== START applying random forest ====================
     # Create a Gaussian Classifier
-    random_forest_result = RandomForestClassifier(n_estimators=100)
+    random_forest_result = RandomForestClassifier(n_estimators=500, criterion='gini', max_depth=4, max_features='auto')
 
     # Train the model using the training sets
     random_forest_result.fit(X_train,Y_train)
@@ -434,7 +434,7 @@ def create_model(name="model"):
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
 	# Set directory to Data
-	os.chdir(home_path + '/Data/MoreInfoData/')
+	os.chdir(home_path + '/Data/IncompleteData/')
 	all_games_dataframe = pd.read_csv('COMBINEDgamesWithMoreInfo2010-15.csv')
 
 	model = create_model_helper(all_games_dataframe, model_name)
