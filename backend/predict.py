@@ -187,11 +187,15 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		}
 		interpret_prediction(result, unit = "season", index = index+1)
 
+		win_or_loss = 'Win';
+		if (game_with_prediction[1][0].item() == 1):
+			win_or_loss = 'Loss'
+
 		result_df = {
 			"home": game_with_prediction[0]["home"]["label"],
 			"away": game_with_prediction[0]["away"]["label"],
 			"date": match["date"],
-			"prediction": game_with_prediction[1][0].item(),
+			"prediction": win_or_loss,
 			"actual": match["actual"]
 		}
 		games_df.append(result_df)
