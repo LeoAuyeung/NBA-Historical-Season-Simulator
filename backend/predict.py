@@ -178,62 +178,12 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# set directory to SavedModels
 		set_directory("SavedModels")
 	
-
-	num_matches = len(match_schedule_list)
-
-	predicted_losses = sum([int(g["prediction"]) for g in games_df])
-	predictied_wins = num_matches - predicted_losses
-	
-	actual_losses = sum([int(g["actual"]) for g in games_df])
-	actual_wins = num_matches - actual_losses
-
-	
-	return {
-		"num_matches": num_matches,
-		"predicted_losses": predicted_losses,
-		"predicted_wins": predictied_wins,
-		"actual_losses": actual_losses,
-		"actual_wins": actual_wins
-	}
-
-
-# Interpret our predicted game result
-def interpret_prediction(game_with_prediction, unit, index):
-	if unit == "season":
-		teams = game_with_prediction["teams"]
-		prediction = game_with_prediction["prediction"]
-		match_date = game_with_prediction["date"]
-
-		home_team = teams["home"]
-		away_team = teams["away"]
-
-		prediction = prediction[0].item()
-
-		if prediction == 0:
-			winner = home_team
-		elif prediction == 1:
-			winner = away_team
-
-		print(f'({index}) {match_date} - {home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
-
-	elif unit == "game":
-		game, prediction = game_with_prediction
-
-		home_team = game["home"]
-		away_team = game["away"]
-
-		prediction = prediction[0].item()
-
-		if prediction == 0:
-			winner = home_team
-		elif prediction == 1:
-			winner = away_team
-
-		print(f'{home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
-
 	interpret_prediction_season(games_df)
-
+	#print(games_df);
 	return games_df
+
+def dummy_function():
+	print('dummy function called');
 
 # home team is the swapped team
 def main():
@@ -250,9 +200,7 @@ def main():
 	}
 	away_season = "2015-16"
 
-
-	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False, use_game_date = False)
-
+	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False)
 
 	end = timer() 
 
