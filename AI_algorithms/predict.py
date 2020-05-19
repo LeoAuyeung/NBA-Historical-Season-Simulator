@@ -8,7 +8,7 @@ from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_
 from constants import TEAMS, STATS_TYPE, HEADERS
 
 # Get the normalized Z-scores of the games played based on the home and away team stats, mean, and std dev
-def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_stats = False):
+def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, features, use_cached_stats = False):
 
 	games = [home_team["label"], away_team["label"]]
 
@@ -92,7 +92,7 @@ def interpret_prediction_season(games_df):
 	print('----------------------------------\n')
 
 # Predict the game based on the training model used. Can use a cached training model.
-def predict_game(game, model_name, use_cached_stats = False):
+def predict_game(game, model_name, features, use_cached_stats = False):
 
 	base_season = game["away"]["season"]
 	base_season_start_date = game["away"]["start_date"]
@@ -101,19 +101,17 @@ def predict_game(game, model_name, use_cached_stats = False):
 	# given home team is swapped team, create mean and stddev using away team season
 	mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
 	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats)
-
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	game_with_z_score_difs = pd.DataFrame(
 		games,
-		columns = ['Home', 'Away', 'W_PCT', 'REB', 'TOV','PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+		columns = features
 	)
 
 	# Slices only the features used in the model
-	just_z_score_difs = game_with_z_score_difs.loc[:, 'W_PCT':'TS_PCT']
+	just_z_score_difs = game_with_z_score_difs.loc[:, features[2]:features[-1]]
 
 	with open(f'{model_name}.pkl', 'rb') as file:
 		pickle_model = pickle.load(file)
-
 	# Predicts the probability that the home team loses/wins
 	prediction = pickle_model.predict(just_z_score_difs)
 
@@ -143,7 +141,11 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# create the game dictionary
 		game = create_game_dict(home_team, away_team)
 		# use game dictionary and given params to create predictions
-		game_with_prediction = predict_game(game, model_name, use_cached_stats)
+		# Feature Importance
+		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS','TS_PCT']
+		# K-Best
+		# features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
+		game_with_prediction = predict_game(game, model_name, features, use_cached_stats)
 
 		# interpret the predictions
 		result = {
@@ -190,7 +192,7 @@ def main():
 	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
-	model_name = "model_knn_20200518"
+	model_name = "model_random_forest_inc_feature_importance"
 	home_team = {
 		"season": "2015-16",
 		"name": "Boston Celtics"

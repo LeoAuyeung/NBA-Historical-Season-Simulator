@@ -64,7 +64,7 @@ def combine_date():
     allGames.to_csv(home_path+'/Data/OriginalData/COMBINEDgamesWithInfo2010-15.csv')
 
 def main():
-    # Whichever year we want the data for.
+    combine_date()
     if len(sys.argv) < 2:
         print("Wrong usage")
         sys.exit()

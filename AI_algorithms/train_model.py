@@ -75,26 +75,18 @@ def knn(dataframe):
 def random_forest(dataframe):
      # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
      # Total features
-    features = ['W_PCT','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','TOV','STL','BLK','BLKA',
-        'PF','PFD','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING','E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_PCT','AST_TO',
-        'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',]
-    
-    # Top 20 select KBest
-    # features = ['W_PCT','FGM','FG_PCT','DREB','AST',
-    # 'BLKA','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING',
-    # 'E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_TO',
-    #     'AST_RATIO','EFG_PCT','TS_PCT','PIE', 'FG3_PCT']
+    # features = ['W_PCT','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','TOV','STL','BLK','BLKA',
+    #     'PF','PFD','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING','E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_PCT','AST_TO',
+    #     'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',]
     
     # Original Feature Set
-    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
 
     # Top 10 feature importance
-    features = ['W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS', 'TS_PCT']
+    # features = ['W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS', 'TS_PCT']
 
     # Top 10 K-best 
-    # features = ['W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
-    # Feature set 2
-    # features = ['W_PCT','NET_RATING','PIE','PLUS_MINUS', 'DEF_RATING', 'TS_PCT', 'PTS']
+    features = ['W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
 
     # ==================== START store necessary variables ====================
 
@@ -104,18 +96,20 @@ def random_forest(dataframe):
     # actual_result_data holds actual result of the games which we can then check our prediction with
     actual_result_data = dataframe.Result
 
-    bestfeatures = SelectKBest(score_func=f_classif, k=10)
-    fit = bestfeatures.fit(feature_data,actual_result_data)
-    dfscores = pd.DataFrame(fit.scores_)
-    dfcolumns = pd.DataFrame(feature_data.columns)
-    #concat two dataframes for better visualization 
-    featureScores = pd.concat([dfcolumns,dfscores],axis=1)
-    featureScores.columns = ['Specs','Score']  #naming the dataframe columns
-    print(featureScores.nlargest(10,'Score'))  #print 20 best features
+    # Select 10 best features.
+    # best_features = SelectKBest(score_func=f_classif, k=10)
+    # fit = best_features.fit(feature_data,actual_result_data)
+    # dfscores = pd.DataFrame(fit.scores_)
+    # dfcolumns = pd.DataFrame(feature_data.columns)
+
+    # Concat two dataframes for better visualization 
+    # featureScores = pd.concat([dfcolumns,dfscores],axis=1)
+    # featureScores.columns = ['Specs','Score']
+    # print(featureScores.nlargest(10,'Score'))
 
     # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     # Split arrays or matrices into random train and test subsets
-    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.3, shuffle=True)
+    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
 
     # ==================== END store necessary variables ====================
 
@@ -137,8 +131,8 @@ def random_forest(dataframe):
 
 
     # ==================== Print model accuracy information ====================
-    print('\nFeature Importance: \n')
-    print(random_forest_result.feature_importances_)
+    # print('\nFeature Importance: \n')
+    # print(random_forest_result.feature_importances_)
 
     print('\n----------------------------------')
 
@@ -160,10 +154,10 @@ def random_forest(dataframe):
     sns.barplot(x=feature_imp, y=feature_imp.index)
 
     # Add labels to your graph
-    plt.xlabel('Feature Importance Score')
-    plt.ylabel('Features')
-    plt.title("Visualizing Important Features")
-    plt.show()
+    # plt.xlabel('Feature Importance Score')
+    # plt.ylabel('Features')
+    # plt.title("Visualizing Important Features")
+    # plt.show()
 
     return random_forest_result
 
@@ -393,13 +387,13 @@ def create_model(name="model"):
 
 	# add svm here
 	model_names = ["log_reg", "knn", "random_forest", "dTree", "gaussian_nb"]
-	model_name=model_names[3]
+	model_name= model_names[2]
 
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
 	# Set directory to Data
-	os.chdir(home_path + '/Data')
-	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
+	os.chdir(home_path + '/Data/MoreInfoData/')
+	all_games_dataframe = pd.read_csv('COMBINEDgamesWithMoreInfo2010-15.csv')
 
 	model = create_model_helper(all_games_dataframe, model_name)
 

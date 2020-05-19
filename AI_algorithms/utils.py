@@ -48,6 +48,7 @@ def get_team_stats_2(team, startDate, endDate, season='2019-20'):
 																				timeout=120)
 		generalTeamDict = generalTeamInfo.get_normalized_dict()
 		generalTeamDashboard = generalTeamDict['OverallTeamDashboard'][0]
+		
 	
 		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
 		advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team], 

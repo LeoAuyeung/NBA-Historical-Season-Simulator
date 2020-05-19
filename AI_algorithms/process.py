@@ -73,7 +73,7 @@ def create_mean_std_dev_dicts(start_date, end_date, season):
 	mean_dict = {}
 	std_dev_dict = {}
 	# Loops through and inputs standard deviation and mean for each stat into dict
-	for stat, stat_type in ADDITIONAL_STATS_TYPE.items():
+	for stat, stat_type in STATS_TYPE.items():
 		# Choose which data to use depending on the stat type
 		data = []
 		if stat_type == 'Base':
