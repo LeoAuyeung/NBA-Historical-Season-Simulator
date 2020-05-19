@@ -46,6 +46,23 @@ def get_data(game, season, start_of_season, current_date):
 
     return game_with_z_score_difs
 
+def combine_date():
+    home_path = os.getcwd()
+    frames = []
+    target_files = ['gamesWithInfo2010-11.csv','gamesWithInfo2011-12.csv','gamesWithInfo2012-13.csv'
+    ,'gamesWithInfo2013-14.csv','gamesWithInfo2014-15.csv']
+    for file in os.listdir(home_path+'/Data/OriginalData/'):
+        if file in target_files:
+            # newName = 'gamesWithMoreInfo' + file[-11:]
+            # print(file,newName)
+            df = pd.read_csv(home_path+'/Data/OriginalData/'+file)
+            # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+            frames.append(df)
+            # df.to_csv(home_path+'/Data/t'+file)
+
+    allGames = pd.concat(frames)
+    allGames.to_csv(home_path+'/Data/OriginalData/COMBINEDgamesWithInfo2010-15.csv')
+
 def main():
     # Whichever year we want the data for.
     if len(sys.argv) < 2:
