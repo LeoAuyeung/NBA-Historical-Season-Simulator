@@ -1,111 +1,103 @@
-from nba_api.stats.endpoints import leaguedashteamstats
-import statistics
-import time
-from constants import HEADERS, STATS_TYPE, ADDITIONAL_STATS_TYPE
-
-import json
-
-import pickle
-
 import os
+import time
+import json
+import pickle
+import statistics
+from constants import HEADERS, STATS_TYPE
+from nba_api.stats.endpoints import leaguedashteamstats
+
 home_path = os.getcwd()
 
 # Save the API call with the given parameters
-def saveAPICall(filename, allTeamsDict):
-	with open(home_path+'/SavedAPICalls/'+filename, 'wb') as handle:
-		pickle.dump(allTeamsDict, handle)
+def save_api_call(filename, all_teams_dict):
+	return None
+	with open(home_path + '/SavedAPICalls/'+filename, 'wb') as handle:
+		pickle.dump(all_teams_dict, handle)
 
 # Check if we've already made an API call with the given parameters.
-def checkAPICall(filename):
+def check_api_call(filename):
 	fileFound = False
-	for file in os.listdir(home_path+'/SavedAPICalls/'):
+	for file in os.listdir(home_path + '/SavedAPICalls/'):
 		if filename in file:
 			return True
 
 	return fileFound
 
 # Get the result of the API call we've already made
-def getAPICall(filename):
-	with open(home_path+'/SavedAPICalls/'+filename, 'rb') as handle:
+def get_api_call(filename):
+	with open(home_path + '/SavedAPICalls/' + filename, 'rb') as handle:
 		return pickle.loads(handle.read())
 
-# Finds league stats for entered basic or advanced statistic (statType = 'Base' or 'Advanced')
-def basicOrAdvancedStat(startDate, endDate, season='2018-19', statType='Base'):
-
-    # time.sleep(.5)
-    filename = statType + '_' + startDate + '_' + endDate + '_' + season + '.json'
-
+# Finds league stats for entered basic or advanced statistic (stat_type = 'Base' or 'Advanced')
+def get_league_stats(start_date, end_date, season = '2018-19', stat_type = 'Base'):
+	filename = stat_type + '_' + start_date + '_' + end_date + '_' + season + '.json'
+	
+	# Add time.sleep so as to not overload the API with requests and timeout
+	time.sleep(.3)
+	
 	# Check if we've made the same api call before
-    callAlreadyMade = checkAPICall(filename)
-    if callAlreadyMade:
+	call_already_made = check_api_call(filename)
+
+	if call_already_made:
 		# Get the result of the API call
-        allTeamsDict = getAPICall(filename)
-    else:
-		# Gets list of dictionaries with stats for every team
-        allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-															measure_type_detailed_defense=statType,
-															date_from_nullable=startDate,
-															date_to_nullable=endDate,
-															season=season,
-															headers=HEADERS,
-															timeout=120)
-        allTeamsDict = allTeamsInfo.get_normalized_dict()
-        saveAPICall(filename, allTeamsDict)
-    allTeamsList = allTeamsDict['LeagueDashTeamStats']
-    return allTeamsList
+		all_teams_dict = get_api_call(filename)
+	else:
+		# Gets list of dictionaries with stats for every team from the nba_api endpoint
+		all_teams_info = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed = 'Per100Possessions', measure_type_detailed_defense = stat_type, date_from_nullable = start_date, date_to_nullable = end_date, season = season, headers = HEADERS, timeout = 60)
+		all_teams_dict = all_teams_info.get_normalized_dict()
+		save_api_call(filename, all_teams_dict)
+	
+	all_teams_list = all_teams_dict['LeagueDashTeamStats']
+	return all_teams_list
 
 # Returns a standardized version of each data point via the z-score method
-def basicOrAdvancedStatZScore(observedStat, mean, standardDeviation):
+def get_z_score(observed_stat, mean, std_dev):
 
-    zScore = (observedStat-mean)/standardDeviation  # Calculation for z-score
+	z_score = (observed_stat - mean) / std_dev  # Calculation for z-score
 
-    return(zScore)
+	return(z_score)
 
-def zScoreDifferential(observedStatHome, observedStatAway, mean, standardDeviation):
+# Get the list of the Zscore differences between the home teams and the away teams based on the mean and std dev
+def z_score_difference(observed_stat_home, observedStatAway, mean, std_dev):
+	return get_z_score(observed_stat_home, mean, std_dev) - get_z_score(observedStatAway, mean, std_dev)
 
-    homeTeamZScore = basicOrAdvancedStatZScore(observedStatHome, mean, standardDeviation)
-    awayTeamZScore = basicOrAdvancedStatZScore(observedStatAway, mean, standardDeviation)
+def create_mean_std_dev_dicts(start_date, end_date, season):
+	# Make API calls and store data in two variables
+	all_teams_infoBase = get_league_stats(start_date, end_date, season, 'Base')
+	all_teams_infoAdvanced = get_league_stats(start_date, end_date, season, 'Advanced')
 
-    differenceInZScore = homeTeamZScore - awayTeamZScore
-    return differenceInZScore
+	# If we got no data
+	if not all_teams_infoAdvanced or not all_teams_infoAdvanced: 
+		return None
 
-def createMeanStandardDeviationDicts(startDate, endDate, season):
+	mean_dict = {}
+	std_dev_dict = {}
+	# Loops through and inputs standard deviation and mean for each stat into dict
+	for stat, stat_type in STATS_TYPE.items():
+		# Choose which data to use depending on the stat type
+		data = []
+		if stat_type == 'Base':
+			data = all_teams_infoBase
+		else:
+			data = all_teams_infoAdvanced
+			
+		# Mean
+		specific_stat_all_teams = []
+		for i in range(len(data)):  # Loops through and appends specific stat to new list until every team's stat has been added
+			specific_stat_all_teams.append(data[i][stat])
+		mean = statistics.mean(specific_stat_all_teams)  # Finds mean of stat
+		mean_dict.update({stat: mean})
 
-    meanDict = {}
-    standardDeviationDict = {}
-
-    # Make API calls and store data in two variables
-    allTeamsInfoBase = basicOrAdvancedStat(startDate, endDate, season, 'Base')
-    allTeamsInfoAdvanced = basicOrAdvancedStat(startDate, endDate, season, 'Advanced')
-
-    if not allTeamsInfoAdvanced or not allTeamsInfoAdvanced: # If we got no data
-        return None
-
-    # Loops through and inputs standard deviation and mean for each stat into dict
-    for stat, statType in ADDITIONAL_STATS_TYPE.items():
-        # Choose which data to use depending on the stat type
-        data = []
-        if statType == 'Base':
-            data = allTeamsInfoBase
-        else:
-            data = allTeamsInfoAdvanced
-            
-        # Mean
-        specificStatAllTeams = []
-        for i in range(len(data)):  # Loops through and appends specific stat to new list until every team's stat has been added
-            specificStatAllTeams.append(data[i][stat])
-        mean = statistics.mean(specificStatAllTeams)  # Finds mean of stat
-        meanDict.update({stat: mean})
-
-        # Standard deviation
-        specificStatAllTeams = []
-        for i in range(len(data)):  # Loops through and appends specific stat to new list until every team's stat has been added
-            specificStatAllTeams.append(data[i][stat])
-        standardDeviation = statistics.stdev(specificStatAllTeams)  # Finds standard deviation of stat
-        standardDeviationDict.update({stat: standardDeviation})
+		# Standard deviation
+		specific_stat_all_teams = []
+		for i in range(len(data)):  # Loops through and appends specific stat to new list until every team's stat has been added
+			specific_stat_all_teams.append(data[i][stat])
+		std_dev = statistics.stdev(specific_stat_all_teams)  # Finds standard deviation of stat
+		std_dev_dict.update({stat: std_dev})
  
-    bothDicts = []
-    bothDicts.append(meanDict)
-    bothDicts.append(standardDeviationDict)
+	# We then want to output both of the mean and std dev dictionaries
+	ans = []
+	ans.append(mean_dict)
+	ans.append(std_dev_dict)
 
-    return bothDicts
+	return ans

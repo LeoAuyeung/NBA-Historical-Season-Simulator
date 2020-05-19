@@ -1,80 +1,47 @@
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import leaguegamefinder, leaguedashteamstats, leaguegamelog
+from nba_api.stats.endpoints import leaguegamefinder
 
-from nba_api.stats.library.parameters import SeasonTypeAllStar
+from datetime import datetime
+from constants import SEASON_DATES, TEAMS, TEAMS_ABV
+from pprint import pprint
 
-# nba_teams = teams.get_teams()
-# # # Select the dictionary for the Celtics, which contains their team ID.
-# celtics = [team for team in nba_teams if team['abbreviation'] == 'BOS'][0]
-# celtics_id = celtics['id']
+team = "Boston Celtics"
+team_id = TEAMS[team]
 
-# # # print(celtics_id)s
+season = "2018-19"
+dates = SEASON_DATES[season]
+start = datetime.strptime(dates["start"], "%m/%d/%Y").strftime("%Y-%m-%d")
+end = datetime.strptime(dates["end"], "%m/%d/%Y").strftime("%Y-%m-%d")
 
-# # # Query for games where the Celtics were playing.
-# gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=celtics_id)
-# # # The first DataFrame of those returned is what we want.
-# games = gamefinder.get_data_frames()[0]
-# games.head()
+gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=team_id, season_nullable=season)
+games = gamefinder.get_data_frames()[0]
 
-# # Subset the games to when the last 4 digits of SEASON_ID were 2017.
+regular_season_games_df = games.loc[(games["GAME_DATE"] >= start) & (games["GAME_DATE"] <= end)].sort_values("GAME_DATE")
+regular_season_games_list = regular_season_games_df.to_dict("records")
+regular_season_games = []
+for game in regular_season_games_list:
+    match = game["MATCHUP"]
+    split_vs = match.split(" vs. ")
+    if len(split_vs) == 1:
+        split_at = match.split(" @ ")
+        split = split_at
+    else:
+        split = split_vs
+    awayTeam = split[1]
+    awayTeamName = TEAMS_ABV[awayTeam]
 
-# games_1718 = games[games.SEASON_ID.str[-4:] == '2017']
-# games_1718.head()
+    date_df = game["GAME_DATE"]
+    date_str = datetime.strptime(date_df, "%Y-%m-%d").strftime("%m/%d/%Y")
 
-# # Prints the DataFrame object from pandas library.
-# print(games_1718)
+    game_dict = {
+        "season" : season,
+        "name" : awayTeamName,
+        "date": date_str
+    }
+    regular_season_games.append(game_dict)
 
-import pandas as pd
-import os
-home_path = os.getcwd()
-frames = []
-target_files = ['gamesWithInfo2010-11.csv','gamesWithInfo2011-12.csv','gamesWithInfo2012-13.csv'
-,'gamesWithInfo2013-14.csv','gamesWithInfo2014-15.csv']
-for file in os.listdir(home_path+'/Data/OriginalData/'):
-    if file in target_files:
-        # newName = 'gamesWithMoreInfo' + file[-11:]
-        # print(file,newName)
-        df = pd.read_csv(home_path+'/Data/OriginalData/'+file)
-        # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-        frames.append(df)
-        # df.to_csv(home_path+'/Data/t'+file)
-
-allGames = pd.concat(frames)
-allGames.to_csv(home_path+'/Data/OriginalData/COMBINEDgamesWithInfo2010-15.csv')
-
-
-# from constants import HEADERS, STATS_TYPE
-# gamefinder = leaguegamelog.LeagueGameLog(season=2015, season_type_all_star=SeasonTypeAllStar.default)
-# games = gamefinder.get_data_frames()[0]
-# print(games)
-
-# allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-#                                                         measure_type_detailed_defense='Base',
-#                                                         date_from_nullable='2015-10-27',
-#                                                         date_to_nullable='2016-04-13',
-#                                                         season='2015-16',
-#                                                         headers=HEADERS,
-#                                                         timeout=120)
-
-# df = allTeamsInfo.get_data_frames()[0]
-# print(df)
+pprint(regular_season_games)
 
 
-# for attribute in df.columns:
-#     print("'"+attribute+"':'"+"Base',")
-
-
-# allTeamsInfo = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-#                                                         measure_type_detailed_defense='Advanced',
-#                                                         date_from_nullable='2015-10-27',
-#                                                         date_to_nullable='2016-04-13',
-#                                                         season='2015-16',
-#                                                         headers=HEADERS,
-#                                                         timeout=120)
-
-# df = allTeamsInfo.get_data_frames()[0]
-# print(df)
-
-
-# for attribute in df.columns:
-#     print("'"+attribute+"':'"+"Advanced',")
+# print(regular_season_games)
+# regular_season_games.to_csv("reg_games.csv")
