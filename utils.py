@@ -209,6 +209,7 @@ def createStatsForTeamsCSV():
 
 	df.to_csv("2009-2019_TeamStats.csv", index=False)
 
+#Get schedule for one team in a season. To get all the games for the season
 def getGameScheduleList(homeTeam, awaySeason):
 	homeTeamName = homeTeam["name"]
 	team_id = TEAMS[homeTeamName]
