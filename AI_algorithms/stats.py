@@ -44,4 +44,8 @@ pprint(regular_season_games)
 
 
 # print(regular_season_games)
+<<<<<<< HEAD
 # regular_season_games.to_csv("reg_games.csv")
+=======
+# regular_season_games.to_csv("reg_games.csv")
+>>>>>>> master

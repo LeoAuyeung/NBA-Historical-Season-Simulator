@@ -131,8 +131,5 @@ dmypy.json
 #node modules
 node_modules/
 
-# Ignore junk files in SavedAPICalls/
-*.json
-
 .DS_Store
 .vscode

@@ -6,7 +6,7 @@ import pandas as pd
 
 from datetime import datetime
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
-from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES
+from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES, STATS_TYPE
 
 home_path = os.getcwd()
 
@@ -28,6 +28,49 @@ def check_api_call(filename):
 def get_api_call(filename):
     with open(home_path + '/SavedAPICalls/' + filename, 'rb') as handle:
         return pickle.loads(handle.read())
+
+def get_team_stats_2(team, startDate, endDate, season='2019-20'):
+	filename = team + '_' + startDate + '_' + endDate + '_' + season + '.json'
+
+	# Check if we've made the same api call before
+	callAlreadyMade = check_api_call(filename)
+	if callAlreadyMade:
+		# Get the result of the API call
+		allStats = get_api_call(filename)
+	else:
+		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
+		generalTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team], 
+																				per_mode_detailed='Per100Possessions', 
+																				date_from_nullable=startDate, 
+																				date_to_nullable=endDate, 
+																				season=season, 
+																				headers=HEADERS, 
+																				timeout=120)
+		generalTeamDict = generalTeamInfo.get_normalized_dict()
+		generalTeamDashboard = generalTeamDict['OverallTeamDashboard'][0]
+	
+		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
+		advancedTeamInfo = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id=TEAMS[team], 
+																				measure_type_detailed_defense='Advanced',
+																				date_from_nullable=startDate, 
+																				date_to_nullable=endDate, 
+																				season=season, 
+																				headers=HEADERS, 
+																				timeout=120)
+		advancedTeamDict = advancedTeamInfo.get_normalized_dict()
+		advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
+
+		allStats = {}
+		for stat, statType in STATS_TYPE.items():
+			if statType == 'Base':
+				allStats[stat] = generalTeamDashboard[stat]
+
+		for stat, statType in STATS_TYPE.items():
+			if statType == 'Advanced':
+				allStats[stat] = advancedTeamDashboard[stat]
+		
+		save_api_call(filename, allStats)
+	return allStats
 
 
 def get_team_stats(team, start_date, end_date, season, use_cached_stats = False, cached_filename = "2009-2019_TeamStats.csv"):
@@ -63,32 +106,19 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats = False,
 		general_team_dict = general_team_info.get_normalized_dict()
 		general_team_dash = general_team_dict['OverallTeamDashboard'][0]
 
-		# Returns Win PCT, Rebounds, Turnovers, and Plus Minus
-		win_pct = general_team_dash['W_PCT']
-		rebounds = general_team_dash['REB']
-		turnovers = general_team_dash['TOV']
-		plus_minus = general_team_dash['PLUS_MINUS']
-
 		# Uses NBA_API to access the dictionary holding advanced stats for every team
 		adv_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id = TEAMS[team], measure_type_detailed_defense = 'Advanced', date_from_nullable = start_date, date_to_nullable = end_date, season = season, headers = HEADERS, timeout = 120)
 		adv_team_dict = adv_team_info.get_normalized_dict()
 		adv_team_dash = adv_team_dict['OverallTeamDashboard'][0]
 
-		# Variables holding OFF Rating, DEF Rating, and TS%
-		offensiveRating = adv_team_dash['OFF_RATING']
-		defensiveRating = adv_team_dash['DEF_RATING']
-		trueShootingPercentage = adv_team_dash['TS_PCT']
+		all_stats = {}
+		for stat, stat_type in STATS_TYPE.items():
+			if stat_type == 'Base':
+				all_stats[stat] = general_team_dash[stat]
 
-		# Puts all the stats for specified team into a dictionary
-		all_stats = {
-			'W_PCT':win_pct,
-			'REB':rebounds,
-			'TOV':turnovers,
-			'PLUS_MINUS':plus_minus,
-			'OFF_RATING':offensiveRating,
-			'DEF_RATING': defensiveRating,
-			'TS_PCT':trueShootingPercentage,
-		}
+		for stat, stat_type in STATS_TYPE.items():
+			if stat_type == 'Advanced':
+				all_stats[stat] = adv_team_dash[stat]
 
 	return all_stats
 
@@ -212,6 +242,7 @@ def get_game_schedule_list(home_team, away_season):
 	return regular_season_games
 
 def parsePredictionCSV(filename):
+	# set directory to Predictions
 	prog_directory = os.path.dirname(os.path.abspath(__file__))
 	new_directory = os.path.join(prog_directory, "Predictions")
 	os.chdir(new_directory)
