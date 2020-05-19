@@ -2,18 +2,31 @@ import os
 import pickle
 import pandas as pd
 from timeit import default_timer as timer
-from datetime import datetime
+from datetime import datetime, timedelta
 from process import create_mean_std_dev_dicts, z_score_difference
 from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_directory
 from constants import TEAMS, STATS_TYPE, HEADERS
 
+
+game_date_stats = []
+
 # Get the normalized Z-scores of the games played based on the home and away team stats, mean, and std dev
-def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, features, use_cached_stats = False):
+def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_stats = False, use_game_date = False, game_date = None):
 
 	games = [home_team["label"], away_team["label"]]
-
 	home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
-	away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
+	if use_game_date:
+		away_stats = get_team_stats(away_team["name"], away_team["start_date"], game_date, away_team["season"], use_cached_stats)
+
+		temp = away_stats
+		temp["team"] = away_team["label"]
+		temp["date"] = game_date
+
+		game_date_stats.append(temp)
+		# print(temp)
+	else:
+		away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
+
 
 	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
 		z_score_dif = z_score_difference(home_stats[stat], away_stats[stat], mean_dict[stat], std_dev_dict[stat])
@@ -92,15 +105,19 @@ def interpret_prediction_season(games_df):
 	print('----------------------------------\n')
 
 # Predict the game based on the training model used. Can use a cached training model.
-def predict_game(game, model_name, features, use_cached_stats = False):
+def predict_game(game, model_name, use_cached_stats = False, use_game_date = False, game_date = None):
 
 	base_season = game["away"]["season"]
 	base_season_start_date = game["away"]["start_date"]
 	base_season_end_date = game["away"]["end_date"]
 
 	# given home team is swapped team, create mean and stddev using away team season
-	mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
-	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats)
+	if use_game_date:
+		mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, game_date, base_season)
+	else:
+		mean_dict, std_dev_dict = create_mean_std_dev_dicts(base_season_start_date, base_season_end_date, base_season)
+
+	games = get_z_scores_list(game["home"], game["away"], mean_dict, std_dev_dict, use_cached_stats, use_game_date, game_date)
 	# Pandas dataframe holding daily games and Z-Score differentials between teams
 	game_with_z_score_difs = pd.DataFrame(
 		games,
@@ -113,19 +130,24 @@ def predict_game(game, model_name, features, use_cached_stats = False):
 	with open(f'{model_name}.pkl', 'rb') as file:
 		pickle_model = pickle.load(file)
 	# Predicts the probability that the home team loses/wins
+	p = pickle_model.predict_proba(just_z_score_difs)
 	prediction = pickle_model.predict(just_z_score_difs)
+
+	print(prediction)
+	print(p)
 
 	game_with_prediction = [game, prediction]
 	return game_with_prediction
 
 
 # Predict an entire season using the original team's schedule
-def predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True):
+def predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = False):
 	'''
 	Predicts an NBA season given a team and a season
 	Uses specified model
 	use_cached_stats - uses cached results from getStatsForTeam
 	save_to_CSV - saves simulated results to csv
+	use_game_date - for getStatsForTeam, uses match date as endDate rather than just endDate of the season
 	'''
 	match_schedule_list = get_game_schedule_list(home_team, away_season)
 
@@ -140,12 +162,22 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 
 		# create the game dictionary
 		game = create_game_dict(home_team, away_team)
+
+		if index > 0:
+			base_season_start_date = game["away"]["start_date"]
+			base_season_start_date_dt = datetime.strptime(base_season_start_date, "%m/%d/%Y")
+			game_date = match["date"]
+			game_date_dt = datetime.strptime(game_date, "%m/%d/%Y")
+			game_date_y_dt = game_date_dt - timedelta(days=1)
+			game_date = max(base_season_start_date_dt, game_date_y_dt)
+			game_date = game_date.strftime("%m/%d/%Y")
+		else:
+			game_date = match["date"]
+
 		# use game dictionary and given params to create predictions
-		# Feature Importance
-		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS','TS_PCT']
-		# K-Best
-		# features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
-		game_with_prediction = predict_game(game, model_name, features, use_cached_stats)
+    # K-Best
+		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
+		game_with_prediction = predict_game(game, model_name, features, use_cached_stats, use_game_date, game_date)
 
 		# interpret the predictions
 		result = {
@@ -192,19 +224,27 @@ def main():
 	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
-	model_name = "model_random_forest_inc_feature_importance"
+	model_name = "model_random_forest_20200519132422"
 	home_team = {
-		"season": "2015-16",
-		"name": "Boston Celtics"
+		"season": "2017-18",
+		"name": "Los Angeles Lakers"
 	}
-	away_season = "2015-16"
+	away_season = "2017-18"
 
-	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False)
+	predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = True)
 
 	end = timer() 
 
 	elapsed_time = end - start
 	print(f'Elapsed Time: {int(elapsed_time / 60)} minutes {int(elapsed_time % 60)} seconds.')
 
+	# columns = ["team", "date", 'W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+	# df = pd.DataFrame(game_date_stats)
+	# set_directory("Data")
+	# df.to_csv("teamStats3.csv", index=False)
+
+
 if __name__ == "__main__":
 	main()
+
+# main()
