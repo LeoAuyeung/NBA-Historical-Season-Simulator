@@ -130,8 +130,6 @@ def create_nba_season_dates_dict(first, last):
 
 		seasons[season_str] = season_dates
 
-	print(seasons)
-
 	return seasons
 
 # Create the actual CSVs of the stats
@@ -245,7 +243,6 @@ def getStatsForPredictionsCSV(predictions):
 		"right_preditions": right_preditions
 	}
 
-	pprint(stats)
-
+	print(stats)
 
 # getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
