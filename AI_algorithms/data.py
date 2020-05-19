@@ -3,7 +3,7 @@ import os
 import pickle
 import pandas as pd
 
-from constants import TEAMS, STATS_TYPE, HEADERS
+from constants import TEAMS, STATS_TYPE, HEADERS, ADDITIONAL_STATS_TYPE
 from nba_api.stats.endpoints import leaguegamelog
 from nba_api.stats.library.parameters import SeasonTypeAllStar
 from process import create_mean_std_dev_dicts, z_score_difference
@@ -16,15 +16,15 @@ def get_z_scores_list(game, mean_dict, std_dev_dict, startDate, endDate, season)
     home_team = list(game.items())[0]
     away_team = list(game.items())[0]
     games = [home_team["label"], away_team["label"]]
-
-	home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
-	away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
-
-	for stat, statType in STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
-		z_score_dif = z_score_difference(home_stats[stat], away_stats[stat], mean_dict[stat], std_dev_dict[stat])
-		games.append(z_score_dif)
-	
-	return [games]
+    
+    home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
+    away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
+    
+    for stat, statType in ADDITIONAL_STATS_TYPE.items():  # Finds Z Score Dif for stats listed above and adds them to list
+        z_score_dif = z_score_difference(home_stats[stat], away_stats[stat], mean_dict[stat], std_dev_dict[stat])
+        games.append(z_score_dif)
+        
+    return [games]
 
 # Get the data and the Zscore differentials of each game
 def get_data(game, season, start_of_season, current_date):
@@ -40,7 +40,11 @@ def get_data(game, season, start_of_season, current_date):
     # Use Pandas dataframe to hold
     game_with_z_score_difs = pd.DataFrame(
 		games,
-		columns=['Home', 'Away', 'W_PCT', 'REB', 'TOV','PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+		columns=[
+            'Home','Away','W_PCT','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','TOV','STL','BLK','BLKA',
+        'PF','PFD','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING','E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_PCT','AST_TO',
+        'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',
+        ]
 	)
 
     return game_with_z_score_difs
@@ -57,7 +61,11 @@ def main():
     games = gamefinder.get_data_frames()[0]
     previous_team = games['TEAM_NAME'][0]
     start_of_season = games['GAME_DATE'][0]
-    season = start_of_season[:4] + '-' + str(int(start_of_season[2:4])+1)
+    end_of_season = games['GAME_DATE'][games.shape[0] - 1]
+    if start_of_season[2] == '0' and start_of_season[3] != '9':
+        season = start_of_season[:4] + '-0' + str(int(start_of_season[2:4])+1)
+    else:
+        season = start_of_season[:4] + '-' + str(int(start_of_season[2:4])+1)
 
     # download_helper_DF = pd.read_csv(home_path+'/Data/gamesWithInfo' + season + '.csv')
     # # If for some reason your program stopped running, continue progress by 
@@ -70,7 +78,6 @@ def main():
             df = pd.read_csv(home_path + '/Data/DownloadHelper' + season + '.csv')
             last_index_downloaded = int(df['lastIndex'])
             
-
     # For a given season, iterate through all the games
     for index, row in games.iterrows():
         if last_index_downloaded == -10:
@@ -104,13 +111,13 @@ def main():
 
             if index == 1:
                 # Initialize the file with headers. This function resets the file.
-                game_stat.to_csv(home_path + '/Data/gamesWithInfo' + season + '.csv')
+                game_stat.to_csv(home_path + '/Data/gamesWithMorInfo' + season + '.csv')
             else:
                 # Keep track of last downloaded index and season year
                 download_helper_data = {'lastIndex' : [index]}
                 download_helper_DF = pd.DataFrame(download_helper_data, columns = ['lastIndex'])
-                download_helper_DF.to_csv(home_path + '/Data/DownloadHelper' + season + '.csv')
-                with open(home_path+'/Data/gamesWithInfo'+season+'.csv','a') as file:
+                download_helper_DF.to_csv(home_path + '/TestTrainingData/DownloadHelper' + season + '.csv')
+                with open(home_path+'/TestTrainingData/gamesWithMoreInfo'+season+'.csv','a') as file:
                     game_stat.to_csv(file, header=False)
         else:
             previous_team = row['TEAM_NAME']
