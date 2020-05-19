@@ -6,7 +6,7 @@ import json
 
 #from AI_algorithms import predict
 
-from predict import dummy_function
+#from predict import dummy_function
 from predict import predict_season
 
 app = Flask(__name__)
@@ -50,13 +50,21 @@ def get_standings():
 	#response_json = jsonify(predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False) )
 
 	#print('response_json',response_json);
-	prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False);
+	prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False, use_game_date = False);
 	print('prediction_list', prediction_list)
 
 	#predict_season result is being turned into a string. we want it to stay as a list fuck
 
 	#return {'listOfPredictions': response_json};
 	return jsonify({"listOfPredictions": prediction_list})
+
+'''
+		win_or_loss = 'Win';
+		if (game_with_prediction[1][0].item() == 1):
+			win_or_loss = 'Loss'
+
+Put this in predicts.py so it will display win or loss
+'''
 
 
 #dummy_function(); A test to see if we can import a function from predict.py
