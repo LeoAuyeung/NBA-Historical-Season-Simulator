@@ -2,7 +2,7 @@ import os
 import pickle
 import pandas as pd
 from timeit import default_timer as timer
-from datetime import datetime
+from datetime import datetime, timedelta
 from process import create_mean_std_dev_dicts, z_score_difference
 from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_directory
 from constants import TEAMS, STATS_TYPE, HEADERS
@@ -23,7 +23,7 @@ def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_
 		temp["date"] = game_date
 
 		game_date_stats.append(temp)
-		print(temp)
+		# print(temp)
 	else:
 		away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
 
@@ -132,7 +132,11 @@ def predict_game(game, model_name, use_cached_stats = False, use_game_date = Fal
 		pickle_model = pickle.load(file)
 
 	# Predicts the probability that the home team loses/wins
+	p = pickle_model.predict_proba(just_z_score_difs)
 	prediction = pickle_model.predict(just_z_score_difs)
+
+	print(prediction)
+	print(p)
 
 	game_with_prediction = [game, prediction]
 	return game_with_prediction
@@ -160,8 +164,20 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 
 		# create the game dictionary
 		game = create_game_dict(home_team, away_team)
+
+		if index > 0:
+			base_season_start_date = game["away"]["start_date"]
+			base_season_start_date_dt = datetime.strptime(base_season_start_date, "%m/%d/%Y")
+			game_date = match["date"]
+			game_date_dt = datetime.strptime(game_date, "%m/%d/%Y")
+			game_date_y_dt = game_date_dt - timedelta(days=1)
+			game_date = max(base_season_start_date_dt, game_date_y_dt)
+			game_date = game_date.strftime("%m/%d/%Y")
+		else:
+			game_date = match["date"]
+
 		# use game dictionary and given params to create predictions
-		game_with_prediction = predict_game(game, model_name, use_cached_stats, use_game_date, match["date"])
+		game_with_prediction = predict_game(game, model_name, use_cached_stats, use_game_date, game_date)
 
 		# interpret the predictions
 		result = {
@@ -208,12 +224,12 @@ def main():
 	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
-	model_name = "model_majority_20200519142646"
+	model_name = "model_random_forest_20200519132422"
 	home_team = {
-		"season": "2008-09",
+		"season": "2017-18",
 		"name": "Los Angeles Lakers"
 	}
-	away_season = "2008-09"
+	away_season = "2017-18"
 
 	predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = True)
 
@@ -222,13 +238,13 @@ def main():
 	elapsed_time = end - start
 	print(f'Elapsed Time: {int(elapsed_time / 60)} minutes {int(elapsed_time % 60)} seconds.')
 
-	columns = ["team", "date", 'W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
-	df = pd.DataFrame(game_date_stats)
-	set_directory("Data")
-	df.to_csv("teamStats3.csv", index=False)
+	# columns = ["team", "date", 'W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+	# df = pd.DataFrame(game_date_stats)
+	# set_directory("Data")
+	# df.to_csv("teamStats3.csv", index=False)
 
 
-# if __name__ == "__main__":
-# 	main()
+if __name__ == "__main__":
+	main()
 
-main()
+# main()

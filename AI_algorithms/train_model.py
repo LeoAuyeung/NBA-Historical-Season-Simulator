@@ -408,7 +408,7 @@ def create_model(name="model"):
 
 	# add svm here
 	model_names = ["log_reg", "knn", "random_forest", "dTree", "gaussian_nb", "majority"]
-	model_name=model_names[5]
+	model_name=model_names[2]
 
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
