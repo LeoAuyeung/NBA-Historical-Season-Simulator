@@ -18,10 +18,18 @@ function App() {
       <div className = 'container'>
         <h1 className='text-center mt-5'>NBA Historical Season Simulator</h1>
         <SwapTeams />
-        <p className='text-center'>API Call Tester {currentTime}.</p>
       </div>
     </Fragment>
   );
 }
 
 export default App;
+
+/*
+-----------------  Previous Code --------------
+
+Used to test if frontend can call backend
+        <p className='text-center'>API Call Tester {currentTime}.</p>
+
+
+*/

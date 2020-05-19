@@ -4,6 +4,7 @@ import json
 import pickle
 import wptools
 import pandas as pd
+from pprint import pprint
 from datetime import datetime
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
 from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES
@@ -30,7 +31,7 @@ def get_api_call(filename):
         return pickle.loads(handle.read())
 
 
-def get_team_stats(team, start_date, end_date, season, use_cached_stats=False, cached_filename="2009-2019_TeamStats.csv"):
+def get_team_stats(team, start_date, end_date, season, use_cached_stats = False, cached_filename = "2009-2019_TeamStats.csv"):
 	filename = team + '_' + start_date + '_' + end_date + '_' + season + '.json'
 
 	if use_cached_stats:
@@ -58,15 +59,7 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats=False, c
 	else:
 		time.sleep(1)
 		# Uses NBA_API to access the dictionary holding basic stats for every team per 100 possessions
-		general_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
-			team_id=TEAMS[team], 
-			per_mode_detailed='Per100Possessions', 
-			date_from_nullable=start_date, 
-			date_to_nullable=end_date, 
-			season=season, 
-			headers=HEADERS, 
-			timeout=120
-		)
+		general_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id = TEAMS[team], per_mode_detailed = 'Per100Possessions', date_from_nullable = start_date, date_to_nullable = end_date, season = season, headers = HEADERS, timeout = 60)
 
 		general_team_dict = general_team_info.get_normalized_dict()
 		general_team_dash = general_team_dict['OverallTeamDashboard'][0]
@@ -78,16 +71,8 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats=False, c
 		plus_minus = general_team_dash['PLUS_MINUS']
 
 		# Uses NBA_API to access the dictionary holding advanced stats for every team
-		adv_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(
-			team_id=TEAMS[team], 
-			measure_type_detailed_defense='Advanced', 
-			date_from_nullable=start_date, 
-			date_to_nullable=end_date, 
-			season=season, 
-			headers=HEADERS, 
-			timeout=120
-		)
-		adv_team_dict  = adv_team_info.get_normalized_dict()
+		adv_team_info = teamdashboardbygeneralsplits.TeamDashboardByGeneralSplits(team_id = TEAMS[team], measure_type_detailed_defense = 'Advanced', date_from_nullable = start_date, date_to_nullable = end_date, season = season, headers = HEADERS, timeout = 120)
+		adv_team_dict = adv_team_info.get_normalized_dict()
 		adv_team_dash = adv_team_dict['OverallTeamDashboard'][0]
 
 		# Variables holding OFF Rating, DEF Rating, and TS%
@@ -140,7 +125,7 @@ def get_season_dates(season):
 # Get the NBA season start and end dates
 def get_nba_season_start_end_dates(season):
 	name = f"{season} NBA season"
-	page = wptools.page(name, silent=True).get_parse(show=False)
+	page = wptools.page(name, silent = True).get_parse(show = False)
 	duration = page.data['infobox']["duration"]
 
 	if season == "2019-20":
@@ -168,18 +153,18 @@ def get_nba_season_start_end_dates(season):
 
 # Create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
 def create_nba_season_dates_dict(first, last):
-    seasons = {}
+	seasons = {}
+	
+	for x in range(first, last + 1):
+		season_str = f'{x}-{str(x+1)[-2:]}'
 
-    for x in range(first, last + 1):
-        season_str = f'{x}-{str(x+1)[-2:]}'
+		season_dates = get_nba_season_start_end_dates(season_str)
 
-        season_dates = get_nba_season_start_end_dates(season_str)
+		seasons[season_str] = season_dates
 
-        seasons[season_str] = season_dates
+	print(seasons)
 
-    print(seasons)
-
-    return seasons
+	return seasons
 
 # Create the actual CSVs of the stats
 def create_team_stats_csv():
@@ -207,9 +192,9 @@ def create_team_stats_csv():
 
 	# feature cols we are using
 	columns = ["season", "team", "W_PCT", "REB", "TOV", "PLUS_MINUS", "OFF_RATING", "DEF_RATING", "TS_PCT"]
-	df = pd.DataFrame(all_stats, columns=columns)
+	df = pd.DataFrame(all_stats, columns = columns)
 
-	df.to_csv("2009-2019_TeamStats.csv", index=False)
+	df.to_csv("2009-2019_TeamStats.csv", index = False)
 
 # Get the entire schedule of a team during a specific season
 def get_game_schedule_list(home_team, away_season):
@@ -221,7 +206,7 @@ def get_game_schedule_list(home_team, away_season):
 	end = datetime.strptime(dates["end"], "%m/%d/%Y").strftime("%Y-%m-%d")
 
 	# use the NBA api endpoint to find the game
-	gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable=team_id, season_nullable=away_season)
+	gamefinder = leaguegamefinder.LeagueGameFinder(team_id_nullable = team_id, season_nullable = away_season)
 	games = gamefinder.get_data_frames()[0]
 
 	# Get the regular season games that we need from the specified dates
@@ -259,3 +244,38 @@ def get_game_schedule_list(home_team, away_season):
 		regular_season_games.append(game_dict)
 	
 	return regular_season_games
+
+def parsePredictionCSV(filename):
+	setCurrentWorkingDirectory("Predictions")
+
+	with open(filename) as f:
+		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace = True)]
+	
+	return predicitons
+
+def getStatsForPredictionsCSV(predictions):
+	num_matches = len(predictions)
+
+	predicted_losses = sum([int(g["prediction"]) for g in predictions])
+	predictied_wins = num_matches - predicted_losses
+	
+	actual_losses = sum([int(g["actual"]) for g in predictions])
+	actual_wins = num_matches - actual_losses
+
+	wrong_preditions = sum([1 for x in predictions if x["prediction"] != x["actual"]])
+	right_preditions = num_matches - wrong_preditions
+
+	stats = {
+		"num_matches": num_matches,
+		"predicted_losses": predicted_losses,
+		"predicted_wins": predictied_wins,
+		"actual_losses": actual_losses,
+		"actual_wins": actual_wins,
+		"wrong_preditions": wrong_preditions,
+		"right_preditions": right_preditions
+	}
+
+	pprint(stats)
+
+
+# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))

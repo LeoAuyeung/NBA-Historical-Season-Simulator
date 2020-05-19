@@ -29,9 +29,12 @@ def get_api_call(filename):
 		return pickle.loads(handle.read())
 
 # Finds league stats for entered basic or advanced statistic (stat_type = 'Base' or 'Advanced')
-def get_league_stats(start_date, end_date, season='2018-19', stat_type='Base'):
+def get_league_stats(start_date, end_date, season = '2018-19', stat_type = 'Base'):
 	filename = stat_type + '_' + start_date + '_' + end_date + '_' + season + '.json'
-
+	
+	# Add time.sleep so as to not overload the API with requests and timeout
+	time.sleep(.3)
+	
 	# Check if we've made the same api call before
 	call_already_made = check_api_call(filename)
 
@@ -39,14 +42,8 @@ def get_league_stats(start_date, end_date, season='2018-19', stat_type='Base'):
 		# Get the result of the API call
 		all_teams_dict = get_api_call(filename)
 	else:
-		# Gets list of dictionaries with stats for every team
-		all_teams_info = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed='Per100Possessions',
-															measure_type_detailed_defense=stat_type,
-															date_from_nullable=start_date,
-															date_to_nullable=end_date,
-															season=season,
-															headers=HEADERS,
-															timeout=120)
+		# Gets list of dictionaries with stats for every team from the nba_api endpoint
+		all_teams_info = leaguedashteamstats.LeagueDashTeamStats(per_mode_detailed = 'Per100Possessions', measure_type_detailed_defense = stat_type, date_from_nullable = start_date, date_to_nullable = end_date, season = season, headers = HEADERS, timeout = 60)
 		all_teams_dict = all_teams_info.get_normalized_dict()
 		save_api_call(filename, all_teams_dict)
 	
