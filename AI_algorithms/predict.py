@@ -74,7 +74,7 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# create the game dictionary
 		game = create_game_dict(home_team, away_team)
 		# use game dictionary and given params to create predictions
-		game_with_prediction = predict_game(game, model_name, use_cached_stats, use_game_date, match["date"])
+		game_with_prediction = predict_game(game, model_name, use_cached_stats)
 
 		# interpret the predictions
 		result = {
