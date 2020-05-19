@@ -149,12 +149,15 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 	save_to_CSV - saves simulated results to csv
 	use_game_date - for getStatsForTeam, uses match date as endDate rather than just endDate of the season
 	'''
+	set_directory("SavedModels")
+
+
 	match_schedule_list = get_game_schedule_list(home_team, away_season)
 
 	games_df = []
 
 	# for each match in the schedule
-	for index, match in enumerate(match_schedule_list):
+	for index, match in enumerate(match_schedule_list[:3]):
 		away_team = {
 			"season": away_season,
 			"name": match["away_team"],
@@ -216,7 +219,7 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# set directory to SavedModels
 		set_directory("SavedModels")
 	
-	interpret_prediction_season(games_df)
+	#interpret_prediction_season(games_df)
 
 	return games_df
 
