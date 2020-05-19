@@ -111,7 +111,7 @@ def main():
 
             if index == 1:
                 # Initialize the file with headers. This function resets the file.
-                game_stat.to_csv(home_path + '/Data/gamesWithMorInfo' + season + '.csv')
+                game_stat.to_csv(home_path + '/Data/gamesWithMoreInfo' + season + '.csv')
             else:
                 # Keep track of last downloaded index and season year
                 download_helper_data = {'lastIndex' : [index]}
