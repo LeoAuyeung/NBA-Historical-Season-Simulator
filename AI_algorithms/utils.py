@@ -7,7 +7,7 @@ import pandas as pd
 from pprint import pprint
 from datetime import datetime
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
-from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES, STATS_TYPE
+from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES, STATS_TYPE, ADDITIONAL_STATS_TYPE
 
 home_path = os.getcwd()
 
@@ -62,11 +62,11 @@ def get_team_stats_2(team, startDate, endDate, season='2019-20'):
 		advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
 
 		allStats = {}
-		for stat, statType in STATS_TYPE.items():
+		for stat, statType in ADDITIONAL_STATS_TYPE.items():
 			if statType == 'Base':
 				allStats[stat] = generalTeamDashboard[stat]
 
-		for stat, statType in STATS_TYPE.items():
+		for stat, statType in ADDITIONAL_STATS_TYPE.items():
 			if statType == 'Advanced':
 				allStats[stat] = advancedTeamDashboard[stat]
 		

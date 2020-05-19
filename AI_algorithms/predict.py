@@ -116,9 +116,9 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		df.to_csv(f'{home_team["season"]}-{home_team["name"]}_{away_season}_{model_name}_{now_str}_predictions.csv', index = False)
 
 		# set directory to SavedModels
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "SavedModels")
-		os.chdir(new_directory)
+		# prog_directory = os.path.dirname(os.path.abspath(__file__))
+		# new_directory = os.path.join(prog_directory, "SavedModels")
+		# os.chdir(new_directory)
 	
 	num_matches = len(match_schedule_list)
 

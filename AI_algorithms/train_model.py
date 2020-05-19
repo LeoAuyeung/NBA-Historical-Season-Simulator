@@ -12,24 +12,32 @@ import os
 
 from datetime import datetime
 
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import chi2
+from sklearn.feature_selection import SelectKBest, VarianceThreshold
+from sklearn.feature_selection import f_classif
 
 home_path = os.getcwd()
 
 def random_forest(dataframe):
+    print(dataframe)
      # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
-    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+     # Total features
     features = ['W_PCT','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','TOV','STL','BLK','BLKA',
         'PF','PFD','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING','E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_PCT','AST_TO',
         'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',]
     
+    # Top 20 select KBest
+    features = ['W_PCT','FGM','FG_PCT','DREB','AST',
+    'BLKA','PTS','PLUS_MINUS','E_OFF_RATING','OFF_RATING',
+    'E_DEF_RATING','DEF_RATING','E_NET_RATING','NET_RATING','AST_TO',
+        'AST_RATIO','EFG_PCT','TS_PCT','PIE', 'FG3_PCT']
+    
     # Feature set 1
-    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
     # Feature set 2
-    # features = ['W_PCT','NET_RATING','PIE','PLUS_MINUS', 'DEF_RATING', 'TS_PCT', 'PTS']
+    features = ['W_PCT','NET_RATING','PIE','PLUS_MINUS', 'DEF_RATING', 'TS_PCT', 'PTS']
 
     # ==================== START store necessary variables ====================
+
 
     # feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
     feature_data = dataframe[features]
@@ -37,21 +45,25 @@ def random_forest(dataframe):
     # actual_result_data holds actual result of the games which we can then check our prediction with
     actual_result_data = dataframe.Result
 
-
-    bestfeatures = SelectKBest(score_func=chi2, k=10)
+    bestfeatures = SelectKBest(score_func=f_classif, k=10)
     fit = bestfeatures.fit(feature_data,actual_result_data)
     dfscores = pd.DataFrame(fit.scores_)
     dfcolumns = pd.DataFrame(feature_data.columns)
     #concat two dataframes for better visualization 
     featureScores = pd.concat([dfcolumns,dfscores],axis=1)
     featureScores.columns = ['Specs','Score']  #naming the dataframe columns
-    print(featureScores.nlargest(10,'Score'))  #print 10 best features
+    print(featureScores.nlargest(10,'Score'))  #print 20 best features
 
     # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     # Split arrays or matrices into random train and test subsets
     X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.3, shuffle=True)
 
     # ==================== END store necessary variables ====================
+
+    
+    sel_variance_threshold = VarianceThreshold() 
+    X_train_remove_variance = sel_variance_threshold.fit_transform(X_train)
+    print(X_train_remove_variance.shape)
 
 
     # ==================== START applying random forest ====================
