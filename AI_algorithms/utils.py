@@ -2,9 +2,8 @@ import os
 import time
 import json
 import pickle
-# import wptools
 import pandas as pd
-from pprint import pprint
+
 from datetime import datetime
 from nba_api.stats.endpoints import teamdashboardbygeneralsplits, leaguedashteamstats, leaguegamefinder
 from constants import TEAMS, TEAMS_ABV, HEADERS, SEASON_DATES, STATS_TYPE, ADDITIONAL_STATS_TYPE
@@ -79,9 +78,7 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats = False,
 
 	if use_cached_stats:
 		# set directory to Data
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "Data")
-		os.chdir(new_directory)
+		set_directory("Data")
 
 		# read csv
 		all_stats = pd.read_csv(cached_filename)
@@ -95,9 +92,7 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats = False,
 			all_stats[h] = team_stats[h].values[0]
 		
 		# set directory to SavedModels
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "SavedModels")
-		os.chdir(new_directory)
+		set_directory("SavedModels")
 
 	else:
 		time.sleep(1)
@@ -149,43 +144,24 @@ def create_game_dict(home_team, away_team):
 def get_season_dates(season):
 	if season in SEASON_DATES:
 		return SEASON_DATES[season]
-	# else:
-	# 	return get_nba_season_start_end_dates(season)
 
-# # Get the NBA season start and end dates
-# def get_nba_season_start_end_dates(season):
-# 	name = f"{season} NBA season"
-# 	page = wptools.page(name, silent = True).get_parse(show = False)
-# 	duration = page.data['infobox']["duration"]
+# Create_nba_season_dates_dict(2008, 2018) for 2008-09 to 2018-19
+def create_nba_season_dates_dict(first, last):
+	seasons = {}
+	
+	for x in range(first, last + 1):
+		season_str = f'{x}-{str(x+1)[-2:]}'
 
-# 	if season == "2019-20":
-# 		split = duration.split("|")[1].split("(")[0].strip()
-# 		start, end = split.split(" – ")
-# 	else:
-# 		split = duration.split("<br>")
-# 		if len(split) == 1:
-# 			start, end = duration.split("<br />")[0].strip().split(" – ")
-# 		else:
-# 			start, end = duration.split("<br>")[0].strip().split(" – ")
+		season_dates = get_season_dates(season_str)
 
-# 	date_fmt_parse = "%B %d, %Y"
+		seasons[season_str] = season_dates
 
-# 	start_dt = datetime.strptime(start, date_fmt_parse)
-# 	end_dt = datetime.strptime(end, date_fmt_parse)
-
-# 	date_fmt_str = "%m/%d/%Y"
-
-# 	start_str = start_dt.strftime(date_fmt_str)
-# 	end_str = end_dt.strftime(date_fmt_str)
-
-# 	return {"start": start_str, "end": end_str}
+	return seasons
 
 # Create the actual CSVs of the stats
 def create_team_stats_csv():
 	# set directory to Data
-	prog_directory = os.path.dirname(os.path.abspath(__file__))
-	new_directory = os.path.join(prog_directory, "Data")
-	os.chdir(new_directory)
+	set_directory("Data")
 
 	all_stats = []
 	# for each season, get dates
@@ -261,9 +237,7 @@ def get_game_schedule_list(home_team, away_season):
 
 def parsePredictionCSV(filename):
 	# set directory to Predictions
-	prog_directory = os.path.dirname(os.path.abspath(__file__))
-	new_directory = os.path.join(prog_directory, "Predictions")
-	os.chdir(new_directory)
+	set_directory("Predictions")
 
 	with open(filename) as f:
 		predicitons = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace = True)]
@@ -292,6 +266,12 @@ def getStatsForPredictionsCSV(predictions):
 		"right_preditions": right_preditions
 	}
 
-	pprint(stats)
+	print(stats)
 
-# # getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
+
+def set_directory(name):
+    src = os.path.dirname(os.path.abspath(__file__))
+    new_directory = os.path.join(src, name)
+    os.chdir(new_directory)
+
+# getStatsForPredictionsCSV(parsePredictionCSV("2015-16-Boston Celtics_2015-16_model_knn_20200518_20200518185052_predictions.csv"))
