@@ -57,32 +57,6 @@ def knn(dataframe):
 
 
 	# ==================== Print model accuracy information ====================
-   
-	'''
-	K nearest neigbors doesnt seem to have any features
-	print('\nCoefficient Information: \n')
-
-	print('knn_result.classes_',knn_result.classes_)
-	print('knn_result.effective_metric_', knn_result.effective_metric_)
-	print('knn_result.effective_metric_params_', knn_result.effective_metric_params_)
-	print('knn_result.outputs_2d_', knn_result.outputs_2d_)
-	'''
-
-	# Loop through each feature
-	'''
-	for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
-
-		# Get feature name and corresponding coefficients
-		knn_coefficients = knn_result.coef_
-		curr_feature = features[i]
-		curr_coefficient = knn_coefficients[0][i]
-
-		# Print them
-		print(curr_feature + ': ' + str(curr_coefficient))
-
-	print('\n----------------------------------')
-	'''
-
 	# Printing accuracy, precision, and recall based on metrics data
 	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
 	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
