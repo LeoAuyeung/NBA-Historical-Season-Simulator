@@ -3,6 +3,8 @@ from flask import Flask
 from flask import request
 import json
 
+#from AI_algorithms import predict
+
 app = Flask(__name__)
 
 #Test call to check if frontend can call backend
@@ -23,6 +25,18 @@ def get_standings():
 	#We will need to take the standings list from predict.py and turn it into that ^^^ then return it to frontend
 	
 	return { 'standings' : ['Chicago Bulls', 60, 20, '75%']}
+
+
+# INPUTS USED TO PREDICT SEASON
+model_name = "model_knn_20200518"
+home_team = {
+	"season": "2015-16",
+	"name": "Boston Celtics"
+}
+away_season = "2015-16"
+
+print(predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True, use_game_date = False));
+
 
 '''
 Reference:

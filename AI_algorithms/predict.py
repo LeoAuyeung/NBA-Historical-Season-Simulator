@@ -128,6 +128,7 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 	actual_losses = sum([int(g["actual"]) for g in games_df])
 	actual_wins = num_matches - actual_losses
 
+	
 	return {
 		"num_matches": num_matches,
 		"predicted_losses": predicted_losses,
@@ -135,6 +136,7 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		"actual_losses": actual_losses,
 		"actual_wins": actual_wins
 	}
+
 
 # Interpret our predicted game result
 def interpret_prediction(game_with_prediction, unit, index):
@@ -188,7 +190,7 @@ def main():
 	}
 	away_season = "2015-16"
 
-	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True, use_game_date = False)
+	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False, use_game_date = False)
 
 	end = timer() 
 
