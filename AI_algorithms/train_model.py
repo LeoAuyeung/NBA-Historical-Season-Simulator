@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, datasets
 
@@ -42,8 +42,9 @@ def knn(dataframe):
 	# ==================== START applying k nearest neighbors ====================
 
 	#Call KNeighborsClassifier from https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
-	knn_result = KNeighborsClassifier(n_neighbors=2)
-	print('n_neighbors = 2')
+	neighbors = 2
+	knn_result = KNeighborsClassifier(n_neighbors=neighbors)
+	print('n_neighbors = ', neighbors)
 
 	# Fit the model according to the given training data.
 	knn_result.fit(X_train, Y_train);
@@ -366,28 +367,69 @@ def logistic_regression(dataframe):
 
     return log_reg_result
 
-def create_model_helper(df, model_name):
-    if model_name == "log_reg":
-        model = logistic_regression(df)
-    elif model_name == "knn":
-        model = knn(df)
-    elif model_name == "random_forest":
-        model = random_forest(df)
-    elif model_name == "dTree":
-        model = decision_tree(df)
-    elif model_name == "gaussian_nb":
-        model = gaussian_nb(df)
+def majority_vote(dataframe):
+	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
 
-    return model
+	# feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+	feature_data = dataframe[features]
+
+	# actual_result_data holds actual result of the games which we can then check our prediction with
+	actual_result_data = dataframe.Result
+
+	# Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+	# Split arrays or matrices into random train and test subsets
+	X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+
+	clf1 = LogisticRegression(multi_class='multinomial', random_state=1)
+	clf2 = RandomForestClassifier(n_estimators=50, random_state=1)
+	clf3 = GaussianNB()
+
+	eclf1 = VotingClassifier(estimators=[('lr', clf1), ('rf', clf2), ('gnb', clf3)], voting='hard')
+
+	eclf1 = eclf1.fit(X_train, Y_train)
+
+	Y_pred = eclf1.predict(X_test)
+
+	confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
+
+	print('\n----------------------------------')
+
+	# Printing accuracy, precision, and recall based on metrics data
+	print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+	print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+	print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+
+	print('----------------------------------\n')
+
+	# Print confusion matrix
+	print('Confusion Matrix:')
+	print(confusion_matrix)
+
+	return eclf1
+
+def create_model_helper(df, model_name):
+	if model_name == "log_reg":
+		model = logistic_regression(df)
+	elif model_name == "knn":
+		model = knn(df)
+	elif model_name == "random_forest":
+		model = random_forest(df)
+	elif model_name == "dTree":
+		model = decision_tree(df)
+	elif model_name == "gaussian_nb":
+		model = gaussian_nb(df)
+	elif model_name == "majority":
+		model = majority_vote(df)
+
+	return model
 
 # Create new training model and save after training
 def create_model(name="model"):
 	now = datetime.now()
-	now_str = now.strftime("%Y%m%d")
+	now_str = now.strftime("%Y%m%d%H%M%S")
 
-	# add svm here
-	model_names = ["log_reg", "knn", "random_forest", "dTree", "gaussian_nb"]
-	model_name= model_names[2]
+	model_names = ["log_reg", "knn", "random_forest", "dTree", "gaussian_nb", "majority"]
+	model_name=model_names[2]
 
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
