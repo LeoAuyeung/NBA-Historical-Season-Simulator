@@ -72,7 +72,6 @@ def knn(dataframe):
 
 	return knn_result
    
-
 def random_forest(dataframe):
      # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
      # Total features
@@ -210,7 +209,6 @@ def decision_tree(dataframe):
 
 	return decision_tree_result
 
-
 def gaussian_nb(dataframe):
 
     # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
@@ -293,7 +291,6 @@ def gaussian_nb(dataframe):
 
     return result
 
-
 def logistic_regression(dataframe):
     # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
     features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
@@ -374,19 +371,20 @@ def logistic_regression(dataframe):
     # plt.show()
 
     return log_reg_result
-    def create_model_helper(df, model_name):
-	if model_name == "log_reg":
-		model = logistic_regression(df)
-	elif model_name == "knn":
-		model = knn(df)
-	elif model_name == "random_forest":
-		model = random_forest(df)
-	elif model_name == "dTree":
-		model = decision_tree(df)
-	elif model_name == "gaussian_nb":
-		model = gaussian_nb(df)
-	
-	return model
+
+def create_model_helper(df, model_name):
+    if model_name == "log_reg":
+        model = logistic_regression(df)
+    elif model_name == "knn":
+        model = knn(df)
+    elif model_name == "random_forest":
+        model = random_forest(df)
+    elif model_name == "dTree":
+        model = decision_tree(df)
+    elif model_name == "gaussian_nb":
+        model = gaussian_nb(df)
+
+    return model
 
 # Create new training model and save after training
 def create_model(name="model"):
