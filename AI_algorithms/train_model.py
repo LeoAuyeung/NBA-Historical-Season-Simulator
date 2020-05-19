@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -205,6 +206,89 @@ def decision_tree(dataframe):
 	return decision_tree_result
 
 
+def gaussian_nb(dataframe):
+
+    # Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
+    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+
+    # ==================== START store necessary variables ====================
+
+    # feature_data holds all features of W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT,
+    feature_data = dataframe[features]
+
+    # actual_result_data holds actual result of the games which we can then check our prediction with
+    actual_result_data = dataframe.Result
+
+    # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+    # Split arrays or matrices into random train and test subsets
+    X_train, X_test, Y_train, Y_test = train_test_split(feature_data, actual_result_data, test_size=0.25, shuffle=True)
+
+    # ==================== END store necessary variables ====================
+
+
+    # ==================== START applying Gaussian NB ====================
+
+    # Call sklearn.naive_bayes's GaussianNB function: https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html
+    result = GaussianNB()
+
+    # Fit the model according to the given training data.
+    result.fit(X_train, Y_train)
+
+    # Predict class labels for samples in X
+    Y_pred = result.predict(X_test)
+
+    # Call sklearn's metric's confusion_matrix function: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+    # Compute confusion matrix to evaluate the accuracy of a classification
+    confusion_matrix = metrics.confusion_matrix(Y_test, Y_pred)
+
+    # ==================== END applying Gaussian NB ====================
+
+
+    # ==================== Print model accuracy information ====================
+    print('\Sigma (variance) Information: \n')
+
+    # Loop through each feature
+    for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
+
+        # Get feature name and corresponding sigmas
+        sigmas = result.sigma_
+        curr_feature = features[i]
+        curr_coefficient = sigmas[0][i]
+
+        # Print them
+        print(curr_feature + ': ' + str(curr_coefficient))
+
+    print('\n----------------------------------')
+
+    print('\Theta (mean) Information: \n')
+
+    # Loop through each feature
+    for i in range(len(features)):  # Prints each feature next to its corresponding coefficient in the model
+
+        # Get feature name and corresponding thetas
+        thetas = result.theta_
+        curr_feature = features[i]
+        curr_coefficient = thetas[0][i]
+
+        # Print them
+        print(curr_feature + ': ' + str(curr_coefficient))
+
+    print('\n----------------------------------')
+
+    # Printing accuracy, precision, and recall based on metrics data
+    print("Accuracy: ", metrics.accuracy_score(Y_test, Y_pred))
+    print("Precision: ", metrics.precision_score(Y_test, Y_pred))
+    print("Recall: ", metrics.recall_score(Y_test, Y_pred))
+
+    print('----------------------------------\n')
+
+    # Print confusion matrix
+    print('Confusion Matrix:')
+    print(confusion_matrix)
+
+    return result
+
+
 def logistic_regression(dataframe):
 	# Features currently present within CSV data file: W_PCT,REB,TOV,PLUS_MINUS,OFF_RATING,DEF_RATING,TS_PCT
 	features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
@@ -285,32 +369,6 @@ def logistic_regression(dataframe):
 	# plt.show()
 
 	return log_reg_result
-	
-
-# Create new training model and save after training
-def create_model(name="model"):
-	now = datetime.now()
-	now_str = now.strftime("%Y%m%d")
-
-	model_name = "dTree"
-
-	filename = f'{name}_{model_name}_{now_str}.pkl'
-
-	# Set directory to Data
-	os.chdir(home_path + '/Data')
-
-	all_games_dataframe = pd.read_csv('COMBINEDgamesWithInfo2016-19.csv')
-
-	# Train model based on the dataframe given by CSV
-	# model = logistic_regression(all_games_dataframe)
-	model = decision_tree(all_games_dataframe)
-
-	# Set directory to SavedModels
-	os.chdir(home_path + '/SavedModels')
-
-	# Save Model
-	with open(filename, 'wb') as file:
-		pickle.dump(model, file)
 
 
 def create_model_helper(df, model_name):
@@ -322,6 +380,8 @@ def create_model_helper(df, model_name):
 		model = random_forest(df)
 	elif model_name == "dTree":
 		model = decision_tree(df)
+	elif model_name == "gaussian_nb":
+		model = gaussian_nb(df)
 	# add svm here
 	
 	return model
@@ -332,7 +392,7 @@ def create_model(name="model"):
 	now_str = now.strftime("%Y%m%d")
 
 	# add svm here
-	model_names = ["log_reg", "knn", "random_forest", "dTree"]
+	model_names = ["log_reg", "knn", "random_forest", "dTree", "gaussian_nb"]
 	model_name=model_names[3]
 
 	filename = f'{name}_{model_name}_{now_str}.pkl'

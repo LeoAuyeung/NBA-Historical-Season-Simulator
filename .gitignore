@@ -133,3 +133,5 @@ node_modules/
 
 # Ignore junk files in SavedAPICalls/
 *.json
+
+.DS_Store
