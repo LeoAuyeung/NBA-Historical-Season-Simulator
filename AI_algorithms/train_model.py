@@ -434,13 +434,8 @@ def create_model(name="model"):
 	filename = f'{name}_{model_name}_{now_str}.pkl'
 
 	# Set directory to Data
-<<<<<<< HEAD
 	os.chdir(home_path + '/Data/IncompleteData/')
 	all_games_dataframe = pd.read_csv('COMBINEDgamesWithMoreInfo2010-15.csv')
-=======
-	os.chdir(home_path + '/Data/MoreInfoData/')
-	all_games_dataframe = pd.read_csv('NEWgamesWithMoreInfo2010-15.csv')
->>>>>>> c8c2a32a5d1ea6ba8215df3100183e7a32a9ebb9
 
 	model = create_model_helper(all_games_dataframe, model_name)
 
