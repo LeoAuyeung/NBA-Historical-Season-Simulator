@@ -141,10 +141,8 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# create the game dictionary
 		game = create_game_dict(home_team, away_team)
 		# use game dictionary and given params to create predictions
-		# Feature Importance
-		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS','TS_PCT']
 		# K-Best
-		# features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
+		features = ['Home','Away','W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
 		game_with_prediction = predict_game(game, model_name, features, use_cached_stats)
 
 		# interpret the predictions
