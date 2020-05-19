@@ -21,6 +21,75 @@ def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_
 	
 	return [games]
 
+# Interpret our predicted game result
+def interpret_prediction(game_with_prediction, unit, index):
+	if unit == "season":
+		teams = game_with_prediction["teams"]
+		prediction = game_with_prediction["prediction"]
+		match_date = game_with_prediction["date"]
+
+		home_team = teams["home"]
+		away_team = teams["away"]
+
+		prediction = prediction[0].item()
+
+		if prediction == 0:
+			winner = home_team
+		elif prediction == 1:
+			winner = away_team
+
+		print(f'({index}) {match_date} - {home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
+
+	elif unit == "game":
+		game, prediction = game_with_prediction
+
+		home_team = game["home"]
+		away_team = game["away"]
+
+		prediction = prediction[0].item()
+
+		if prediction == 0:
+			winner = home_team
+		elif prediction == 1:
+			winner = away_team
+
+		print(f'{home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
+
+
+'''
+True = 0 (Home Win)
+False = 1 (Home Loss)
+Actual, Prediction
+TP = 0, 0
+FP = 1, 0
+FN = 0, 1
+TN = 1, 1
+
+	TP FP
+	FN TN
+'''
+def interpret_prediction_season(games_df):
+	total = len(games_df)
+	tp = sum([1 for x in games_df if x["actual"] == x["prediction"] and x["actual"] == 0 and x["prediction"] == 0 ])
+	fp = sum([1 for x in games_df if x["actual"] != x["prediction"] and x["actual"] == 1 and x["prediction"] == 0 ])
+	fn = sum([1 for x in games_df if x["actual"] != x["prediction"] and x["actual"] == 0 and x["prediction"] == 1 ])
+	tn = sum([1 for x in games_df if x["actual"] == x["prediction"] and x["actual"] == 1 and x["prediction"] == 1 ])
+
+	accuracy = (tp + tn) / total
+	precision = tp / (tp + fp)
+	recall = tp / (tp + fn)
+
+	# Printing accuracy, precision, and recall based on metrics data
+	print('\n----------------------------------')
+	print("Accuracy: ", accuracy)
+	print("Precision: ", precision)
+	print("Recall: ", recall)
+	print('----------------------------------\n')
+
+	# Print confusion matrix
+	print("[ ", tp, fp)
+	print("  ", fn, tn, " ]")
+	print('----------------------------------\n')
 
 # Predict the game based on the training model used. Can use a cached training model.
 def predict_game(game, model_name, use_cached_stats = False):
@@ -109,58 +178,9 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		# set directory to SavedModels
 		set_directory("SavedModels")
 	
+	interpret_prediction_season(games_df)
+
 	return games_df
-
-	# num_matches = len(match_schedule_list)
-
-	# predicted_losses = sum([int(g["prediction"]) for g in games_df])
-	# predictied_wins = num_matches - predicted_losses
-	
-	# actual_losses = sum([int(g["actual"]) for g in games_df])
-	# actual_wins = num_matches - actual_losses
-
-	# return {
-	# 	"num_matches": num_matches,
-	# 	"predicted_losses": predicted_losses,
-	# 	"predicted_wins": predictied_wins,
-	# 	"actual_losses": actual_losses,
-	# 	"actual_wins": actual_wins
-	# }
-
-# Interpret our predicted game result
-def interpret_prediction(game_with_prediction, unit, index):
-	if unit == "season":
-		teams = game_with_prediction["teams"]
-		prediction = game_with_prediction["prediction"]
-		match_date = game_with_prediction["date"]
-
-		home_team = teams["home"]
-		away_team = teams["away"]
-
-		prediction = prediction[0].item()
-
-		if prediction == 0:
-			winner = home_team
-		elif prediction == 1:
-			winner = away_team
-
-		print(f'({index}) {match_date} - {home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
-
-	elif unit == "game":
-		game, prediction = game_with_prediction
-
-		home_team = game["home"]
-		away_team = game["away"]
-
-		prediction = prediction[0].item()
-
-		if prediction == 0:
-			winner = home_team
-		elif prediction == 1:
-			winner = away_team
-
-		print(f'{home_team["label"]} vs. {away_team["label"]} : {winner["label"]}')
-
 
 # home team is the swapped team
 def main():
@@ -177,7 +197,7 @@ def main():
 	}
 	away_season = "2015-16"
 
-	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = True)
+	predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False)
 
 	end = timer() 
 
