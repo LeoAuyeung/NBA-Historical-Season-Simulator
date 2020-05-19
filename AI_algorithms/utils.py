@@ -78,9 +78,7 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats = False,
 
 	if use_cached_stats:
 		# set directory to Data
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "Data")
-		os.chdir(new_directory)
+		set_directory("Data")
 
 		# read csv
 		all_stats = pd.read_csv(cached_filename)
@@ -94,9 +92,7 @@ def get_team_stats(team, start_date, end_date, season, use_cached_stats = False,
 			all_stats[h] = team_stats[h].values[0]
 		
 		# set directory to SavedModels
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "SavedModels")
-		os.chdir(new_directory)
+		set_directory("SavedModels")
 
 	else:
 		time.sleep(1)
@@ -165,9 +161,7 @@ def create_nba_season_dates_dict(first, last):
 # Create the actual CSVs of the stats
 def create_team_stats_csv():
 	# set directory to Data
-	prog_directory = os.path.dirname(os.path.abspath(__file__))
-	new_directory = os.path.join(prog_directory, "Data")
-	os.chdir(new_directory)
+	set_directory("Data")
 
 	all_stats = []
 	# for each season, get dates

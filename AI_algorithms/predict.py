@@ -4,7 +4,7 @@ import pandas as pd
 from timeit import default_timer as timer
 from datetime import datetime
 from process import create_mean_std_dev_dicts, z_score_difference
-from utils import get_team_stats, get_game_schedule_list, create_game_dict
+from utils import get_team_stats, get_game_schedule_list, create_game_dict, set_directory
 from constants import TEAMS, STATS_TYPE, HEADERS
 
 # Get the normalized Z-scores of the games played based on the home and away team stats, mean, and std dev
@@ -108,17 +108,13 @@ def predict_season(home_team, away_season, model_name, use_cached_stats = False,
 		df = pd.DataFrame(games_df, columns = columns)
 
 		# set directory to Predictions
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "Predictions")
-		os.chdir(new_directory)
+		set_directory("Predictions")
 
 		# save to CSV file
 		df.to_csv(f'{home_team["season"]}-{home_team["name"]}_{away_season}_{model_name}_{now_str}_predictions.csv', index = False)
 
 		# set directory to SavedModels
-		prog_directory = os.path.dirname(os.path.abspath(__file__))
-		new_directory = os.path.join(prog_directory, "SavedModels")
-		os.chdir(new_directory)
+		set_directory("SavedModels")
 	
 	num_matches = len(match_schedule_list)
 
@@ -176,9 +172,7 @@ def main():
 	start = timer()
 	
 	# set directory to SavedModels
-	prog_directory = os.path.dirname(os.path.abspath(__file__))
-	new_directory = os.path.join(prog_directory, "SavedModels")
-	os.chdir(new_directory)
+	set_directory("SavedModels")
 
 	# INPUTS USED TO PREDICT SEASON
 	model_name = "model_knn_20200518"
