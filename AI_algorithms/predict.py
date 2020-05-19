@@ -13,7 +13,7 @@ def get_z_scores_list(home_team, away_team, mean_dict, std_dev_dict, use_cached_
 	games = [home_team["label"], away_team["label"]]
 	home_stats = get_team_stats(home_team["name"], home_team["start_date"], home_team["end_date"], home_team["season"], use_cached_stats)
 	if use_game_date:
-		away_stats = getStatsForTeam(awayTeam["name"], awayTeam["startDate"], game_date, awayTeam["season"], use_cached_stats)
+		away_stats = get_team_stats(away_team["name"], away_team["start_date"], game_date, away_team["season"], use_cached_stats)
 	else:
 		away_stats = get_team_stats(away_team["name"], away_team["start_date"], away_team["end_date"], away_team["season"], use_cached_stats)
 
