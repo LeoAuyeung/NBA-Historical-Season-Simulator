@@ -81,12 +81,12 @@ def random_forest(dataframe):
     #     'AST_RATIO','OREB_PCT','DREB_PCT','REB_PCT','TM_TOV_PCT','EFG_PCT','TS_PCT','E_PACE','PACE','PACE_PER40','POSS','PIE',]
     
     # Original Feature Set
-    features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
+    # features = ['W_PCT', 'REB', 'TOV', 'PLUS_MINUS', 'OFF_RATING', 'DEF_RATING', 'TS_PCT']
 
     # Top 10 feature importance
     # features = ['W_PCT','NET_RATING','PLUS_MINUS','PIE','E_NET_RATING','DEF_RATING','E_OFF_RATING','OFF_RATING','PTS', 'TS_PCT']
 
-    # Top 10 K-best 
+    # Top 10 K-best
     features = ['W_PCT','NET_RATING','PLUS_MINUS','E_NET_RATING','PIE','E_OFF_RATING','PTS','OFF_RATING','TS_PCT','E_DEF_RATING']
 
     # ==================== START store necessary variables ====================
@@ -97,16 +97,16 @@ def random_forest(dataframe):
     # actual_result_data holds actual result of the games which we can then check our prediction with
     actual_result_data = dataframe.Result
 
-    # Select 10 best features.
-    # best_features = SelectKBest(score_func=f_classif, k=10)
+    # # Select 10 best features.
+    # best_features = SelectKBest(score_func=f_classif, k=20)
     # fit = best_features.fit(feature_data,actual_result_data)
     # dfscores = pd.DataFrame(fit.scores_)
     # dfcolumns = pd.DataFrame(feature_data.columns)
 
-    # Concat two dataframes for better visualization 
+    # # Concat two dataframes for better visualization 
     # featureScores = pd.concat([dfcolumns,dfscores],axis=1)
     # featureScores.columns = ['Specs','Score']
-    # print(featureScores.nlargest(10,'Score'))
+    # print(featureScores.nlargest(20,'Score'))
 
     # Call sklearn.model_selection's train_test_split function: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     # Split arrays or matrices into random train and test subsets
@@ -435,7 +435,7 @@ def create_model(name="model"):
 
 	# Set directory to Data
 	os.chdir(home_path + '/Data/MoreInfoData/')
-	all_games_dataframe = pd.read_csv('COMBINEDgamesWithMoreInfo2010-15.csv')
+	all_games_dataframe = pd.read_csv('NEWgamesWithMoreInfo2010-15.csv')
 
 	model = create_model_helper(all_games_dataframe, model_name)
 
