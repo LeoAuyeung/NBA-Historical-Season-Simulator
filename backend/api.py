@@ -1,7 +1,13 @@
 import time
 from flask import Flask
 from flask import request
+from flask import jsonify
 import json
+
+#from AI_algorithms import predict
+
+#from predict import dummy_function
+from predict import predict_season
 
 app = Flask(__name__)
 
@@ -22,7 +28,71 @@ def get_standings():
 	#Example: [{'teamName': 'Golden State Warriors', 'wins': 73, 'losses': 9, 'wlPercent': 0.89}, {'name': 'John', 'age': 30, 'city': 'New York'}]
 	#We will need to take the standings list from predict.py and turn it into that ^^^ then return it to frontend
 	
-	return { 'standings' : ['Chicago Bulls', 60, 20, '75%']}
+	'''
+	model_name = "model_knn_20200518"
+	home_team = {
+		"season": "2015-16",
+		"name": "Boston Celtics"
+	}
+	away_season = "2015-16"
+	'''
+	model_name = "final_model"
+	home_team = {
+		"season": teamsAndSeasons[3],
+		"name": teamsAndSeasons[2]
+	}
+	away_season = teamsAndSeasons[1]
+
+
+	#predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False)
+	#response_json = json.dumps(predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False) )
+	#return { 'predictions' : predict_season}
+	#response_json = jsonify(predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False) )
+
+	#print('response_json',response_json);
+	prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = False, save_to_CSV = True, use_game_date = True);
+	print('prediction_list', prediction_list)
+
+	#predict_season result is being turned into a string. we want it to stay as a list fuck
+
+	#return {'listOfPredictions': response_json};
+	return jsonify({"listOfPredictions": prediction_list})
+
+'''
+TO DO:
+- REMOVE DATE AND ACTUAL COLUMN 
+- CHANGE PREDICTION TO WIN OR LOSS
+
+		win_or_loss = 'Win';
+		if (game_with_prediction[1][0].item() == 1):
+			win_or_loss = 'Loss'
+
+Put this in predicts.py so it will display win or loss
+'''
+
+
+#dummy_function(); A test to see if we can import a function from predict.py
+
+#-------------------- TESTING FRONTEND SENDING TO BACKEND WITH TEAM SELECTION
+'''
+teamsAndSeasons = ["Atlanta Hawks", "2019-20", "Los Angeles Lakers", "2018-19"]
+
+dummy_function();
+
+model_name = "model_knn_20200518"
+home_team = {
+	"season": teamsAndSeasons[3],
+	"name": teamsAndSeasons[2]
+}
+away_season = teamsAndSeasons[1]
+
+print('works');
+
+#print('response_json',response_json);
+prediction_list = predict_season(home_team, away_season, model_name, use_cached_stats = True, save_to_CSV = False);
+print('prediction_list', prediction_list)
+'''
+
 
 '''
 Reference:
