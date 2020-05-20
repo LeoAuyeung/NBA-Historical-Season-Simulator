@@ -118,7 +118,24 @@ const SwapTeams = () => {
 			wlPercent: .500
 		}
 	]);
-		
+	/*	
+	const [predictions, setPredictions] = useState([
+		{
+			date: '10/16/2018',
+			home: 'Boston Celtics',
+			away: 'Philadelphia 76ers',
+			prediction: 0,
+			actual: 0
+		}
+	]);
+	*/
+	const [predictions, setPredictions] = useState([{'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Los Angeles Clippers', 'date': '10/19/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Phoenix Suns', 'date': '10/20/2017', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 New Orleans Pelicans', 'date': '10/22/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Washington Wizards', 'date': '10/25/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Toronto Raptors', 'date': '10/27/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Utah Jazz', 'date': '10/28/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Detroit Pistons', 'date': '10/31/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Portland Trail Blazers', 'date': '11/02/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Brooklyn Nets', 'date': '11/03/2017', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Memphis Grizzlies', 'date': '11/05/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Boston Celtics', 'date': '11/08/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Washington Wizards', 'date': '11/09/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Milwaukee Bucks', 'date': '11/11/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Phoenix Suns', 'date': '11/13/2017', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Philadelphia 76ers', 'date': '11/15/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Phoenix Suns', 'date': '11/17/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Denver Nuggets', 'date': '11/19/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Chicago Bulls', 'date': '11/21/2017', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Sacramento Kings', 'date': '11/22/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Los Angeles Clippers', 'date': '11/27/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Golden State Warriors', 'date': '11/29/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Denver Nuggets', 'date': '12/02/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Houston Rockets', 'date': '12/03/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Philadelphia 76ers', 'date': '12/07/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Charlotte Hornets', 'date': '12/09/2017', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 New York Knicks', 'date': '12/12/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Cleveland Cavaliers', 'date': '12/14/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Golden State Warriors', 'date': '12/18/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Houston Rockets', 'date': '12/20/2017', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Golden State Warriors', 'date': '12/22/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Portland Trail Blazers', 'date': '12/23/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Minnesota Timberwolves', 'date': '12/25/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Memphis Grizzlies', 'date': '12/27/2017', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Los Angeles Clippers', 'date': '12/29/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Houston Rockets', 'date': '12/31/2017', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Minnesota Timberwolves', 'date': '01/01/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Oklahoma City Thunder', 'date': '01/03/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Charlotte Hornets', 'date': '01/05/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Atlanta Hawks', 'date': '01/07/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Sacramento Kings', 'date': '01/09/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 San Antonio Spurs', 'date': '01/11/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Dallas Mavericks', 'date': '01/13/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Memphis Grizzlies', 'date': '01/15/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Oklahoma City Thunder', 'date': '01/17/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Indiana Pacers', 'date': '01/19/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 New York Knicks', 'date': '01/21/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Boston Celtics', 'date': '01/23/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Chicago Bulls', 'date': '01/26/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Toronto Raptors', 'date': '01/28/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Orlando Magic', 'date': '01/31/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Brooklyn Nets', 'date': '02/02/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Oklahoma City Thunder', 'date': '02/04/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Phoenix Suns', 'date': '02/06/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Oklahoma City Thunder', 'date': '02/08/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Dallas Mavericks', 'date': '02/10/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 New Orleans Pelicans', 'date': '02/14/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Minnesota Timberwolves', 'date': '02/15/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Dallas Mavericks', 'date': '02/23/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Sacramento Kings', 'date': '02/24/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Atlanta Hawks', 'date': '02/26/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Miami Heat', 'date': '03/01/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 San Antonio Spurs', 'date': '03/03/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Portland Trail Blazers', 'date': '03/05/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Orlando Magic', 'date': '03/07/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Denver Nuggets', 'date': '03/09/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Cleveland Cavaliers', 'date': '03/11/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Denver Nuggets', 'date': '03/13/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Golden State Warriors', 'date': '03/14/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Miami Heat', 'date': '03/16/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Indiana Pacers', 'date': '03/19/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 New Orleans Pelicans', 'date': '03/22/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Memphis Grizzlies', 'date': '03/24/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Detroit Pistons', 'date': '03/26/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Dallas Mavericks', 'date': '03/28/2018', 'prediction': 1, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Milwaukee Bucks', 'date': '03/30/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Sacramento Kings', 'date': '04/01/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Utah Jazz', 'date': '04/03/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 San Antonio Spurs', 'date': '04/04/2018', 'prediction': 0, 'actual': 0}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Minnesota Timberwolves', 'date': '04/06/2018', 'prediction': 1, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Utah Jazz', 'date': '04/08/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Houston Rockets', 'date': '04/10/2018', 'prediction': 0, 'actual': 1}, {'home': '2017-18 Los Angeles Lakers', 'away': '2017-18 Los Angeles Clippers', 'date': '04/11/2018', 'prediction': 0, 'actual': 0}]
+
+
+
+	);
+
+//jsondata.predictions [{"home": "Boston Celtics", "away": "Philadelphia 76ers", "date": "10/28/2015", "prediction": 1, "actual": 0}, {"home": "Boston Celtics", "away": "Toronto Raptors", "date": "10/30/2015", "prediction": 0, "actual": 1}, {"home": "Boston Celtics", "away": "San Antonio Spurs", "date": "11/01/2015", "prediction": 1, "actual": 1}, {"home": "Boston Celtics", "away": "Indiana Pacers", "date": "11/04/2015", "prediction": 1, "actual": 1}, 
 
 	let teamList = ['Atlanta Hawks','2019-20','Atlanta Hawks','2019-20']
 
@@ -128,6 +145,9 @@ const SwapTeams = () => {
 		//console.log('teamList', teamList);
 		const body = { teamList: teamList };
 
+		console.log('teamList', teamList);
+
+
 		const response = await fetch('/standings',{
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json'},
@@ -136,8 +156,36 @@ const SwapTeams = () => {
 		const jsonData = await response.json();
 
 		console.log('jsondata',jsonData);
+		console.log('jsondata.predictions', jsonData.listOfPredictions);
 
+		setPredictions(jsonData.listOfPredictions)
+
+		//setPredictions(jsonData.predictions);
+		//console.log('test',jsonData.test);
 		//setTeamDescriptions(teamDescriptions+1);
+		/*
+		setTeamDescriptions([
+			{
+				teamName: 'Golden State Warriors',
+				wins: 73,
+				losses: 9,
+				wlPercent: .890
+			},
+			{
+				teamName: 'San Antonio Spurs',
+				wins: 67,
+				losses: 15,
+				wlPercent: .817
+			},
+			{
+				teamName: 'Cleveland Cavaliers',
+				wins: 57,
+				losses: 25,
+				wlPercent: '.695'
+			}
+		])
+		*/
+		//console.log(jsonData.predictions);
 	}
 
 	return(
@@ -146,37 +194,8 @@ const SwapTeams = () => {
 		    <form  onSubmit={ onSubmitForm }>
 			    <div className="row">
     		  		<div className="col-sm text-center">
-						<h3>Team to swap out</h3>
-							<select onChange={e => teamList[0]=(e.target.value)}>
-							  <option value="Atlanta Hawks">Atlanta Hawks</option>
-							  <option value="Boston Celtics">Boston Celtics</option>
-							  <option value="Brooklyn Nets">Brooklyn Nets</option>
-							  <option value="Charlotte Hornets">Charlotte Hornets</option>
-							  <option value="Chicago Bulls">Chicago Bulls</option>
-							  <option value="Cleveland Cavaliers">Cleveland Cavaliers</option>
-							  <option value="Dallas Mavericks">Dallas Mavericks</option>
-							  <option value="Golden State Warriors">Golden State Warriors</option>
-							  <option value="Houston Rockets">Houston Rockets</option>
-							  <option value="Indiana Pacers">Indiana Pacers</option>
-							  <option value="LA Clippers">LA Clippers</option>
-							  <option value="LA Lakers">LA Lakers</option>
-							  <option value="Memphis Grizzlies">Memphis Grizzlies</option>
-							  <option value="Miami Heat">Miami Heat</option>
-							  <option value="Milwaukee Bucks">Milwaukee Bucks</option>
-							  <option value="Minnesota Timberwolves">Minnesota Timberwolves</option>
-							  <option value="New Orleans Hornets">New Orleans Hornets</option>
-							  <option value="New York Knicks">New York Knicks</option>
-							  <option value="Oklahoma City Thunder">Oklahoma City Thunder</option>
-							  <option value="Orlando Magic">Orlando Magic</option>
-							  <option value="Philadelphia Sixers">Philadelphia Sixers</option>
-							  <option value="Phoenix Suns">Phoenix Suns</option>
-							  <option value="Portland Trail Blazers">Portland Trail Blazers</option>
-							  <option value="Sacramento Kings">Sacramento Kings</option>
-							  <option value="San Antonio Spurs">San Antonio Spurs</option>
-							  <option value="Toronto Raptors">Toronto Raptors</option>
-							  <option value="Utah Jazz">Utah Jazz</option>
-							  <option value="Washington Wizards">Washington Wizards</option>
-							</select>
+						<h3>Season To Play In</h3>
+
 
 							<select className="ml-1" onChange={e => teamList[1]=(e.target.value)}>
 							    <option value="2019-20">2019-20</option>
@@ -201,8 +220,8 @@ const SwapTeams = () => {
 							  <option value="Golden State Warriors">Golden State Warriors</option>
 							  <option value="Houston Rockets">Houston Rockets</option>
 							  <option value="Indiana Pacers">Indiana Pacers</option>
-							  <option value="LA Clippers">LA Clippers</option>
-							  <option value="LA Lakers">LA Lakers</option>
+							  <option value="Los Angeles Clippers">Los Angeles Clippers</option>
+							  <option value="Los Angeles Lakers">Los Angeles Lakers</option>
 							  <option value="Memphis Grizzlies">Memphis Grizzlies</option>
 							  <option value="Miami Heat">Miami Heat</option>
 							  <option value="Milwaukee Bucks">Milwaukee Bucks</option>
@@ -258,6 +277,31 @@ const SwapTeams = () => {
 			      	))}
 			    </tbody>
 			</table>
+
+			<h2 className='text-center mt-4'>Predicted Games</h2>
+			<table className="table table-striped">
+			    <thead>
+			    	<tr>
+			        	<th>Date</th>
+			        	<th>Home</th>
+			        	<th>Away</th>
+			        	<th>Prediction</th>
+			        	<th>Actual</th>
+			    	</tr>
+			    </thead>
+			    <tbody>
+			      	{predictions.map((game,index) => (
+			      		<tr key={index} index={index}>
+			      			<td>{game.date}</td>
+			      			<td>{game.home}</td>
+			      			<td>{game.away}</td>
+			      			<td>{game.prediction}</td>
+			      			<td>{game.actual}</td>
+			      		</tr>
+			      	))}
+			    </tbody>
+			</table>
+
 		</Fragment>
 	); 
 
@@ -266,7 +310,36 @@ const SwapTeams = () => {
 export default SwapTeams;
 
 /*  
-
+							<select onChange={e => teamList[0]=(e.target.value)}>
+							  <option value="Atlanta Hawks">Atlanta Hawks</option>
+							  <option value="Boston Celtics">Boston Celtics</option>
+							  <option value="Brooklyn Nets">Brooklyn Nets</option>
+							  <option value="Charlotte Hornets">Charlotte Hornets</option>
+							  <option value="Chicago Bulls">Chicago Bulls</option>
+							  <option value="Cleveland Cavaliers">Cleveland Cavaliers</option>
+							  <option value="Dallas Mavericks">Dallas Mavericks</option>
+							  <option value="Golden State Warriors">Golden State Warriors</option>
+							  <option value="Houston Rockets">Houston Rockets</option>
+							  <option value="Indiana Pacers">Indiana Pacers</option>
+							  <option value="Los Angeles Clippers">Los Angeles Clippers</option>
+							  <option value="Los Angeles Lakers">Los Angeles Lakers</option>
+							  <option value="Memphis Grizzlies">Memphis Grizzlies</option>
+							  <option value="Miami Heat">Miami Heat</option>
+							  <option value="Milwaukee Bucks">Milwaukee Bucks</option>
+							  <option value="Minnesota Timberwolves">Minnesota Timberwolves</option>
+							  <option value="New Orleans Hornets">New Orleans Hornets</option>
+							  <option value="New York Knicks">New York Knicks</option>
+							  <option value="Oklahoma City Thunder">Oklahoma City Thunder</option>
+							  <option value="Orlando Magic">Orlando Magic</option>
+							  <option value="Philadelphia Sixers">Philadelphia Sixers</option>
+							  <option value="Phoenix Suns">Phoenix Suns</option>
+							  <option value="Portland Trail Blazers">Portland Trail Blazers</option>
+							  <option value="Sacramento Kings">Sacramento Kings</option>
+							  <option value="San Antonio Spurs">San Antonio Spurs</option>
+							  <option value="Toronto Raptors">Toronto Raptors</option>
+							  <option value="Utah Jazz">Utah Jazz</option>
+							  <option value="Washington Wizards">Washington Wizards</option>
+							</select>
 
 Previous Code:
 ---------- Specific team name from teamDescription
@@ -340,4 +413,6 @@ https://getbootstrap.com/docs/4.0/components/forms/#select-menu
 Table:
 https://www.w3schools.com/bootstrap4/bootstrap_tables.asp
 
+Git pull from master to branch:
+https://stackoverflow.com/questions/20101994/git-pull-from-master-into-the-development-branch
 */
