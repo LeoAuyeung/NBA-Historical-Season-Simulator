@@ -1,6 +1,5 @@
 import os
 import csv
-import time
 import pickle
 import pandas as pd
 from timeit import default_timer as timer
@@ -100,7 +99,6 @@ def interpret_prediction_season(games_df):
 # Predict the game based on the training model used. Can use a cached training model.
 def predict_game(game, model, features, use_cached_stats = False, use_game_date = False, game_date = None, demo = False, index=None):
 	if demo:
-		time.sleep(1)
 		set_directory("Data")
 		with open("demoData.csv") as f:
 			demo_data = [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace = True)]
@@ -244,12 +242,6 @@ def main():
 
 	elapsed_time = end - start
 	print(f'Elapsed Time: {int(elapsed_time / 60)} minutes {int(elapsed_time % 60)} seconds.')
-
-
-	# set_directory("Data")
-	# df = pd.concat(demo_list, ignore_index=True)
-	# df.to_csv("demoData.csv", index=False)
-
 
 if __name__ == "__main__":
 	main()

@@ -85,30 +85,6 @@ HEADERS = {
     'x-nba-stats-token': 'true',
 }
 
-# STATS_TYPE = {
-#     'W_PCT':'Base',
-#     'REB':'Base',
-#     'TOV':'Base',
-#     'PLUS_MINUS':'Base',
-#     'OFF_RATING':'Advanced',
-#     'DEF_RATING':'Advanced',
-#     'TS_PCT':'Advanced'
-# }
-
-# Feature importance
-# STATS_TYPE = {
-#    'W_PCT':'Base',
-#    'NET_RATING':'Advanced',
-#    'PLUS_MINUS':'Base',
-#    'PIE':'Advanced',
-#    'E_NET_RATING':'Advanced',
-#    'DEF_RATING':'Advanced',
-#    'E_OFF_RATING':'Advanced',
-#    'OFF_RATING':'Advanced',
-#    'PTS':'Base',
-#    'TS_PCT':'Advanced',
-# }
-
 # K-best
 STATS_TYPE = {
    'W_PCT':'Base',

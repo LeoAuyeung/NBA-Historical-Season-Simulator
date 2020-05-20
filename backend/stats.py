@@ -41,7 +41,3 @@ for game in regular_season_games_list:
     regular_season_games.append(game_dict)
 
 pprint(regular_season_games)
-
-
-# print(regular_season_games)
-# regular_season_games.to_csv("reg_games.csv")
