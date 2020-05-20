@@ -96,32 +96,32 @@ HEADERS = {
 # }
 
 # Feature importance
-STATS_TYPE = {
-   'W_PCT':'Base',
-   'NET_RATING':'Advanced',
-   'PLUS_MINUS':'Base',
-   'PIE':'Advanced',
-   'E_NET_RATING':'Advanced',
-   'DEF_RATING':'Advanced',
-   'E_OFF_RATING':'Advanced',
-   'OFF_RATING':'Advanced',
-   'PTS':'Base',
-   'TS_PCT':'Advanced',
-}
-
-# K-best
 # STATS_TYPE = {
 #    'W_PCT':'Base',
 #    'NET_RATING':'Advanced',
 #    'PLUS_MINUS':'Base',
-#    'E_NET_RATING':'Advanced',
 #    'PIE':'Advanced',
+#    'E_NET_RATING':'Advanced',
+#    'DEF_RATING':'Advanced',
 #    'E_OFF_RATING':'Advanced',
-#    'PTS':'Base',
 #    'OFF_RATING':'Advanced',
+#    'PTS':'Base',
 #    'TS_PCT':'Advanced',
-#    'E_DEF_RATING':'Advanced',
 # }
+
+# K-best
+STATS_TYPE = {
+   'W_PCT':'Base',
+   'NET_RATING':'Advanced',
+   'PLUS_MINUS':'Base',
+   'E_NET_RATING':'Advanced',
+   'PIE':'Advanced',
+   'E_OFF_RATING':'Advanced',
+   'PTS':'Base',
+   'OFF_RATING':'Advanced',
+   'TS_PCT':'Advanced',
+   'E_DEF_RATING':'Advanced',
+}
 
 ADDITIONAL_STATS_TYPE = {
     'W_PCT':'Base',

@@ -1,0 +1,83 @@
+date,home,away,prediction,actual
+10/16/2018,2015-16 Golden State Warriors,2018-19 Oklahoma City Thunder,Loss,0
+10/19/2018,2015-16 Golden State Warriors,2018-19 Utah Jazz,Loss,0
+10/21/2018,2015-16 Golden State Warriors,2018-19 Denver Nuggets,Loss,1
+10/22/2018,2015-16 Golden State Warriors,2018-19 Phoenix Suns,Loss,0
+10/24/2018,2015-16 Golden State Warriors,2018-19 Washington Wizards,Loss,0
+10/26/2018,2015-16 Golden State Warriors,2018-19 New York Knicks,Loss,0
+10/28/2018,2015-16 Golden State Warriors,2018-19 Brooklyn Nets,Loss,0
+10/29/2018,2015-16 Golden State Warriors,2018-19 Chicago Bulls,Loss,0
+10/31/2018,2015-16 Golden State Warriors,2018-19 New Orleans Pelicans,Loss,0
+11/02/2018,2015-16 Golden State Warriors,2018-19 Minnesota Timberwolves,Loss,0
+11/05/2018,2015-16 Golden State Warriors,2018-19 Memphis Grizzlies,Loss,0
+11/08/2018,2015-16 Golden State Warriors,2018-19 Milwaukee Bucks,Loss,1
+11/10/2018,2015-16 Golden State Warriors,2018-19 Brooklyn Nets,Loss,0
+11/12/2018,2015-16 Golden State Warriors,2018-19 Los Angeles Clippers,Loss,1
+11/13/2018,2015-16 Golden State Warriors,2018-19 Atlanta Hawks,Loss,0
+11/15/2018,2015-16 Golden State Warriors,2018-19 Houston Rockets,Loss,1
+11/17/2018,2015-16 Golden State Warriors,2018-19 Dallas Mavericks,Loss,1
+11/18/2018,2015-16 Golden State Warriors,2018-19 San Antonio Spurs,Loss,1
+11/21/2018,2015-16 Golden State Warriors,2018-19 Oklahoma City Thunder,Loss,1
+11/23/2018,2015-16 Golden State Warriors,2018-19 Portland Trail Blazers,Loss,0
+11/24/2018,2015-16 Golden State Warriors,2018-19 Sacramento Kings,Loss,0
+11/26/2018,2015-16 Golden State Warriors,2018-19 Orlando Magic,Loss,0
+11/29/2018,2015-16 Golden State Warriors,2018-19 Toronto Raptors,Loss,1
+12/01/2018,2015-16 Golden State Warriors,2018-19 Detroit Pistons,Loss,1
+12/03/2018,2015-16 Golden State Warriors,2018-19 Atlanta Hawks,Loss,0
+12/05/2018,2015-16 Golden State Warriors,2018-19 Cleveland Cavaliers,Loss,0
+12/07/2018,2015-16 Golden State Warriors,2018-19 Milwaukee Bucks,Loss,0
+12/10/2018,2015-16 Golden State Warriors,2018-19 Minnesota Timberwolves,Loss,0
+12/12/2018,2015-16 Golden State Warriors,2018-19 Toronto Raptors,Loss,1
+12/14/2018,2015-16 Golden State Warriors,2018-19 Sacramento Kings,Loss,0
+12/17/2018,2015-16 Golden State Warriors,2018-19 Memphis Grizzlies,Loss,0
+12/19/2018,2015-16 Golden State Warriors,2018-19 Utah Jazz,Loss,1
+12/22/2018,2015-16 Golden State Warriors,2018-19 Dallas Mavericks,Loss,0
+12/23/2018,2015-16 Golden State Warriors,2018-19 Los Angeles Clippers,Loss,0
+12/25/2018,2015-16 Golden State Warriors,2018-19 Los Angeles Lakers,Loss,1
+12/27/2018,2015-16 Golden State Warriors,2018-19 Portland Trail Blazers,Loss,1
+12/29/2018,2015-16 Golden State Warriors,2018-19 Portland Trail Blazers,Loss,0
+12/31/2018,2015-16 Golden State Warriors,2018-19 Phoenix Suns,Loss,0
+01/03/2019,2015-16 Golden State Warriors,2018-19 Houston Rockets,Loss,1
+01/05/2019,2015-16 Golden State Warriors,2018-19 Sacramento Kings,Loss,0
+01/08/2019,2015-16 Golden State Warriors,2018-19 New York Knicks,Loss,0
+01/11/2019,2015-16 Golden State Warriors,2018-19 Chicago Bulls,Loss,0
+01/13/2019,2015-16 Golden State Warriors,2018-19 Dallas Mavericks,Loss,0
+01/15/2019,2015-16 Golden State Warriors,2018-19 Denver Nuggets,Loss,0
+01/16/2019,2015-16 Golden State Warriors,2018-19 New Orleans Pelicans,Loss,0
+01/18/2019,2015-16 Golden State Warriors,2018-19 Los Angeles Clippers,Loss,0
+01/21/2019,2015-16 Golden State Warriors,2018-19 Los Angeles Lakers,Loss,0
+01/24/2019,2015-16 Golden State Warriors,2018-19 Washington Wizards,Loss,0
+01/26/2019,2015-16 Golden State Warriors,2018-19 Boston Celtics,Loss,0
+01/28/2019,2015-16 Golden State Warriors,2018-19 Indiana Pacers,Loss,0
+01/31/2019,2015-16 Golden State Warriors,2018-19 Philadelphia 76ers,Loss,1
+02/02/2019,2015-16 Golden State Warriors,2018-19 Los Angeles Lakers,Loss,0
+02/06/2019,2015-16 Golden State Warriors,2018-19 San Antonio Spurs,Loss,0
+02/08/2019,2015-16 Golden State Warriors,2018-19 Phoenix Suns,Loss,0
+02/10/2019,2015-16 Golden State Warriors,2018-19 Miami Heat,Loss,0
+02/12/2019,2015-16 Golden State Warriors,2018-19 Utah Jazz,Loss,0
+02/13/2019,2015-16 Golden State Warriors,2018-19 Portland Trail Blazers,Loss,1
+02/21/2019,2015-16 Golden State Warriors,2018-19 Sacramento Kings,Loss,0
+02/23/2019,2015-16 Golden State Warriors,2018-19 Houston Rockets,Loss,1
+02/25/2019,2015-16 Golden State Warriors,2018-19 Charlotte Hornets,Loss,0
+02/27/2019,2015-16 Golden State Warriors,2018-19 Miami Heat,Loss,1
+02/28/2019,2015-16 Golden State Warriors,2018-19 Orlando Magic,Loss,1
+03/02/2019,2015-16 Golden State Warriors,2018-19 Philadelphia 76ers,Loss,0
+03/05/2019,2015-16 Golden State Warriors,2018-19 Boston Celtics,Loss,1
+03/08/2019,2015-16 Golden State Warriors,2018-19 Denver Nuggets,Loss,0
+03/10/2019,2015-16 Golden State Warriors,2018-19 Phoenix Suns,Loss,1
+03/13/2019,2015-16 Golden State Warriors,2018-19 Houston Rockets,Loss,0
+03/16/2019,2015-16 Golden State Warriors,2018-19 Oklahoma City Thunder,Loss,0
+03/18/2019,2015-16 Golden State Warriors,2018-19 San Antonio Spurs,Loss,1
+03/19/2019,2015-16 Golden State Warriors,2018-19 Minnesota Timberwolves,Loss,0
+03/21/2019,2015-16 Golden State Warriors,2018-19 Indiana Pacers,Loss,0
+03/23/2019,2015-16 Golden State Warriors,2018-19 Dallas Mavericks,Loss,1
+03/24/2019,2015-16 Golden State Warriors,2018-19 Detroit Pistons,Loss,0
+03/27/2019,2015-16 Golden State Warriors,2018-19 Memphis Grizzlies,Loss,0
+03/29/2019,2015-16 Golden State Warriors,2018-19 Minnesota Timberwolves,Loss,1
+03/31/2019,2015-16 Golden State Warriors,2018-19 Charlotte Hornets,Loss,0
+04/02/2019,2015-16 Golden State Warriors,2018-19 Denver Nuggets,Loss,0
+04/04/2019,2015-16 Golden State Warriors,2018-19 Los Angeles Lakers,Loss,0
+04/05/2019,2015-16 Golden State Warriors,2018-19 Cleveland Cavaliers,Loss,0
+04/07/2019,2015-16 Golden State Warriors,2018-19 Los Angeles Clippers,Loss,0
+04/09/2019,2015-16 Golden State Warriors,2018-19 New Orleans Pelicans,Loss,0
+04/10/2019,2015-16 Golden State Warriors,2018-19 Memphis Grizzlies,Loss,1

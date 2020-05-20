@@ -62,11 +62,11 @@ def get_team_stats_2(team, startDate, endDate, season='2019-20'):
 		advancedTeamDashboard = advancedTeamDict['OverallTeamDashboard'][0]
 
 		allStats = {}
-		for stat, statType in ADDITIONAL_STATS_TYPE.items():
+		for stat, statType in STATS_TYPE.items():
 			if statType == 'Base':
 				allStats[stat] = generalTeamDashboard[stat]
 
-		for stat, statType in ADDITIONAL_STATS_TYPE.items():
+		for stat, statType in STATS_TYPE.items():
 			if statType == 'Advanced':
 				allStats[stat] = advancedTeamDashboard[stat]
 		
@@ -74,7 +74,7 @@ def get_team_stats_2(team, startDate, endDate, season='2019-20'):
 	return allStats
 
 
-def get_team_stats(team, start_date, end_date, season, use_cached_stats = False, cached_filename = "2009-2019_TeamStats.csv"):
+def get_team_stats(team, start_date, end_date, season, use_cached_stats = False, cached_filename = "2009-2019_TeamStats10.csv"):
 	filename = team + '_' + start_date + '_' + end_date + '_' + season + '.json'
 
 	if use_cached_stats:
@@ -182,10 +182,10 @@ def create_team_stats_csv():
 			all_stats.append(stats)
 
 	# feature cols we are using
-	columns = ["season", "team", "W_PCT", "REB", "TOV", "PLUS_MINUS", "OFF_RATING", "DEF_RATING", "TS_PCT"]
+	columns = ["season", "team"] + list(STATS_TYPE.keys())
 	df = pd.DataFrame(all_stats, columns = columns)
 
-	df.to_csv("2009-2019_TeamStats.csv", index = False)
+	df.to_csv("2009-2019_TeamStats10.csv", index = False)
 
 # Get the entire schedule of a team during a specific season
 def get_game_schedule_list(home_team, away_season):

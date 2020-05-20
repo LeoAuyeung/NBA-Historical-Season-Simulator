@@ -435,7 +435,7 @@ def create_model(name="model"):
 
 	# Set directory to Data
 	os.chdir(home_path + '/Data/MoreInfoData/')
-	all_games_dataframe = pd.read_csv('NEWgamesWithMoreInfo2010-15.csv')
+	all_games_dataframe = pd.read_csv('COMBINEDgamesWithMoreInfo2010-15.csv')
 
 	model = create_model_helper(all_games_dataframe, model_name)
 
@@ -443,7 +443,7 @@ def create_model(name="model"):
 	os.chdir(home_path + '/SavedModels')
 
 	# Save Model
-	with open(filename, 'wb') as file:
+	with open("final_model_v2.pkl", 'wb') as file:
 		pickle.dump(model, file)
 
 if __name__ == "__main__":
