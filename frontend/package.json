@@ -16,7 +16,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-api": "cd .. && cd backend && venv/bin/flask run --no-debugger"
-
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -34,5 +33,4 @@
     ]
   },
   "proxy": "http://localhost:5000"
-
 }

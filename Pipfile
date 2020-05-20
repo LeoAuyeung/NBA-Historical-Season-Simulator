@@ -12,6 +12,8 @@ sklearn = "*"
 nba-api = "*"
 matplotlib = "*"
 seaborn = "*"
+flask = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
