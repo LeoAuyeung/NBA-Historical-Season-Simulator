@@ -282,21 +282,17 @@ const SwapTeams = () => {
 			<table className="table table-striped">
 			    <thead>
 			    	<tr>
-			        	<th>Date</th>
 			        	<th>Home</th>
 			        	<th>Away</th>
 			        	<th>Prediction</th>
-			        	<th>Actual</th>
 			    	</tr>
 			    </thead>
 			    <tbody>
 			      	{predictions.map((game,index) => (
 			      		<tr key={index} index={index}>
-			      			<td>{game.date}</td>
 			      			<td>{game.home}</td>
 			      			<td>{game.away}</td>
 			      			<td>{game.prediction}</td>
-			      			<td>{game.actual}</td>
 			      		</tr>
 			      	))}
 			    </tbody>
