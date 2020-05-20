@@ -21,11 +21,15 @@ scikit-learn, nba_api, pandas, numpy, matplotlib, seaborn, flask, react
 ### Install Instructions
 This project uses [pipenv](https://github.com/pypa/pipenv) to handle dependencies. Install pipenv and install dependencies by using the following command which will create a local virtual environment to install packages.
 
-````pipenv install````
+````
+pipenv install
+````
 
 To run in the virtual envionment with installed packages, use the following command to enter the virtual envionment:
 
-````pipenv shell````
+````
+pipenv shell
+````
 
 To manage python versions, you may want to look into [pyenv](https://github.com/pyenv/pyenv) to set a local python version.
 
@@ -37,8 +41,13 @@ npm install
 
 To run frontend
 
-````npm start````
+````
+npm start
+````
 
 To run backend
 
-````flask run --no-debugger````
+````
+pipenv shell
+flask run --no-debugger
+````
